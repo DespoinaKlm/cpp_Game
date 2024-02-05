@@ -19,6 +19,15 @@ struct Box
             (fabs(m_pos_y - other.m_pos_y) * 2.0f < (m_height + other.m_height));
     }
 
+    bool insertUp(Box& other) {
+        if (m_pos_y + m_height>= other.m_pos_y && 
+            m_pos_y <= other.m_pos_y + other.m_height && 
+            m_pos_x <= other.m_pos_x + other.m_width &&
+            m_pos_x + m_width >= other.m_pos_x) {
+            return true;
+        }
+        return false;
+    }
     float intersectUp(Box& other)
     {
         if (fabs(m_pos_x - other.m_pos_x) * 2.0f >= (m_width + other.m_width) || m_pos_y > other.m_pos_y)

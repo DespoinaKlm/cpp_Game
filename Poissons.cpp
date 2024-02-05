@@ -1,5 +1,6 @@
+#pragma once
 #include "Poissons.h"
-//---------------------------------Constructor--------------------------------------------------------------------------------------
+//---------------------------------Constructor--------------------------------------------------------------------------------
 Poissons::Poissons(GameState* gs, int type,float posx, float posy, float posw, float posh, const string& name):GameObject(gs, name), m_type(type)
 {
 	m_type = type;
@@ -8,12 +9,12 @@ Poissons::Poissons(GameState* gs, int type,float posx, float posy, float posw, f
 	m_width = posw;
 	m_height = posh;
 }
-//---------------------------------Update---------------------------------------------------------------------------------
+//---------------------------------Update-------------------------------------------------------------------------------------
 void Poissons::update(float dt)
 {
 
 }
-//---------------------------------Init---------------------------------------------------------------------------------
+//---------------------------------Init---------------------------------------------------------------------------------------
 void Poissons::init()
 {
 	//brush
@@ -25,14 +26,10 @@ void Poissons::init()
 	br_poison.texture = m_state->getFullAssetPath("poison1.png");
 	
 	//try animation for the poisson
-	m_poissonA.push_back(m_state->getFullAssetPath("poison1.png"));//0
-	m_poissonA.push_back(m_state->getFullAssetPath("poison2.png"));//1
-	m_poissonA.push_back(m_state->getFullAssetPath("poison3.png"));//2
-	m_poissonA.push_back(m_state->getFullAssetPath("poison4.png"));//3
-	m_poissonA.push_back(m_state->getFullAssetPath("poison5.png"));//4
+	m_poissonA = loadFileGameObject("poison");
 	
 }
-//---------------------------------Color---------------------------------------------------------------------------------
+//---------------------------------Color--------------------------------------------------------------------------------------
 void Poissons::getColor()
 {
 	switch (m_type)
@@ -58,7 +55,7 @@ void Poissons::getColor()
 		break;
 	}
 }
-//---------------------------------TypeOfPoison---------------------------------------------------------------------------------
+//---------------------------------TypeOfPoison-------------------------------------------------------------------------------
 void Poissons::TypeOfPoison()
 {
 	switch (m_type)
@@ -77,9 +74,10 @@ void Poissons::TypeOfPoison()
 		break;
 	}
 }
-//---------------------------------Draw-----------------------------------
+//---------------------------------Draw---------------------------------------------------------------------------------------
 void Poissons::draw()
 {
+	graphics::resetPose();
 	float x = m_pos_x + m_state->m_global_offset_x;
 	float y = m_pos_y + m_state->m_global_offset_y;
 
@@ -90,8 +88,8 @@ void Poissons::draw()
 	}
 	if (drawframe)
 	{
-		indexframePoisson += 0.25;
-		if (indexframePoisson >= m_poissonA.size()/2)
+		indexframePoisson += 0.15;
+		if (indexframePoisson >= m_poissonA.size())
 		{
 			TypeOfPoison();
 			drawframe = false;
@@ -102,18 +100,19 @@ void Poissons::draw()
 			br_poison.texture = m_poissonA[int(indexframePoisson)];
 		}
 	}
-	graphics::drawRect(x, y, m_width / 2, m_height / 2, br_poison);
+	//cout << indexframePoisson << "\n";
+	graphics::drawRect(x, y, m_width , m_height , br_poison);
 
 	if (m_state->m_debugging) {
 		debugDrawPoison();
 	}
 }
-//---------------------------------getType-----------------------	
+//---------------------------------getType------------------------------------------------------------------------------------
 const int& Poissons::getType() const
 {
 	return m_type;
 }
-//---------------------------------debugDrawPoison-----------------------
+//---------------------------------debugDrawPoison----------------------------------------------------------------------------
 void Poissons::debugDrawPoison()
 {
 	float x = m_pos_x + m_state->m_global_offset_x;

@@ -3,6 +3,7 @@
 #include <string>
 #include "GameState.h"
 #include <iostream>
+#include <fstream>
 #include <cstring>
 #include <ctime>
 #include <cstdlib>
@@ -43,15 +44,8 @@ int main(int argc, char** argv) {
 
 	graphics::destroyWindow();
 	
-	//graphics::setFont(GameState::get_Gamestate()->getAssetDir()+"OpenSans-Regular.ttf");
 	graphics::setFont(GameState::get_Gamestate()->getAssetDir() + "DrawSketchDemo.ttf");
 	graphics::Brush br_font;
-	//br_font.fill_color[0] = 1.0f;
-	//br_font.fill_color[1] = 2.7f;
-	//br_font.fill_color[2] = 3.9f;
-	//br_font.outline_opacity = 0.0f;
-	
-	//graphics::drawText(GameState::get_Gamestate()->getCanvasWidth(), GameState::get_Gamestate()->getCanvasHeight(), 1000, "kwnna", br_font);
 	
 	return 0;
 }

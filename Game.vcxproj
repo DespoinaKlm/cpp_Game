@@ -139,46 +139,33 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Bird.cpp" />
     <ClCompile Include="Blocks.cpp" />
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="Point.cpp" />
     <ClCompile Include="Poissons.cpp" />
     <ClCompile Include="Rock.cpp" />
     <ClCompile Include="timer.cpp" />
-    <ClCompile Include="Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Animation.h" />
     <ClInclude Include="Bird.h" />
     <ClInclude Include="Blocks.h" />
     <ClInclude Include="box.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="Collision.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="Point.h" />
     <ClInclude Include="Poissons.h" />
-    <ClInclude Include="Rigit_Body_Physics.h" />
     <ClInclude Include="Rock.h" />
     <ClInclude Include="timer.h" />
-    <ClInclude Include="Vector2D.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Animation.txt" />
-    <Text Include="Bird.txt" />
-    <Text Include="blocks.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

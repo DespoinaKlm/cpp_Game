@@ -22,6 +22,5 @@ public:
 	void update(float dt) override;
 	void init() override;
 	void draw() override;
-	 
 	void debugDrawEnemy(float x, float y) override;
 };

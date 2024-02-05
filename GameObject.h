@@ -1,7 +1,7 @@
 #pragma once
 #include <sgg/graphics.h>
+#include <iostream>
 #include <string>
-#include "Properties.h"
 
 using namespace std;
 class GameObject
@@ -14,15 +14,15 @@ protected:
 	string m_name;
 	int m_id = 0;
 	bool m_active = true;
-
 public:
 	GameObject(GameState* gs, const string& name = "");
 	virtual ~GameObject();
 	virtual void update(float dt);
 	virtual void init();
 	virtual void draw();
-	bool isActive() { return m_active; }
+	bool isActive() const { return m_active; }
 	void setActive(bool a) { m_active = a; }
 	int getID(){return m_next_id;}
+	vector<string> loadFileGameObject(string movement);
 };
 

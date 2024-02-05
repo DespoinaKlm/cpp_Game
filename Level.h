@@ -8,7 +8,6 @@
 #include "Poissons.h"
 #include "Bird.h"
 #include "Rock.h"
-#include "Collision.h"
 
 using namespace std;
 class Poissons;
@@ -65,7 +64,7 @@ class Level : public GameObject {
 		   {'X', 'X', 'X', 'X', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'X', 'X'}, //14
 		   {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, //15
 		   {' ', ' ', ' ', ' ', 'R', ' ', 'X', ' ', ' ', 'X', 'X', ' ', ' ',' ', 'R', ' ', 'R', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, //16
-		   {'T', 'P', 'E', 'P', 'X', 'X', 'X', ' ', ' ', 'X', 'X', 'X', 'X','X', 'X', 'X', 'X', 'X', 'X', ' ', ' ', 'X', 'X', ' ', 'G', 'T'}, //17
+		   {'T', 'P', 'P', 'E', 'X', 'X', 'X', ' ', ' ', 'X', 'X', 'X', 'X','X', 'X', 'X', 'X', 'X', 'X', ' ', ' ', 'X', 'X', ' ', 'G', 'T'}, //17
 		   {'X', 'X', 'X', 'X', 'X', 'X', 'X', ' ', ' ', 'X', 'X', 'X', 'X','X', 'X', 'X', 'X', 'X', 'X', ' ', ' ', 'X', 'X', 'X', 'X', 'X'}, //18
 	};//dipla apo to g to kontino eixa ena x mhn to jexaseis pigene san piramida
 
@@ -88,13 +87,9 @@ class Level : public GameObject {
 	//brush for the background 
 	graphics::Brush br_background;
 
-	// class collision
-	class Collision* collisionInstance=0;
 	Box m_weaponlevel;
+	int p;
 	graphics::Brush br_weapon;
-	
-	//void checkCollisions();
-	//void check_collision();
 	
 	//Code for the enemy bird
 	Enemy* EnemyBird;
@@ -131,6 +126,7 @@ public:
 	//Code for the score 
 	void setScore(float score);
 	float getScore();
+	void NextLevel(float score,float health);
 	Level& updateScore(float score);
 
 	//Code for the Collision class

@@ -3,13 +3,6 @@
 #include "GameObject.h"
 #include "GameState.h"
 #include "box.h"
-#include "Vector2D.h"
-#include "Transform.h"
-#include "Properties.h"
-#include "Rigit_Body_Physics.h"
-#include "Point.h"
-#include "Collision.h"
-#include "Animation.h"
 #include <filesystem>
 #include "Blocks.h"
 
@@ -20,7 +13,6 @@
 
 using namespace std;
 
-//player has health,attack,and weapons
 class Player : public GameObject, public Box
 {
 private:
@@ -29,32 +21,25 @@ private:
 	Blocks playerBlocks;
 	graphics::Brush br_player;
 	graphics::Brush br_player_health;
-	graphics::Brush br_weapon;
+	float indexPlayer=0;
 
-	const string m_filename = "Animation.txt";
-	vector<string> m_sprites;
-	vector<string> m_attack;
-	vector<string> loadFileIntoVector(const std::string& filePath,std::string player, std::string movement);
-	
 	//health
 	float m_health;
 	float m_health_max = 1000;
+	int countdownAttack=0;
 	
 	//Animation
 	vector<string> m_sprites_player;
 	
-	//Vector2D
-	Vector2D direction;
-	Vector2D velocity;
-	Vector2D accel=Vector2D(20.0f , 4500.0f);
-
 	const float m_accel_horizontal = 20.0f;
-	//const float m_accel_horizontal = 100.0f;
 	const float m_accel_vertical = 4500.0f;
 	const float m_max_velocity = 25.0f;
 	const float m_gravity = 9.8f;
 
 	//movement
+	bool canAttack;;
+	bool right;
+	bool left;
 	bool m_IsJumping;
 	bool m_IsRunning;
 	bool m_Attacking;
@@ -64,6 +49,7 @@ private:
 	bool plusAttack;
 	bool weaponIsActive;
 	bool cantMove;
+	bool dead;
 
 	//total time
 	float JumpTime;
@@ -72,11 +58,9 @@ private:
 
 	//class for Animation and Collision
 	class Animation* animationInstance=0;
-	class Collision* collisionInstance=0;
 
 	//functions
 	void movePlayer(float dt);
-	void movePlayerNew(float dt);
 	void AnimationPlayer();
 
 public:
@@ -85,40 +69,37 @@ public:
 	float m_vy = 0.0f;
 	Player(GameState* gs, const string& name,float health=1000);
 	~Player();
-	Rigit_Body_Physics* rigit;
 	void drawHealth(float health,float max_health,int length);
 	Blocks m_weapon;
 	//----------getPosition()----------------
-	float getPosX() { return m_pos_x; }
-	float getPosY() { return m_pos_y; }
+	float getPosX() const{ return m_pos_x; }
+	float getPosY() const { return m_pos_y; }
 	inline graphics::Brush getBrush() { return br_player; }
-	inline Vector2D getDirection() { return direction; }
-	inline Vector2D getVelocity() { return velocity; }
-	inline bool getGround() {return m_Grounding;}
-	inline void setVelocityX(float answer) { velocity.m_x = answer; }
-	inline void setVelocityY(float answer) { velocity.m_y = answer; }
+	inline bool getGround() const {return m_Grounding;}
 	inline void setJumping(bool answer) { m_IsJumping = answer; }
 	inline void setGround(bool answer) { m_Grounding =answer; }
-	inline bool isJumping() { return m_IsJumping; }
-	inline bool isAttacking() { return m_Attacking; }
-	inline bool isPickingUp() { return m_IsPickingUp; }
-	inline bool isGrounding() { return m_Grounding; }
-	inline bool PlusAttack() { return plusAttack; }
+	inline bool isJumping() const{ return m_IsJumping; }
+	inline bool isAttacking() const{ return m_Attacking; }
+	inline bool isPickingUp() const { return m_IsPickingUp; }
+	inline bool isGrounding() const{ return m_Grounding; }
+	inline bool PlusAttack() const { return plusAttack; }
 	inline void setPlusAttack(bool answ) { plusAttack = answ; }
-	
-	inline bool isActiveWeapon() { return weaponIsActive; }
+	inline float getGravity() const { return m_gravity; }
+	inline bool isActiveWeapon() const { return weaponIsActive; }
+	inline bool isRight() const { return right; }
+	inline bool isLeft() const { return left; }
 	//inline void setHealth(float health) { m_health=health; }
 	//inline float getHealth() const { return m_health; }
 
 	void update(float dt) override;
 	void init() override;
 	void draw() override;
-	int sword();
 	Player &PlusHealth(float plushealth);
 	Player &Damage(float damage);
 	int get_Attack();
 	float get_Health();
 	void set_Health(float health);
+	void playerDrawDeath();
 
 protected:
 	void debugDraw();

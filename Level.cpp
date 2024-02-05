@@ -33,15 +33,12 @@ void Level::update(float dt)
 	updateEnemies(dt);
 	checkCollisions();
 	checkCollisionWithEnemies(dt);
-	//collisionInstance->DownCollision();
-	//collisionInstance->SideCollision();
 
 	if (m_state->getPlayer()->isActive() && m_state->getPlayer()->get_Health() <= 250) {
 		float p = 0.5f + fabs(cos(graphics::getGlobalTime() / 1000.0f));
 		br_background.fill_color[0] = 1.0f;
 		br_background.fill_color[1] = p;
 		br_background.fill_color[2] = p;
-
 	}
 	else
 	{
@@ -50,10 +47,8 @@ void Level::update(float dt)
 		br_background.fill_color[2] = 1.0f;
 	}
 
-	//ANGRY ENEMY
 	if (m_state->getPlayer()->isActive() && m_state->getPlayer()->isAttacking() && m_state->getPlayer()->get_Attack() >= 75) {
 
-		//flash
 		float p = 0.5f + fabs(cos(graphics::getGlobalTime() / 1000.0f));
 		br_background.fill_color[0] = p;
 		br_background.fill_color[1] = p;
@@ -61,15 +56,32 @@ void Level::update(float dt)
 	}
 
 	for (auto& p : m_dynamic_objects) {
-		//objects
 		if (p) {
 			p->update(dt);
 		}
 	}
 
+	for (auto& p : m_birds) {
+		//objects
+		if (p->isActive()) {
+			p->update(dt);
+		}
+	}
+	
+	if (m_state->getPlayer()->isLeft()) {
+		m_weaponlevel.m_pos_x = m_state->getPlayer()->m_pos_x - 30;
+		p = -30;
+	}
+	if (m_state->getPlayer()->isRight()) {
+		m_weaponlevel.m_pos_x = m_state->getPlayer()->m_pos_x +40;
+		p = 40;
+	}
+	
+	m_weaponlevel.m_pos_y = m_state->getPlayer()->m_pos_y;
+	NextLevel(getScore(),m_state->getPlayer()->get_Health());
 	GameObject::update(dt);
 }
-//------------------------------------init()--------------------------------------------------------
+//------------------------------------init()----------------------------------------------------------
 void Level::init()
 {
 	//brush background
@@ -82,6 +94,9 @@ void Level::init()
 	//keep score
 	if (m_name == "level-1") {
 		this->m_score = 0;
+	}
+	else {
+		m_score = getScore();
 	}
 
 	//for flying enemies
@@ -139,8 +154,9 @@ void Level::init()
 			{
 				float pos_x = col * m_block_size - 1850;
 				float pos_y = row * m_block_size+50;
-				m_blocks[row][col] =Blocks(pos_x , pos_y, m_block_size, m_block_size);
-				poisontype = new Poissons(m_state, rand() % PoisonType::NROFTYPES, pos_x, pos_y, m_block_size,m_block_size , "Poison");
+				float pw_h = m_block_size / 2.2;
+				m_blocks[row][col] =Blocks(pos_x , pos_y, pw_h, pw_h);
+				poisontype = new Poissons(m_state, rand() % PoisonType::NROFTYPES, pos_x, pos_y, pw_h, pw_h, "Poison");
 				m_dynamic_objects.push_back(poisontype);
 				m_poissons.push_back(poisontype);
 				m_block_names[row][col] ="poison1.png";
@@ -183,45 +199,36 @@ void Level::init()
 	m_block_brush_debug.outline_color[1] = 1.0f;
 	m_block_brush_debug.outline_color[2] = 0.2f;
 
-	//try animation gate 
-	m_gate.push_back(m_state->getFullAssetPath("gate1.png"));
-	m_gate.push_back(m_state->getFullAssetPath("gate2.png"));
-	m_gate.push_back(m_state->getFullAssetPath("gate3.png"));
-	m_gate.push_back(m_state->getFullAssetPath("gate4.png"));
-	m_gate.push_back(m_state->getFullAssetPath("gate5.png"));
-	m_gate.push_back(m_state->getFullAssetPath("gate6.png"));
-	m_gate.push_back(m_state->getFullAssetPath("gate7.png"));
-	m_gate.push_back(m_state->getFullAssetPath("gate8.png"));
-	m_gate.push_back(m_state->getFullAssetPath("gate9.png"));
-	m_gate.push_back(m_state->getFullAssetPath("gate10.png"));
-	m_gate.push_back(m_state->getFullAssetPath("gate11.png"));
-	m_gate.push_back(m_state->getFullAssetPath("gate12.png"));
+	//Animation gate
+	m_gate= loadFileGameObject("gate");
 
-	//brush for the weapon of the player
-	m_weaponlevel = Box(m_state->getCanvasWidth() * 0.5f + 40, m_state->getCanvasHeight() * 0.5f, 90, m_state->getPlayer()->m_height*2);
-	//pink
+	//brush for the weapon of the player	
+	m_weaponlevel.m_pos_x = m_state->getPlayer()->m_pos_x;
+	m_weaponlevel.m_pos_y = m_state->getPlayer()->m_pos_y;
+	m_weaponlevel.m_width=90;
+	m_weaponlevel.m_height=m_state->getPlayer()->m_height ;
+	
+	// Pink fill color
 	br_weapon.fill_color[0] = 1.0f;
 	br_weapon.fill_color[1] = 0.5f;
 	br_weapon.fill_color[2] = 0.5f;
 	br_weapon.fill_opacity = 0.2f;
 
-	//white
-	br_weapon.outline_opacity = 0.0f;
+	// Yellow outline color
+	br_weapon.outline_opacity = 1.0f;
 	br_weapon.outline_color[0] = 1.0f;
 	br_weapon.outline_color[1] = 1.0f;
-	br_weapon.outline_color[2] = 1.0f;
-
-	graphics::drawRect(m_state->getCanvasWidth() * 0.5f + 40, m_state->getCanvasHeight() * 0.5f, 75, m_state->getPlayer()->m_height, br_weapon);
+	br_weapon.outline_color[2] = 0.0f;
 
 }
-//------------------------------------draw()--------------------------------------------------------
+//------------------------------------draw()----------------------------------------------------------
 void Level::draw()
 {
 	//background
 	float offset_x = (m_state->m_global_offset_x / 2.0f) + (m_state->getCanvasWidth() / 2.0f);
 	float offset_y = (m_state->m_global_offset_y / 2.0f) + (m_state->getCanvasHeight() / 2.0f);
-	graphics::drawRect(offset_x, offset_y, m_state->getCanvasWidth() * 4.0f, m_state->getCanvasHeight()*3.0f, br_background);
-	
+	graphics::drawRect(offset_x, offset_y, m_state->getCanvasWidth() * 4.0f, m_state->getCanvasHeight() * 3.0f, br_background);
+
 	//draw map
 	for (int row = 0; row < level_map.size(); row++)
 	{
@@ -255,7 +262,7 @@ void Level::draw()
 		sprintf_s(s, "(%5.2f, %5.2f)", m_state->getPlayer()->getPosX(), m_state->getPlayer()->getPosY());
 		graphics::drawText(45, 200, 50, "Position: ", br_background);
 		graphics::drawText(240, 200, 50, s, br_background);
-		
+
 	}
 
 	for (auto& p : m_dynamic_objects)
@@ -269,7 +276,7 @@ void Level::draw()
 
 	//enemies
 	drawEnemies();
-	
+
 	for (auto& p : m_rocks)
 	{
 		//rocks enemies
@@ -279,10 +286,14 @@ void Level::draw()
 		}
 	}
 	drawScore();
-	graphics::drawRect(m_state->getCanvasWidth() * 0.5f + 40, m_state->getCanvasHeight() * 0.5f, 75, m_state->getPlayer()->m_height, br_weapon);
-
+	
+	if (m_state->m_debugging)
+	{
+		graphics::drawRect(m_state->getCanvasWidth() * 0.5f +p, m_state->getCanvasHeight() * 0.5f, m_weaponlevel.m_width, m_weaponlevel.m_height, br_weapon);
+	}
+	
 }
-//------------------------------------blocks-------------------------------------------------------
+//------------------------------------drawBlock-------------------------------------------------------
 void Level::drawBlock(int i, int j)
 {
 	if (m_block_names[i][j] != "")
@@ -316,7 +327,7 @@ void Level::drawBlock(int i, int j)
 			}
 			else if (path == gate)
 			{
-				indexframeGate += 0.05;
+				indexframeGate += 0.30;
 				if (indexframeGate >= m_gate.size()) {
 					indexframeGate = 0;
 				}
@@ -336,7 +347,7 @@ void Level::drawBlock(int i, int j)
 		}
 	}
 }
-//----------------------------------------enemy bird-----------------------------------------------
+//----------------------------------------enemy bird--------------------------------------------------
 void Level::drawEnemies()
 {
 	for (auto& p : m_birds) {
@@ -346,7 +357,7 @@ void Level::drawEnemies()
 		}
 	}
 }
-//---------------------------------------updateEnemies---------------------------------------------
+//---------------------------------------updateEnemies------------------------------------------------
 void Level::updateEnemies(float dt)
 {
 	if (this->m_birds.size() < this->maxEnemies)
@@ -394,15 +405,30 @@ void Level::updateEnemies(float dt)
 		}	
 	}
 }
-//----------------------------------SpawnEnemy---------------------------------------------------
+//----------------------------------SpawnEnemy--------------------------------------------------------
 void Level::SpawnEnemy()
 {
 	EnemyBird = new Bird(m_state, "Bird");
 	this->m_birds.push_back(this->EnemyBird);
 }
-//----------------------------------checkCollisions----------------------------------------------
+//----------------------------------checkCollisions---------------------------------------------------
 void Level::checkCollisions()
 {	
+	for (int row = 0; row < level_map.size(); row++) {
+		for (int col = 0; col < level_map[row].size(); col++) {
+			float offset = 0.0f;
+			if (level_map[row][col] == 'X') {
+				Blocks block = m_blocks[row][col];
+				if (m_state->getPlayer()->insertUp(block)) {
+					if (m_state->getPlayer()->m_vy < 0) {
+						m_state->getPlayer()->m_vy += m_state->getPlayer()->delta_time * m_state->getPlayer()->getGravity();
+						m_state->getPlayer()->m_pos_y = block.m_pos_y + block.m_height + 0.1;
+						break;
+					}
+				}
+			}
+		}
+	}
 	for (int row = 0; row < level_map.size(); row++)
 	{
 		for (int col = 0; col < level_map[row].size(); col++)
@@ -415,8 +441,6 @@ void Level::checkCollisions()
 				{
 					m_state->getPlayer()->m_pos_y += offset;
 
-					// add sound event
-					//if (m_state->getPlayer()->m_vy > 1.0f)
 					if(m_state->getPlayer()->isJumping() && !m_state->getPlayer()->isGrounding())
 						graphics::playSound(m_state->getFullAssetPath("big_impact.wav"), 1.0f);
 
@@ -451,16 +475,37 @@ void Level::checkCollisions()
 		}
 	}
 }
-//----------------------------------checkCollisionWithEnemies-------------------------------------
+//----------------------------------checkCollisionWithEnemies-----------------------------------------
 void Level::checkCollisionWithEnemies(float dt)
 {
 	for (int i = 0; i < this->m_rocks.size(); i++)
 	{
 		this->m_rocks[i]->update(dt);
-		if (this->m_rocks[i]->isActive())
+		float offset = 0.0f;
+		if (this->m_rocks[i]->isActive() && m_state->getPlayer()->isAttacking())
 		{
 			if (m_weaponlevel.intersect(*(m_rocks[i]))) {
-				cout << "*";
+				updateScore(100 + rand() % 251);
+				if (m_rocks[i]->getSpeed() < 0) {
+					m_rocks[i]->m_pos_x += offset + 150;
+				}
+				else
+				{
+					m_rocks[i]->m_pos_x += offset - 150;
+				}
+				graphics::playSound(m_state->getFullAssetPath("Attack.wav"), 1.0f);
+				if (m_state->getPlayer()->PlusAttack()) {
+					this->m_rocks[i]->Damage(m_state->getPlayer()->get_Attack() * 2);
+					m_state->getPlayer()->setPlusAttack(false);
+				}
+				else {
+					this->m_rocks[i]->Damage(m_state->getPlayer()->get_Attack());
+				}
+				if (!this->m_rocks[i]->isActive())
+				{
+					updateScore(250 + rand() % 501);
+					graphics::playSound(m_state->getFullAssetPath("death_enemy.wav"), 1.0f);
+				}
 			}
 		}
 	}
@@ -470,40 +515,20 @@ void Level::checkCollisionWithEnemies(float dt)
 		this->m_rocks[i]->update(dt);
 		if (this->m_rocks[i]->isActive())
 		{
-
 			float offset = 0.0f;
-			//----------------
 			if (offset = m_state->getPlayer()->intersectSideways(*(m_rocks[i])))
 			{
-				//cout << "yes" << endl;
-				m_state->getPlayer()->m_pos_x -= offset;
+				updateScore((10 + rand() % 50)*-1);
 				if (m_rocks[i]->getSpeed() < 0) {
 					m_rocks[i]->m_pos_x += offset + 150;
+					m_state->getPlayer()->m_pos_x += offset -70;
 				}
 				else
 				{
+					m_state->getPlayer()->m_pos_x += offset + 70;
 					m_rocks[i]->m_pos_x += offset - 150;
 				}
-				if (this->m_rocks[i]->isActive() && m_state->getPlayer()->isAttacking())
-				{
-					updateScore(250);
-					graphics::playSound(m_state->getFullAssetPath("Attack.wav"), 1.0f);
-					if (m_state->getPlayer()->PlusAttack()) {
-						this->m_rocks[i]->Damage(m_state->getPlayer()->get_Attack() * 2);
-						m_state->getPlayer()->setPlusAttack(false);
-					}
-					else {
-						
-						this->m_rocks[i]->Damage(m_state->getPlayer()->get_Attack());
-						
-					}
-					if (!this->m_rocks[i]->isActive())
-					{
-						updateScore(500);
-						graphics::playSound(m_state->getFullAssetPath("death_enemy.wav"), 1.0f);
-					}
-				}
-				if (this->m_rocks[i]->isActive() && !m_state->getPlayer()->isAttacking())
+				if (!this->m_rocks[i]->getCantAttack() && !m_state->getPlayer()->isAttacking())
 				{
 					graphics::playSound(m_state->getFullAssetPath("notAttack.wav"), 1.0f);
 					m_state->getPlayer()->Damage(this->m_rocks[i]->getAttack());
@@ -511,50 +536,6 @@ void Level::checkCollisionWithEnemies(float dt)
 				m_state->getPlayer()->m_vx = 0.0f;
 				break;
 			}
-			//------------------------------------------------------------------------------
-			/*
-			offset = 0.0f;
-
-			if (m_state->getPlayer()->isActiveWeapon())
-			{
-				cout << "yes" << endl;
-				cout << m_weapon.intersectSideways(*(m_rocks[i])) << endl;
-				if (offset =m_weapon.intersectSideways(*(m_rocks[i])))
-				{
-					cout << "yes                        2                " << endl;
-					//m_state->getPlayer()->m_pos_x -= offset;
-					if (m_rocks[i]->getSpeed() < 0) {
-						m_rocks[i]->m_pos_x += offset + 150;
-					}
-					else
-					{
-						m_rocks[i]->m_pos_x += offset - 150;
-					}
-					if (this->m_rocks[i]->isActive() && m_state->getPlayer()->isAttacking())
-					{
-						updateScore(250);
-						graphics::playSound(m_state->getFullAssetPath("Attack.wav"), 1.0f);
-						if (m_state->getPlayer()->PlusAttack()) {
-							this->m_rocks[i]->Damage(m_state->getPlayer()->get_Attack() * 2);
-							m_state->getPlayer()->setPlusAttack(false);
-						}
-						else {
-							cout << "before:     " << this->m_rocks[i]->getHealth() << endl;
-							this->m_rocks[i]->Damage(m_state->getPlayer()->get_Attack());
-							cout << "after:     " << this->m_rocks[i]->getHealth() << endl;
-						}
-						if (!this->m_rocks[i]->isActive())
-						{
-							updateScore(500);
-							graphics::playSound(m_state->getFullAssetPath("death_enemy.wav"), 1.0f);
-						}
-					}
-					break;
-				}
-			}
-			
-			*/
-			
 		}
 	}
 
@@ -567,7 +548,7 @@ void Level::checkCollisionWithEnemies(float dt)
 			if (m_state->getPlayer()->intersectDown(*(m_rocks[i])))
 			{
 				m_state->getPlayer()->m_pos_y += offset - 150;
-				updateScore(150);
+				updateScore(10 + rand() % 151);
 				graphics::playSound(m_state->getFullAssetPath("Attack.wav"), 1.0f);
 				if (m_state->getPlayer()->PlusAttack())
 				{
@@ -580,7 +561,7 @@ void Level::checkCollisionWithEnemies(float dt)
 				}
 				if (!this->m_rocks[i]->isActive())
 				{
-					updateScore(600);
+					updateScore(100 + rand() % 350);
 					graphics::playSound(m_state->getFullAssetPath("notAttack.wav"), 1.0f);
 
 				}
@@ -590,7 +571,7 @@ void Level::checkCollisionWithEnemies(float dt)
 		}
 	}
 }
-//-----------------------------------------------drawScore()----------------------------------------
+//-----------------------------------------------drawScore()------------------------------------------
 void Level::drawScore()
 {
 	graphics::resetPose();
@@ -599,23 +580,31 @@ void Level::drawScore()
 	sprintf_s(score, "(%5.2f)", getScore());
 	graphics::drawText(265, 300, 50, score, br_background);
 }
-//------------------------------------setScore()----------------------------------------------------
+//------------------------------------setScore()------------------------------------------------------
 void Level::setScore(float score)
 {
 	m_score = score;
 }
-//------------------------------------getScore()----------------------------------------------------
+//------------------------------------getScore()------------------------------------------------------
 float Level::getScore()
 {
 	return m_score;
 }
-//-------------------------------------updateScore()------------------------------------------------
+//------------------------------------NextLevel()-----------------------------------------------------
+void Level::NextLevel(float score, float health)
+{
+	if (next_level) {
+		setScore(m_score);
+		m_state->getPlayer()->set_Health(health);
+	}
+}
+//-------------------------------------updateScore()--------------------------------------------------
 Level& Level::updateScore(float score)
 {
 	m_score += score;
 	return *this;
 }
-//--------------------------------Destructor---------------------------------------------------------
+//--------------------------------Destructor----------------------------------------------------------
 Level::~Level()
 {
 	// Delete dynamic objects

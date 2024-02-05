@@ -12,7 +12,6 @@ private:
 
 	const float m_gravity = 9.8f;
 	float enemy_size = 200;
-	float enemy_speed_rock = 2.0;
 public:
 	Rock(GameState* gs, float px, float py,const string& name = "", int health = 300);
 	~Rock();
@@ -22,5 +21,5 @@ public:
 	void debugDrawEnemy(float x, float y) override;
 	void checkCollisionRock();
 	void reverse();
-	float getSpeed(){ return enemy_speed_rock; }
+	float getSpeed(){ return speed_enemy; }
 };

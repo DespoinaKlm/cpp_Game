@@ -7,7 +7,6 @@
 #include "Player.h"
 #include <thread>
 #include <chrono>
-#include "Vector2D.h"
 #include <cstdio>
 #include "Enemy.h"
 #include "Rock.h"
