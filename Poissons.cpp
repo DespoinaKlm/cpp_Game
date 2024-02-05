@@ -88,7 +88,7 @@ void Poissons::draw()
 	}
 	if (drawframe)
 	{
-		indexframePoisson += 0.15;
+		indexframePoisson += 0.25;
 		if (indexframePoisson >= m_poissonA.size())
 		{
 			TypeOfPoison();
@@ -133,4 +133,4 @@ Poissons::~Poissons()
 {
 
 }
-
+//----------------------------------------------------------------------------------------------------------------------------

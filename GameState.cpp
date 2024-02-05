@@ -71,7 +71,6 @@ GameState* GameState::get_Gamestate()
     }
     return m_unique_state;
 }
-
 //------------------------------------Destructor----------------------------------------------------
 GameState::~GameState()
 {
@@ -82,13 +81,13 @@ GameState::~GameState()
         // an exoume ki alla levels prepei na pame na kanoume delete ta levels kai oxi ton prointer kapoiou apo auta diladi se for loop
         delete m_level;
     }
-    if (m_enemy) {
-        delete m_enemy;
-    }
+    //if (m_enemy) {
+    //    delete m_enemy;
+    //}
 
-    if (m_enemy_bird) {
-        delete m_enemy_bird;
-    }
+ //   if (m_enemy_bird) {
+    //    delete m_enemy_bird;
+    //}
 }
 //------------------------------------getAssetDir()-------------------------------------------------
 string GameState::getAssetDir()
@@ -101,7 +100,6 @@ string GameState::getFullAssetPath(const string& asset)
 {
     return m_asset_path + asset;
 }
-
 //------------------------------------getCanvasWidth()---------------------------------------------
 float GameState::getCanvasWidth()
 {

@@ -9,7 +9,8 @@
 #include "Blocks.h"
 #include "Rock.h"
 #include "Bird.h"
-class Poissons;
+#include "Poissons.h"
+//class Poissons;
 
 using namespace std;
 //------------------------------------Constructor---------------------------------------------------
@@ -62,7 +63,6 @@ void Level::update(float dt)
 	}
 
 	for (auto& p : m_birds) {
-		//objects
 		if (p->isActive()) {
 			p->update(dt);
 		}
@@ -70,16 +70,25 @@ void Level::update(float dt)
 	
 	if (m_state->getPlayer()->isLeft()) {
 		m_weaponlevel.m_pos_x = m_state->getPlayer()->m_pos_x - 30;
-		p = -30;
+		boxmove = -30;
 	}
 	if (m_state->getPlayer()->isRight()) {
 		m_weaponlevel.m_pos_x = m_state->getPlayer()->m_pos_x +40;
-		p = 40;
+		boxmove = 40;
 	}
 	
 	m_weaponlevel.m_pos_y = m_state->getPlayer()->m_pos_y;
 	NextLevel(getScore(),m_state->getPlayer()->get_Health());
 	GameObject::update(dt);
+
+	/*cout << m_dynamic_objects.size() << endl;
+	for (auto& p : m_dynamic_objects) {
+		if (p) {
+			cout << "DYNAMIC OBJECT " << p << endl;
+		}
+	}
+	*/
+	
 }
 //------------------------------------init()----------------------------------------------------------
 void Level::init()
@@ -93,7 +102,13 @@ void Level::init()
 
 	//keep score
 	if (m_name == "level-1") {
-		this->m_score = 0;
+		m_score = 0;
+	}
+	if (m_name == "level-2") {
+		m_score = getScore();
+	}
+	if (m_name == "level-3") {
+		m_score = getScore();
 	}
 	else {
 		m_score = getScore();
@@ -158,7 +173,6 @@ void Level::init()
 				m_blocks[row][col] =Blocks(pos_x , pos_y, pw_h, pw_h);
 				poisontype = new Poissons(m_state, rand() % PoisonType::NROFTYPES, pos_x, pos_y, pw_h, pw_h, "Poison");
 				m_dynamic_objects.push_back(poisontype);
-				m_poissons.push_back(poisontype);
 				m_block_names[row][col] ="poison1.png";
 			}
 			else if (level_map[row][col] == 'E') {
@@ -179,13 +193,11 @@ void Level::init()
 	}
 	for (auto& p : m_static_objects) {
 		if (p) {
-			//objects
 			p->init();
 		}
 	}
 	
 	for (auto& p : m_dynamic_objects) {
-		//objects
 		if (p) {
 			p->init();
 		}
@@ -246,14 +258,7 @@ void Level::draw()
 			p->draw();
 		}
 	}
-	for (auto& p : m_poissons)
-	{
-		//objects
-		if (p->isActive())
-		{
-			p->draw();
-		}
-	}
+
 	//player 
 	if (m_state->getPlayer()->isActive())
 	{
@@ -289,9 +294,8 @@ void Level::draw()
 	
 	if (m_state->m_debugging)
 	{
-		graphics::drawRect(m_state->getCanvasWidth() * 0.5f +p, m_state->getCanvasHeight() * 0.5f, m_weaponlevel.m_width, m_weaponlevel.m_height, br_weapon);
+		graphics::drawRect(m_state->getCanvasWidth() * 0.5f + boxmove, m_state->getCanvasHeight() * 0.5f, m_weaponlevel.m_width, m_weaponlevel.m_height, br_weapon);
 	}
-	
 }
 //------------------------------------drawBlock-------------------------------------------------------
 void Level::drawBlock(int i, int j)
@@ -303,7 +307,8 @@ void Level::drawBlock(int i, int j)
 		float y = box.m_pos_y + m_state->m_global_offset_y;
 		m_block_brush.texture = m_state->getFullAssetPath(m_block_names[i][j]);
 		string path = "";
-		for (char& c : m_block_names[i][j]) {
+		for (char& c : m_block_names[i][j])
+		{
 			if (c != '0' && c != '1' && c != '2' && c != '3' && c != '4' && c != '5' && c != '6' && c != '7' && c != '8' && c != '9' && c != '_') {
 				path += c;
 			}
@@ -312,20 +317,24 @@ void Level::drawBlock(int i, int j)
 				break;
 			}
 		}
-		string tree = "tree";
-		string gate = "gate";
-		string rock = "rock";
-		string poison = "poison";
-		string enemy = "rockEnemy";
-		if (path != poison && path != enemy) {
+		const char* paths = path.c_str();
+		const char* tree = "tree";
+		const char* gate = "gate";
+		const char* rock = "rock";
+		const char* poison = "poison";
+		const char* enemy = "rockEnemy";
+		if (strcmp(paths, poison) != 0 && strcmp(paths, enemy) != 0)
+		{
 
-			if (path == tree) {
+			if (strcmp(paths, tree)== 0)
+			{
 				graphics::drawRect(x, y, m_block_size, m_block_size * 3, m_block_brush);
 			}
-			else if (path == rock) {
+			else if (strcmp(paths, rock) == 0)
+			{
 				graphics::drawRect(x, y, m_block_size, m_block_size * 2, m_block_brush);
 			}
-			else if (path == gate)
+			else if (strcmp(paths, gate) == 0)
 			{
 				indexframeGate += 0.30;
 				if (indexframeGate >= m_gate.size()) {
@@ -334,14 +343,15 @@ void Level::drawBlock(int i, int j)
 				m_block_brush.texture = m_gate[int(indexframeGate)];
 				graphics::drawRect(x, y, m_block_size * 2, m_block_size * 3, m_block_brush);
 			}
-			else//ground
+			else
 			{
 				graphics::drawRect(x, y, m_block_size*2, m_block_size, m_block_brush);
 			}
 		}
 		if (m_state->m_debugging)
 		{
-			if (path != poison && path != enemy) {
+			if (strcmp(paths, poison) != 0 && strcmp(paths, enemy) != 0)
+			{
 				graphics::drawRect(x, y, box.m_width, box.m_height, m_block_brush_debug);
 			}
 		}
@@ -478,6 +488,46 @@ void Level::checkCollisions()
 //----------------------------------checkCollisionWithEnemies-----------------------------------------
 void Level::checkCollisionWithEnemies(float dt)
 {
+	/*
+	
+	
+	for (auto& p: m_dynamic_objects) {
+		cout << p->getName() << endl;
+		const char* name = p->getName().c_str();
+		const char* nameEnemy = "RockEnemy";
+		if (strcmp(name, nameEnemy) == 0) {
+			p->update(dt);
+			float offset = 0.0f;
+			if (p->isActive() && m_state->getPlayer()->isAttacking())
+			{
+				if (m_weaponlevel.intersect(p.m_)po)
+				{
+					updateScore(100 + rand() % 251);
+					if (p->getSpeed() < 0) {
+						p->m_pos_x += offset + 150;
+					}
+					else
+					{
+						p->m_pos_x += offset - 150;
+					}
+					graphics::playSound(m_state->getFullAssetPath("Attack.wav"), 1.0f);
+					if (m_state->getPlayer()->PlusAttack()) {
+						p->Damage(m_state->getPlayer()->get_Attack() * 2);
+						m_state->getPlayer()->setPlusAttack(false);
+					}
+					else {
+						p->Damage(m_state->getPlayer()->get_Attack());
+					}
+					if (p->getDead())
+					{
+						updateScore(250 + rand() % 501);
+						graphics::playSound(m_state->getFullAssetPath("death_enemy.wav"), 1.0f);
+					}
+				}
+			}
+		}
+	}
+	*/
 	for (int i = 0; i < this->m_rocks.size(); i++)
 	{
 		this->m_rocks[i]->update(dt);
@@ -570,6 +620,7 @@ void Level::checkCollisionWithEnemies(float dt)
 			}
 		}
 	}
+	
 }
 //-----------------------------------------------drawScore()------------------------------------------
 void Level::drawScore()
@@ -607,33 +658,26 @@ Level& Level::updateScore(float score)
 //--------------------------------Destructor----------------------------------------------------------
 Level::~Level()
 {
+	
 	// Delete dynamic objects
-	for (auto dynamicObj : m_dynamic_objects) {
+	for (auto& dynamicObj : m_dynamic_objects) {
 		delete dynamicObj;
 	}
 	m_dynamic_objects.clear();
 
-	// Delete block enemies
-	for (auto blockEnemy : m_block_enemies) {
-		delete blockEnemy;
-	}
-	m_block_enemies.clear();
-
 	// Delete birds
-	for (auto bird : m_birds) {
+	for (auto& bird : m_birds) {
 		delete bird;
 	}
 	m_birds.clear();
 
 	// Delete rocks
-	for (auto rock : m_rocks) {
+	for (auto& rock : m_rocks) {
 		delete rock;
 	}
 	m_rocks.clear();
-
-	// Delete poissons
-	for (auto poisson : m_poissons) {
-		delete poisson;
-	}
-	m_poissons.clear();
+	delete poisontype;
+	delete EnemyBird;
+	delete EnemyRock;
 }
+//----------------------------------------------------------------------------------------------------

@@ -19,8 +19,8 @@ private:
 
 	class Player * m_player = 0;
 	class Level * m_level = 0;
-	class Rock * m_enemy = 0;
-	class Bird * m_enemy_bird = 0;
+	//class Rock * m_enemy = 0;
+	//class Bird * m_enemy_bird = 0;
 
 public:
 
@@ -42,6 +42,6 @@ public:
 
 	class Player * getPlayer() { return m_player; }
 	class Level * getlevel() { return m_level;}
-	class Rock * getEnemy(){return m_enemy; }
-	class Bird * getEnemyBird() { return m_enemy_bird; }
+	//class Rock * getEnemy(){return m_enemy; }
+	//class Bird * getEnemyBird() { return m_enemy_bird; }
 };

@@ -22,8 +22,7 @@ protected:
 	
 	void setHealth(int health);
 	void setAttack();
-	inline void setDead(bool answer) { dead = answer; }
-	inline bool getDead() const{ return dead; }
+	
 	int strongerAttack = 1;
 	graphics:: Brush br_enemy;
 	graphics::Brush br_enemyD;
@@ -38,8 +37,9 @@ public:
 	float getAttack();
 	float getHealth();
 	inline bool getCantAttack() const { return cantAttack; };
-	inline int getStrongerAttack() { return strongerAttack;}
+	inline int getStrongerAttack() const { return strongerAttack;}
+	inline void setDead(bool answer) { dead = answer; }
+	inline bool getDead() const{ return dead; }
 	void enemyDrawDeath(vector<string> draw_death, float px, float py, float pw, float ph);
 	Enemy& Damage(int damage);
-
 };

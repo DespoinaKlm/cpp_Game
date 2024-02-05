@@ -11,7 +11,7 @@ private:
 protected:
 
 	class GameState* m_state;
-	string m_name;
+	const string m_name;
 	int m_id = 0;
 	bool m_active = true;
 public:
@@ -20,9 +20,10 @@ public:
 	virtual void update(float dt);
 	virtual void init();
 	virtual void draw();
-	bool isActive() const { return m_active; }
-	void setActive(bool a) { m_active = a; }
-	int getID(){return m_next_id;}
+	inline bool isActive() const { return m_active; }
+	inline void setActive(bool a) { m_active = a; }
+	inline int getID(){return m_next_id;}
+	inline const string& getName() { return m_name; }
 	vector<string> loadFileGameObject(string movement);
 };
 

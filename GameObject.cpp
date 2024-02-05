@@ -8,22 +8,19 @@
 GameObject::GameObject(GameState* gs, const string& name): m_state(gs), m_name(name), m_id(m_next_id++)
 {
 }
-
 //------------------------------------Destructor----------------------------------------------------
 GameObject:: ~GameObject() {
 
 }
-
 //------------------------------------init()--------------------------------------------------------
 void GameObject::init() {
 
 }
-
 //------------------------------------draw()--------------------------------------------------------
 void GameObject::draw() {
 
 }
-
+//-----------------------------------loadFileGameObject()---------------------------------------------
 vector<string> GameObject::loadFileGameObject(string movement)
 {
     vector<string> m_sprites;
@@ -49,10 +46,9 @@ vector<string> GameObject::loadFileGameObject(string movement)
     }
     return m_sprites;
 }
-
-
 //------------------------------------update()------------------------------------------------------
 void GameObject::update(float dt) {
 
 }
+
 int GameObject::m_next_id = 1;

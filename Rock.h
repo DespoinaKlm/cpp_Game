@@ -5,7 +5,6 @@
 class Rock :public Enemy {
 
 private:
-	graphics::Brush br_enemy_rock;
 	vector<string> rock_enemy;
 	vector<vector<char>> levelMapHelp;
 	vector<vector<Blocks>> m_blocksHelp;
@@ -21,5 +20,5 @@ public:
 	void debugDrawEnemy(float x, float y) override;
 	void checkCollisionRock();
 	void reverse();
-	float getSpeed(){ return speed_enemy; }
+	float getSpeed()const { return speed_enemy; }
 };

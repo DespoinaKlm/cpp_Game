@@ -9,7 +9,6 @@
 #include <fstream>
 #include <string>
 #include <iostream>
-#include <filesystem>
 #include <vector>
 #include "Blocks.h"
 
@@ -134,6 +133,7 @@ void Player::movePlayer(float dt)
 	m_pos_y += m_vy * delta_time;
 	
 }
+/*
 //----------------------------------------AnimationPlayer-----------------------------------------------
 void Player::AnimationPlayer()
 {
@@ -145,14 +145,12 @@ void Player::AnimationPlayer()
 	else if (graphics::getKeyState(graphics::SCANCODE_D) || graphics::getKeyState(graphics::SCANCODE_A))
 	{
 		
-		/*
 		* if (graphics::getKeyState(graphics::SCANCODE_D)) {
 			graphics::resetPose();
 		}
 		if (graphics::getKeyState(graphics::SCANCODE_A)) {
 			graphics::setScale(-1.0f, 1.0f);
 		}
-		*/
 		m_sprites_player = loadFileGameObject("playerWalk");
 	}
 	// Attack animation
@@ -175,9 +173,13 @@ void Player::AnimationPlayer()
 	// Reset transformation for subsequent drawing
 	graphics::resetPose();
 }
+*/
 //------------------------------------update()----------------------------------------------------------
 void Player::update(float dt)
 {
+	if (m_pos_y >=4700.0f) {
+		setActive(false);
+	}
 	if (!dead) {
 		if (graphics::getKeyState(graphics::SCANCODE_Q)) {
 			m_Attacking = true;
@@ -200,7 +202,6 @@ void Player::update(float dt)
 	else {
 		m_pos_x += m_vx;
 	}
-	
 	
 	// update offset for other game objects
 	m_state->m_global_offset_x = m_state->getCanvasWidth() / 2.0f - m_pos_x;
@@ -289,7 +290,7 @@ void Player::draw()
 			br_player.texture = m_sprites_player[s];
 		}
 		if(canAttack){
-			indexPlayer += 0.3;
+			indexPlayer += 0.15;
 			if (indexPlayer >= m_sprites_player.size()) {
 				indexPlayer = 0;
 				weaponIsActive = false;
@@ -313,8 +314,6 @@ void Player::draw()
 		}
 		playerDrawDeath();
 	}
-	
-	
 }
 //------------------------------------playerDrawDeath()-------------------------------------------------
 void Player::playerDrawDeath()
