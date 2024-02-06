@@ -345,7 +345,7 @@ void Level::drawBlock(int i, int j)
 			}
 			else
 			{
-				graphics::drawRect(x, y, m_block_size*2, m_block_size, m_block_brush);
+				graphics::drawRect(x, y, m_block_size*2.5, m_block_size*10, m_block_brush);
 			}
 		}
 		if (m_state->m_debugging)
