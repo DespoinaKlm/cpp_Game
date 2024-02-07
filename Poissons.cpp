@@ -101,7 +101,8 @@ void Poissons::draw()
 		}
 	}
 	//cout << indexframePoisson << "\n";
-	graphics::drawRect(x, y, m_width , m_height , br_poison);
+	graphics::drawRect(x, y, m_width*2.5f , m_height*5.0f , br_poison);
+
 
 	if (m_state->m_debugging) {
 		debugDrawPoison();
