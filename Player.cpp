@@ -299,7 +299,7 @@ void Player::draw()
 			br_player.texture = m_sprites_player[int(indexPlayer)];
 		}
 
-		graphics::drawRect(m_state->getCanvasWidth() * 0.5f, m_state->getCanvasHeight() * 0.5f, 150, 200, br_player);
+		graphics::drawRect(m_state->getCanvasWidth() * 0.5f, m_state->getCanvasHeight() * 0.5f, 200, 250, br_player);
 
 		graphics::resetPose();
 		if (m_state->m_debugging)
