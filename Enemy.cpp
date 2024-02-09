@@ -30,6 +30,7 @@ void Enemy::init()
 //---------------------------------------init-------------------------------------------------------------
 void Enemy::draw()
 {
+    
     if (dead)
     {
         if (strcmp(str1, str2) == 0) {
@@ -56,6 +57,7 @@ void Enemy::draw()
 //---------------------------------------getAttack--------------------------------------------------------
 float Enemy::getAttack()
 {
+   this->attack = true;
    return (40 + rand() % 81)* getStrongerAttack();
 }
 //---------------------------------------getHealth--------------------------------------------------------
@@ -91,12 +93,20 @@ Enemy & Enemy::Damage(int damage)
 {
     //cout << getHealth() << endl;
     m_enemy_health -= damage;
-    if (m_enemy_health <= 0) {
+    if (m_enemy_health <= 0)
+    {
         m_enemy_health = 0;
         dead = true;
         cantAttack = true;
-        if (strcmp(str1, str2) == 0) {
-            enemy_death = loadFileGameObject("rockEnemyDies");
+        if (strcmp(str1, str2) == 0)
+        {
+            enemy_death=loadFileGameObject("rockEnemyDies");
+        }
+        else if (strcmp(str1, str3) == 0) {
+            enemy_death = loadFileGameObject("greenGoblinDie");
+        }
+        else if (strcmp(str1, str4) == 0) {
+            enemy_death = loadFileGameObject("iceBlobDie");
         }
         else
         {

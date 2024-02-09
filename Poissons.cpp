@@ -60,18 +60,18 @@ void Poissons::TypeOfPoison()
 {
 	switch (m_type)
 	{
-	case PoisonType::DEFAULT:
-		m_state->getlevel()->updateScore(rand() % 51 + 50);
-		break;
-	case PoisonType::HEALING:
-		m_state->getPlayer()->PlusHealth(rand() % 51 + 250);
-		break;
-	case PoisonType::DAMAGING:
-		m_state->getPlayer()->Damage(10 + rand() % 21);
-		break;
-	case PoisonType::STRONGER:
-		m_state->getPlayer()->setPlusAttack(true);
-		break;
+		case PoisonType::DEFAULT:
+			m_state->getlevel()->updateScore(rand() % 51 + 50);
+			break;
+		case PoisonType::HEALING:
+			m_state->getPlayer()->PlusHealth(rand() % 51 + 250);
+			break;
+		case PoisonType::DAMAGING:
+			m_state->getPlayer()->Damage(10 + rand() % 21);
+			break;
+		case PoisonType::STRONGER:
+			m_state->getPlayer()->setPlusAttack(true);
+			break;
 	}
 }
 //---------------------------------Draw---------------------------------------------------------------------------------------

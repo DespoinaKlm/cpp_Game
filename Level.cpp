@@ -170,7 +170,7 @@ void Level::init()
 			else if (level_map[row][col] == 'E') {
 				float pos_x = col * m_block_size - 1850;
 				float pos_y = row * m_block_size + 30 ;
-				EnemyRock = new Rock(m_state, pos_x, pos_y, "RockEnemy", 500);
+				EnemyRock = new Rock(m_state, rand() % RockTyoe::NROFTYPES1, pos_x, pos_y, "RockEnemy", 500);
 				m_dynamic_objects.push_back(EnemyRock);
 				m_rocks.push_back(EnemyRock);
 				m_blocks[row][col] = Blocks(pos_x, pos_y, EnemyRock->m_width, EnemyRock->m_height);
@@ -472,7 +472,7 @@ void Level::checkCollisions()
 				Blocks block = m_blocks[row][col];
 				if (offset = m_state->getPlayer()->intersectDown(block))
 				{
-					cout << "Down down" << endl;
+					//cout << "Down down" << endl;
 					m_state->getPlayer()->m_pos_y += offset;
 
 					if (m_state->getPlayer()->isJumping() && !m_state->getPlayer()->isGrounding())
@@ -571,11 +571,11 @@ void Level::checkCollisionWithEnemies(float dt)
 			if (m_weaponlevel.intersect(*(m_rocks[i]))){
 				updateScore(100 + rand() % 251);
 				if (m_rocks[i]->getSpeed() < 0) {
-					m_rocks[i]->m_pos_x += offset + 100;
+					m_rocks[i]->m_pos_x += offset + 50;
 				}
 				else
 				{
-					m_rocks[i]->m_pos_x += offset - 100;
+					m_rocks[i]->m_pos_x += offset - 50;
 				}
 				graphics::playSound(m_state->getFullAssetPath("Attack.wav"), 1.0f);
 				if (m_state->getPlayer()->PlusAttack()) {
@@ -606,13 +606,13 @@ void Level::checkCollisionWithEnemies(float dt)
 			{
 				updateScore((10 + rand() % 50)*-1);
 				if (m_rocks[i]->getSpeed() < 0) {
-					m_rocks[i]->m_pos_x += offset + 100;
-					m_state->getPlayer()->m_pos_x += offset -70;
+					m_rocks[i]->m_pos_x += offset + 50;
+					m_state->getPlayer()->m_pos_x += offset -50;
 				}
 				else
 				{
-					m_state->getPlayer()->m_pos_x += offset + 70;
-					m_rocks[i]->m_pos_x += offset - 100;
+					m_state->getPlayer()->m_pos_x += offset + 50;
+					m_rocks[i]->m_pos_x += offset - 50;
 				}
 				if (!this->m_rocks[i]->getCantAttack() && !m_state->getPlayer()->isAttacking())
 				{

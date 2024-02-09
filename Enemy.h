@@ -9,11 +9,15 @@ class Enemy : public GameObject, public Box {
 private:
 	vector<string> enemy_death;
 	const char* str2= "RockEnemy";
+	const char* str3 = "Goblin";
+	const char* str4 = "IceBlob";
 	const char* str1 = m_name.c_str();
 	
 protected:
 	bool cantAttack;
 	bool dead;
+	bool attack;
+	bool canAttack;
 	int m_enemy_health;
 	int m_attack;
 	float indexDrawDeath=0;

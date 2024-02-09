@@ -4,13 +4,27 @@
 #include "GameState.h"
 #include "Level.h"
 //----------------------------------Rock------------------------------------------------------
-Rock::Rock(GameState* gs, float px, float py, const string& name, int health) :Enemy(gs, name, health)
+Rock::Rock(GameState* gs, int type, float px, float py, const string& name, int health) :Enemy(gs, name, health)
 {
     m_pos_x = px;
     m_pos_y = py;
     m_width = enemy_size*0.7;
     m_height = enemy_size*0.9;
+    type_enemy = type;
+    /*if (type_enemy=0) {
+        m_name = "rock";
+    }
+    else if(type_enemy=1) {
+        m_name = "Goblin";
+    }
+    else {
+        m_name = "IceBlob";
+    }
+    */
+    
     speed_enemy = 2.0f;
+    AttackingAnimation = false;
+    attack = false;
     setDead(false);
     init();
 }
@@ -33,10 +47,28 @@ void Rock::init()
     br_enemy.outline_opacity = 0.0f;
     br_enemy.texture = m_state->getFullAssetPath("rockEnemyWalking1.png");
 
-    //Animation
-    rock_enemy= loadFileGameObject("rockEnemyWalking");
     
-    Enemy::init();
+    //Animation
+    switch (type_enemy)
+    {
+        case RockTyoe::ROCK:
+            br_enemy.texture = m_state->getFullAssetPath("rockEnemyWalking1.png");
+            rock_enemy= loadFileGameObject("rockEnemyWalking");
+            break;
+        case RockTyoe::GOBLIN:
+            br_enemy.texture = m_state->getFullAssetPath("greenGoblinWalking1.png");
+            rock_enemy = loadFileGameObject("greenGoblinWalking");
+            setName("Goblin");
+            break;
+        case RockTyoe::IceBlOb:
+            br_enemy.texture = m_state->getFullAssetPath("iceBlobWalking1.png");
+            rock_enemy = loadFileGameObject("iceBlobWalking");
+            setName("iceBlob");
+            break;
+    }
+    cout << m_name;
+    cout << type_enemy << endl;
+    
 }
 //----------------------------------draw------------------------------------------------------
 void Rock::draw()
@@ -53,7 +85,62 @@ void Rock::draw()
         {
             graphics::resetPose();
         }
-        graphics::drawRect(x, y, m_width, m_height, br_enemy);
+        if (attack)
+        {
+            switch (type_enemy)
+            {
+            case RockTyoe::ROCK:
+                rock_enemy = loadFileGameObject("rockEnemyAttack");
+                break;
+            case RockTyoe::GOBLIN:
+                rock_enemy = loadFileGameObject("greenGoblinAttack");
+                break;
+            case RockTyoe::IceBlOb:
+                rock_enemy = loadFileGameObject("iceBlobAttack");
+                break;
+            }
+            AttackingAnimation = true;
+            attack = false;
+            
+        }
+        else
+        {
+            if (!AttackingAnimation) {
+                switch (type_enemy)
+                {
+                case RockTyoe::ROCK:
+                    rock_enemy = loadFileGameObject("rockEnemyWalking");
+                    break;
+                case RockTyoe::GOBLIN:
+                    rock_enemy = loadFileGameObject("greenGoblinWalking");
+                    break;
+                case RockTyoe::IceBlOb:
+                    rock_enemy = loadFileGameObject("iceBlobWalking");
+                    break;
+                }
+            }
+        }
+        if (AttackingAnimation) {
+            indexAttackAnimation += 0.25;
+            if (indexAttackAnimation >= rock_enemy.size())
+            {
+                AttackingAnimation = false;
+                indexAttackAnimation = 0;
+            }
+            else
+            {
+                br_enemy.texture = rock_enemy[int(indexAttackAnimation)];
+            }
+        }
+        if (getName()=="IceBlob")
+        {
+            graphics::drawRect(x, y, m_width, m_height, br_enemy);
+        }
+        else
+        {
+            graphics::drawRect(x, y, m_width * 1.5, m_height*1.5, br_enemy);
+        }
+        
 
         if (m_state->m_debugging)
         {
@@ -67,6 +154,11 @@ void Rock::debugDrawEnemy(float x, float y)
 {
     Enemy::debugDrawEnemy(x, y);
 
+}
+//----------------------------------getType()-------------------------------------------------
+const int& Rock::getType() const
+{
+    return type_enemy;
 }
 //----------------------------------checkCollisionRock----------------------------------------
 void Rock::checkCollisionRock()
@@ -107,5 +199,20 @@ void Rock::checkCollisionRock()
 void Rock::reverse()
 {
     speed_enemy *= -1;
+}
+void Rock::TypeOfEnemy()
+{
+    switch (type_enemy)
+    {
+    case RockTyoe::ROCK:
+        
+        break;
+    case RockTyoe::GOBLIN:
+
+        break;
+    case RockTyoe::IceBlOb:
+
+        break;
+    }
 }
 //--------------------------------------------------------------------------------------------
