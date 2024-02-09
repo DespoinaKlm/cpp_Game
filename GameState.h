@@ -19,6 +19,33 @@ private:
 
 	class Player * m_player = 0;
 	class Level * m_level = 0;
+
+	graphics::Brush m_brush_bg;
+	graphics::Brush m_brush_wasd;
+	graphics::Brush m_brush_bgStart;
+	graphics::Brush m_brush_pressSpace;
+	graphics::Brush m_brush_exit;
+
+	float m_wasd_pos_x;
+	float m_wasd_pos_y;
+	float m_wasd_size_x;
+	float m_wasd_size_y = 0.2f;
+
+	// position of "Press Space to start"
+	float m_pressSpace_pos_x;
+	float m_pressSpace_pos_y;
+	float m_pressSpace_size_x;
+	float m_pressSpace_size_y;
+
+	// position of exit button
+	float m_exit_pos_x;
+	float m_exit_pos_y;
+	float m_exit_size_x;
+	float m_exit_size_y;
+
+	bool pressed_space;
+	bool game_over;
+	//vector<Level*> m_levels;
 	//class Rock * m_enemy = 0;
 	//class Bird * m_enemy_bird = 0;
 

@@ -13,7 +13,7 @@ private:
 	float indexBird;
 	int reverse;
 public:
-	Bird(GameState* gs, const string& name = "", int health = 300);
+	Bird(GameState* gs, float px, float py, const string& name, int health=300);
 	~Bird();
 	void update(float dt) override;
 	void init() override;

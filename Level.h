@@ -80,7 +80,7 @@ class Level : public GameObject {
 		   {' ', ' ', ' ', ' ', 'X', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'T'}, //2
 		   {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'X', 'X','X', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'X'}, //3
 		   {'T', ' ', ' ', ' ', ' ', ' ', 'X', ' ', ' ', ' ', 'X', 'X', 'X','X', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, //4
-		   {'X', 'X', ' ', ' ', ' ', 'X', 'X', ' ', ' ', ' ', ' ', ' ', ' ',' ', ' ', ' ', 'R', 'E', ' ', ' ', 'X', ' ', 'X', ' ', ' ', ' '}, //5
+		   {'X', 'X', ' ', ' ', ' ', 'X', 'X', ' ', ' ', ' ', ' ', ' ', ' ',' ', ' ', ' ', 'R', 'E', ' ', ' ', 'X', ' ', 'X', ' ', ' ', 'B'}, //5
 		   {'X', 'X', ' ', ' ', 'X', 'X', 'X', ' ', ' ', ' ', ' ', ' ', ' ',' ', ' ', ' ', 'X', 'X', 'X', 'X', ' ', ' ', ' ', ' ', ' ', 'T'}, //6
 		   {' ', ' ', ' ', 'R', ' ', ' ', ' ', 'R', ' ', ' ', ' ', ' ', ' ',' ', ' ', 'X', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'X'}, //7
 		   {' ', ' ', 'X', 'X', 'X', 'X', 'X', 'X', 'X', ' ', ' ', ' ', ' ',' ', 'X', 'X', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'X', ' '}, //8
@@ -92,7 +92,7 @@ class Level : public GameObject {
 		   {'X', 'X', 'X', 'X', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'X', 'X'}, //14
 		   {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, //15
 		   {' ', ' ', ' ', ' ', 'R', ' ', 'X', ' ', ' ', 'X', 'X', ' ', ' ',' ', 'R', ' ', 'R', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, //16
-		   {'T', 'P', 'E', 'P', 'X', 'X', 'X', ' ', ' ', 'X', 'X', 'X', 'X','X', 'X', 'X', 'X', 'X', 'X', ' ', ' ', 'X', 'X', ' ', 'G', 'T'}, //17
+		   {'B', 'P', 'E', 'P', 'X', 'X', 'X', ' ', ' ', 'X', 'X', 'X', 'X','X', 'X', 'X', 'X', 'X', 'X', ' ', ' ', 'X', 'X', ' ', 'G', 'T'}, //17
 		   {'X', 'X', 'X', 'X', 'X', 'X', 'X', ' ', ' ', 'X', 'X', 'X', 'X','X', 'X', 'X', 'X', 'X', 'X', ' ', ' ', 'X', 'X', 'X', 'X', 'X'}, //18
 	};//dipla apo to g to kontino eixa ena x mhn to jexaseis pigene san piramida
 	
@@ -120,7 +120,7 @@ class Level : public GameObject {
 	graphics::Brush br_weapon;
 	
 	//Code for the enemy bird
-	Enemy* EnemyBird;
+	Bird* EnemyBird;
 	Rock* EnemyRock;
 	void drawEnemies();
 	void updateEnemies(float sdt);
@@ -153,7 +153,7 @@ public:
 	float getScore();
 	void NextLevel(float score,float health);
 	Level& updateScore(float score);
-
+	inline bool getNextLevel() const { return next_level;}
 	//Code for the Collision class
 	vector<vector<Blocks>> getBlock() { return m_blocks; }
 	vector<vector<char>> getLevelMap() { return level_map;}

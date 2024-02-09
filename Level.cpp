@@ -31,7 +31,7 @@ void Level::update(float dt)
 		m_state->getPlayer()->update(dt);
 	}
 
-	updateEnemies(dt);
+	//updateEnemies(dt);
 	checkCollisions();
 	checkCollisionWithEnemies(dt);
 
@@ -69,25 +69,17 @@ void Level::update(float dt)
 	}
 	
 	if (m_state->getPlayer()->isLeft()) {
-		m_weaponlevel.m_pos_x = m_state->getPlayer()->m_pos_x - 30;
-		boxmove = -30;
+		m_weaponlevel.m_pos_x = m_state->getPlayer()->m_pos_x - 10;
+		boxmove = -10;
 	}
 	if (m_state->getPlayer()->isRight()) {
-		m_weaponlevel.m_pos_x = m_state->getPlayer()->m_pos_x +40;
-		boxmove = 40;
+		m_weaponlevel.m_pos_x = m_state->getPlayer()->m_pos_x +20;
+		boxmove = 20;
 	}
 	
 	m_weaponlevel.m_pos_y = m_state->getPlayer()->m_pos_y;
 	NextLevel(getScore(),m_state->getPlayer()->get_Health());
 	GameObject::update(dt);
-
-	/*cout << m_dynamic_objects.size() << endl;
-	for (auto& p : m_dynamic_objects) {
-		if (p) {
-			cout << "DYNAMIC OBJECT " << p << endl;
-		}
-	}
-	*/
 	
 }
 //------------------------------------init()----------------------------------------------------------
@@ -168,7 +160,7 @@ void Level::init()
 			else if(level_map[row][col] == 'P')
 			{
 				float pos_x = col * m_block_size - 1850;
-				float pos_y = row * m_block_size+50;
+				float pos_y = row * m_block_size+30;
 				float pw_h = m_block_size / 2.2;
 				m_blocks[row][col] =Blocks(pos_x , pos_y, pw_h, pw_h);
 				poisontype = new Poissons(m_state, rand() % PoisonType::NROFTYPES, pos_x, pos_y, pw_h, pw_h, "Poison");
@@ -183,6 +175,15 @@ void Level::init()
 				m_rocks.push_back(EnemyRock);
 				m_blocks[row][col] = Blocks(pos_x, pos_y, EnemyRock->m_width, EnemyRock->m_height);
 				m_block_names[row][col] = "rockEnemy1.png";
+			}
+			else if (level_map[row][col] == 'B') {
+				float pos_x = col * m_block_size - 1850;
+				float pos_y = row * m_block_size + 30;
+				EnemyBird = new Bird(m_state, pos_x, pos_y, "BirdEnemy", 300);
+				m_dynamic_objects.push_back(EnemyBird);
+				m_birds.push_back(EnemyBird);
+				m_blocks[row][col] = Blocks(pos_x, pos_y, EnemyBird->m_width, EnemyBird->m_height);
+				m_block_names[row][col] = "bird1.png";
 			}
 			else
 			{
@@ -345,7 +346,7 @@ void Level::drawBlock(int i, int j)
 			}
 			else
 			{
-				graphics::drawRect(x, y, m_block_size*2.5, m_block_size*10, m_block_brush);
+				graphics::drawRect(x, y, m_block_size * 2.5, m_block_size * 10, m_block_brush);
 			}
 		}
 		if (m_state->m_debugging)
@@ -374,7 +375,7 @@ void Level::updateEnemies(float dt)
 	{
 		if (this->enemySpawnTimer>= this->enemySpawnTimerMax)
 		{
-			this->SpawnEnemy();
+			//this->SpawnEnemy();
 			this->enemySpawnTimer = 0.0f;
 		}
 		else
@@ -388,7 +389,7 @@ void Level::updateEnemies(float dt)
 		
 		if (m_state->getPlayer()->intersectSideways(*(m_birds[i])))
 		{
-			cout<<"Active bird:" << this->m_birds[i]->isActive();
+			//cout<<"Active bird:" << this->m_birds[i]->isActive();
 			if (this->m_birds[i]->isActive() && m_state->getPlayer()->isAttacking()){
 				updateScore(100);
 				graphics::playSound(m_state->getFullAssetPath("Attack.wav"), 1.0f);
@@ -396,7 +397,7 @@ void Level::updateEnemies(float dt)
 					updateScore(200);
 					
 					m_birds[i]->Damage(m_state->getPlayer()->get_Attack());
-					cout << m_birds[i]->getHealth();
+					//cout << m_birds[i]->getHealth();
 					//graphics::playSound(m_state->getFullAssetPath("attacksound.wav"), 1.0f);
 
 				}
@@ -418,8 +419,8 @@ void Level::updateEnemies(float dt)
 //----------------------------------SpawnEnemy--------------------------------------------------------
 void Level::SpawnEnemy()
 {
-	EnemyBird = new Bird(m_state, "Bird");
-	this->m_birds.push_back(this->EnemyBird);
+	//EnemyBird = new Bird(m_state, "Bird");
+	//this->m_birds.push_back(this->EnemyBird);
 }
 //----------------------------------checkCollisions---------------------------------------------------
 void Level::checkCollisions()
@@ -429,29 +430,52 @@ void Level::checkCollisions()
 			float offset = 0.0f;
 			if (level_map[row][col] == 'X') {
 				Blocks block = m_blocks[row][col];
+				
 				if (m_state->getPlayer()->insertUp(block)) {
+					//cout<<m_state->getPlayer()->insertUp(block);
+					//cout << " find the differences " << m_state->getPlayer()->intersectDown(block) << endl;
+					//cout << "Up up" << endl;
 					if (m_state->getPlayer()->m_vy < 0) {
+						m_state->getPlayer()->m_pos_y = block.m_pos_y + block.m_height - 0.1;
+						//m_state->getPlayer()->m_pos_y -=  block.m_height + 0.1;
 						m_state->getPlayer()->m_vy += m_state->getPlayer()->delta_time * m_state->getPlayer()->getGravity();
-						m_state->getPlayer()->m_pos_y = block.m_pos_y + block.m_height + 0.1;
 						break;
 					}
 				}
+				/*
+				
+				else {
+					if (offset = m_state->getPlayer()->intersectDown(block))
+					{
+						//cout << "Down down" << endl;
+						m_state->getPlayer()->m_pos_y += offset;
+
+						if (m_state->getPlayer()->isJumping() && !m_state->getPlayer()->isGrounding())
+							graphics::playSound(m_state->getFullAssetPath("big_impact.wav"), 1.0f);
+
+						m_state->getPlayer()->m_vy = 0.0f;
+
+						break;
+					}
+				}*/
 			}
 		}
 	}
+	
 	for (int row = 0; row < level_map.size(); row++)
 	{
 		for (int col = 0; col < level_map[row].size(); col++)
 		{
 			float offset = 0.0f;
-			if (level_map[row][col] == 'X') 
+			if (level_map[row][col] == 'X')
 			{
 				Blocks block = m_blocks[row][col];
 				if (offset = m_state->getPlayer()->intersectDown(block))
 				{
+					cout << "Down down" << endl;
 					m_state->getPlayer()->m_pos_y += offset;
 
-					if(m_state->getPlayer()->isJumping() && !m_state->getPlayer()->isGrounding())
+					if (m_state->getPlayer()->isJumping() && !m_state->getPlayer()->isGrounding())
 						graphics::playSound(m_state->getFullAssetPath("big_impact.wav"), 1.0f);
 
 					m_state->getPlayer()->m_vy = 0.0f;
@@ -459,6 +483,14 @@ void Level::checkCollisions()
 					break;
 				}
 			}
+		}
+	}
+
+	for (int row = 0; row < level_map.size(); row++)
+	{
+		for (int col = 0; col < level_map[row].size(); col++)
+		{
+			float offset = 0.0f;
 			if (level_map[row][col] == 'G') {
 				Blocks block = m_blocks[row][col];
 				if (offset = m_state->getPlayer()->intersect(block) && m_state->getPlayer()->isPickingUp())
@@ -477,6 +509,7 @@ void Level::checkCollisions()
 				Blocks block = m_blocks[row][col];
 				if(offset = m_state->getPlayer()->intersectSideways(block))
 				{
+					//cout << "Side side" << endl;
 					m_state->getPlayer()->m_pos_x += offset;
 					m_state->getPlayer()->m_vx = 0.0f;
 					break;
@@ -534,14 +567,15 @@ void Level::checkCollisionWithEnemies(float dt)
 		float offset = 0.0f;
 		if (this->m_rocks[i]->isActive() && m_state->getPlayer()->isAttacking())
 		{
-			if (m_weaponlevel.intersect(*(m_rocks[i]))) {
+			
+			if (m_weaponlevel.intersect(*(m_rocks[i]))){
 				updateScore(100 + rand() % 251);
 				if (m_rocks[i]->getSpeed() < 0) {
-					m_rocks[i]->m_pos_x += offset + 150;
+					m_rocks[i]->m_pos_x += offset + 100;
 				}
 				else
 				{
-					m_rocks[i]->m_pos_x += offset - 150;
+					m_rocks[i]->m_pos_x += offset - 100;
 				}
 				graphics::playSound(m_state->getFullAssetPath("Attack.wav"), 1.0f);
 				if (m_state->getPlayer()->PlusAttack()) {
@@ -549,7 +583,9 @@ void Level::checkCollisionWithEnemies(float dt)
 					m_state->getPlayer()->setPlusAttack(false);
 				}
 				else {
-					this->m_rocks[i]->Damage(m_state->getPlayer()->get_Attack());
+					if (m_state->getPlayer()->isActive()) {
+						this->m_rocks[i]->Damage(m_state->getPlayer()->get_Attack());
+					}
 				}
 				if (!this->m_rocks[i]->isActive())
 				{
@@ -570,13 +606,13 @@ void Level::checkCollisionWithEnemies(float dt)
 			{
 				updateScore((10 + rand() % 50)*-1);
 				if (m_rocks[i]->getSpeed() < 0) {
-					m_rocks[i]->m_pos_x += offset + 150;
+					m_rocks[i]->m_pos_x += offset + 100;
 					m_state->getPlayer()->m_pos_x += offset -70;
 				}
 				else
 				{
 					m_state->getPlayer()->m_pos_x += offset + 70;
-					m_rocks[i]->m_pos_x += offset - 150;
+					m_rocks[i]->m_pos_x += offset - 100;
 				}
 				if (!this->m_rocks[i]->getCantAttack() && !m_state->getPlayer()->isAttacking())
 				{

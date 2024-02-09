@@ -41,11 +41,7 @@ int main(int argc, char** argv) {
 	graphics::setCanvasScaleMode(graphics::CANVAS_SCALE_STRETCH);
 	
 	graphics::startMessageLoop();
-
 	graphics::destroyWindow();
-	
-	graphics::setFont(GameState::get_Gamestate()->getAssetDir() + "DrawSketchDemo.ttf");
-	graphics::Brush br_font;
 	
 	return 0;
 }

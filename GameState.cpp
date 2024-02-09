@@ -19,16 +19,16 @@ GameState::GameState()
 //------------------------------------init()--------------------------------------------------------
 void GameState::init()
 {
-   
-    m_player = new Player(m_unique_state, "The-man",1000);
+
+    m_player = new Player(m_unique_state, "The-man", 1000);
     m_player->init();
 
-    m_level = new Level(m_unique_state,"level-1");
+    m_level = new Level(m_unique_state, "level-1");
     m_level->init();
 
     graphics::preloadBitmaps(getAssetDir());
-    graphics::setFont(m_asset_path+"OpenSans-Regular.ttf");
-    graphics::playMusic(getFullAssetPath("TheRebelPath.wav"), 0.5f,true,4000);
+    graphics::setFont(m_asset_path + "OpenSans-Regular.ttf");
+    graphics::playMusic(getFullAssetPath("TheRebelPath.wav"), 0.5f, true, 4000);
 
 }
 //------------------------------------draw()--------------------------------------------------------
@@ -37,7 +37,7 @@ void GameState::draw()
     if (!m_level) {
         return;
     }
-    
+
     m_level->draw();
 
 }
@@ -58,7 +58,7 @@ void GameState::update(float dt)
     if (!m_level) {
         return;
     }
-    
+
     m_level->update(dt);
     m_debugging = graphics::getKeyState(graphics::SCANCODE_0);
 
@@ -66,7 +66,7 @@ void GameState::update(float dt)
 //------------------------------------get_Gamestate()-----------------------------------------------
 GameState* GameState::get_Gamestate()
 {
-    if (m_unique_state==nullptr) {
+    if (m_unique_state == nullptr) {
         m_unique_state = new GameState();
     }
     return m_unique_state;
@@ -81,13 +81,6 @@ GameState::~GameState()
         // an exoume ki alla levels prepei na pame na kanoume delete ta levels kai oxi ton prointer kapoiou apo auta diladi se for loop
         delete m_level;
     }
-    //if (m_enemy) {
-    //    delete m_enemy;
-    //}
-
- //   if (m_enemy_bird) {
-    //    delete m_enemy_bird;
-    //}
 }
 //------------------------------------getAssetDir()-------------------------------------------------
 string GameState::getAssetDir()
@@ -111,4 +104,4 @@ float GameState::getCanvasHeight()
     return m_canvas_height;
 }
 
-GameState * GameState :: m_unique_state = nullptr;
+GameState* GameState::m_unique_state = nullptr;
