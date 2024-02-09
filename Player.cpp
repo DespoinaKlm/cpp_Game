@@ -257,7 +257,7 @@ void Player::init()
 	//brush player
 	br_player.fill_opacity = 1.1f;
 	br_player.outline_opacity = 0.0f;
-	br_player.texture = m_state->getFullAssetPath("playerStanding.png");
+	br_player.texture = m_state->getFullAssetPath("playerStanding1.png");
 
 	m_state->m_global_offset_x = m_state->getCanvasWidth() / 2.0f - m_pos_x;
 	m_state->m_global_offset_y = m_state->getCanvasHeight() / 2.0f - m_pos_y;
@@ -328,7 +328,7 @@ void Player::draw()
 						if (getKeyState(graphics::SCANCODE_A) || getKeyState(graphics::SCANCODE_D))
 						{
 
-							int s = (int)fmod(1000.0f - m_pos_y * 0.025f, m_sprites_player.size());
+							s = (int)fmod(1000.0f - m_pos_y * 0.025f, m_sprites_player.size());
 							br_player.texture = m_sprites_player[s];
 						}
 						else
@@ -358,7 +358,7 @@ void Player::draw()
 						m_IsJumping = false;
 						m_Grounding = true;
 
-						m_sprites_player = loadFileGameObject("playerWalk");
+						m_sprites_player = loadFileGameObject("playerStanding");
 					}
 					if (getKeyState(graphics::SCANCODE_A))
 					{
@@ -381,7 +381,13 @@ void Player::draw()
 
 						}
 					}
-					int s = (int)fmod(1000.0f - m_pos_x * 0.025f, m_sprites_player.size());
+					cout<<m_sprites_player.size();
+					if (m_sprites_player.size() == 0) {
+						s = 0;
+					}
+					else {
+						s = (int)fmod(1000.0f - m_pos_x * 0.025f, m_sprites_player.size());
+					}
 					br_player.texture = m_sprites_player[s];
 					//cout << "1000.0f - m_pos_x(" << m_pos_x << ")* 0.025f  MOD " << m_sprites_player.size() << ": " << s << endl;
 
@@ -396,7 +402,7 @@ void Player::draw()
 					{
 						right = false;
 					}
-					int s = (int)fmod(1000.0f - m_pos_x * 0.025f, m_sprites_player.size());
+					s = (int)fmod(1000.0f - m_pos_x * 0.025f, m_sprites_player.size());
 					br_player.texture = m_sprites_player[s];
 				}
 				if (canAttackN)
@@ -447,8 +453,6 @@ void Player::draw()
 					graphics::setScale(-1.0f, 1.0f);
 				}
 			}
-
-
 			/*
 			if (!getKeyState(graphics::SCANCODE_Q) && !canAttackN)
 			{

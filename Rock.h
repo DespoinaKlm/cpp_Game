@@ -26,5 +26,4 @@ public:
 	void checkCollisionRock();
 	void reverse();
 	float getSpeed()const { return speed_enemy; }
-	void TypeOfEnemy();
 };

@@ -20,7 +20,7 @@ private:
 	float indexDustAnimation = 0;
 	float animation_speed = 0.5;
 	float x_d=0, y_d=0;
-
+	int s;
 	//health
 	float m_health;
 	float m_health_max = 1000;

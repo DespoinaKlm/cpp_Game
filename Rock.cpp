@@ -11,17 +11,6 @@ Rock::Rock(GameState* gs, int type, float px, float py, const string& name, int 
     m_width = enemy_size*0.7;
     m_height = enemy_size*0.9;
     type_enemy = type;
-    /*if (type_enemy=0) {
-        m_name = "rock";
-    }
-    else if(type_enemy=1) {
-        m_name = "Goblin";
-    }
-    else {
-        m_name = "IceBlob";
-    }
-    */
-    
     speed_enemy = 2.0f;
     AttackingAnimation = false;
     attack = false;
@@ -66,9 +55,6 @@ void Rock::init()
             setName("iceBlob");
             break;
     }
-    cout << m_name;
-    cout << type_enemy << endl;
-    
 }
 //----------------------------------draw------------------------------------------------------
 void Rock::draw()
@@ -132,7 +118,7 @@ void Rock::draw()
                 br_enemy.texture = rock_enemy[int(indexAttackAnimation)];
             }
         }
-        if (getName()=="IceBlob")
+        if (getName()=="iceBlob")
         {
             graphics::drawRect(x, y, m_width, m_height, br_enemy);
         }
@@ -199,20 +185,5 @@ void Rock::checkCollisionRock()
 void Rock::reverse()
 {
     speed_enemy *= -1;
-}
-void Rock::TypeOfEnemy()
-{
-    switch (type_enemy)
-    {
-    case RockTyoe::ROCK:
-        
-        break;
-    case RockTyoe::GOBLIN:
-
-        break;
-    case RockTyoe::IceBlOb:
-
-        break;
-    }
 }
 //--------------------------------------------------------------------------------------------
