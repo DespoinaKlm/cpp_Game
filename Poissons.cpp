@@ -1,5 +1,10 @@
 #pragma once
+#include <sgg/graphics.h>
+#include "GameObject.h"
+#include "GameState.h"
 #include "Poissons.h"
+#include "Player.h"
+#include "Level.h"
 //---------------------------------Constructor--------------------------------------------------------------------------------
 Poissons::Poissons(GameState* gs, int type,float posx, float posy, float posw, float posh, const string& name):GameObject(gs, name), m_type(type)
 {
