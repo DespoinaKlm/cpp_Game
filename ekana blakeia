@@ -1,0 +1,202 @@
+void Player::draw()
+{
+	//cout << m_state->getlevel()->getNextLevel() << endl;
+	if (!m_state->getlevel()->getNextLevel())
+	{
+		if (!dead)
+		{
+			//Mini Animation when the player was attacked 
+			if (damage)
+			{
+				
+				m_sprites_player = loadFileGameObject("playerDie");
+				damageAnimation = true;
+				damage = false;
+			}
+			if (damageAnimation)
+			{
+				if (getKeyState(graphics::SCANCODE_A))
+				{
+					right = false;
+				}
+				indexPlayer += 0.40;
+				cout << m_sprites_player.size() << "   " << m_sprites_player.size() / 2 << endl;
+				if (indexPlayer >= (m_sprites_player.size() / 2) + 1) {
+					indexPlayer = 0;
+					damageAnimation = false;
+				}
+				br_player.texture = m_sprites_player[int(indexPlayer)];
+			}
+			if (!damageAnimation)
+			{
+				if (!getKeyState(graphics::SCANCODE_Q) && !canAttackN)
+				{
+					if (getKeyState(graphics::SCANCODE_W))
+					{
+						m_IsJumping = true;
+						m_Grounding = false;
+						if (getKeyState(graphics::SCANCODE_A))
+						{
+							right = false;
+						}
+						if (getKeyState(graphics::SCANCODE_D))
+						{
+							right = true;
+						}
+
+						m_sprites_player = loadFileGameObject("playerJump");
+					}
+					if (m_vy != 0)
+					{
+						m_Grounding = false;
+						m_IsJumping = true;
+
+						if (getKeyState(graphics::SCANCODE_A) || getKeyState(graphics::SCANCODE_D))
+						{
+
+							int s = (int)fmod(1000.0f - m_pos_y * 0.025f, m_sprites_player.size());
+							br_player.texture = m_sprites_player[s];
+						}
+						else
+						{
+							//leptomeria otan den kounietai o paixthw na kounietai
+
+							//cout << m_IsJumping << endl;
+							if (m_IsJumping)
+							{
+								indexPlayer += 0.15;
+								//cout << indexPlayer << endl;
+								if (indexPlayer >= m_sprites_player.size())
+								{
+
+									indexPlayer = 0;
+								}
+								br_player.texture = m_sprites_player[int(indexPlayer)];
+							}
+							else
+							{
+								indexPlayer = 0;
+							}
+						}
+					}
+					else
+					{
+						m_IsJumping = false;
+						m_Grounding = true;
+
+						m_sprites_player = loadFileGameObject("playerWalk");
+					}
+					if (getKeyState(graphics::SCANCODE_A))
+					{
+						right = false;
+						//m_IsRunning = true;
+					}
+					if (m_Grounding) {
+						if (getKeyState(graphics::SCANCODE_A) || getKeyState(graphics::SCANCODE_D))
+						{
+
+							m_sprites_player = loadFileGameObject("playerWalk");
+							if (graphics::getKeyState(graphics::SCANCODE_D))
+							{
+								right = true;
+							}
+							if (graphics::getKeyState(graphics::SCANCODE_A))
+							{
+								right = false;
+							}
+
+						}
+					}
+					int s = (int)fmod(1000.0f - m_pos_x * 0.025f, m_sprites_player.size());
+					br_player.texture = m_sprites_player[s];
+					//cout << "1000.0f - m_pos_x(" << m_pos_x << ")* 0.025f  MOD " << m_sprites_player.size() << ": " << s << endl;
+
+				}
+				if (getKeyState(graphics::SCANCODE_Q))
+				{
+					weaponIsActive = true;
+					m_sprites_player = loadFileGameObject("playerAttack");
+					canAttackN = true;
+
+					if (getKeyState(graphics::SCANCODE_A))
+					{
+						right = false;
+					}
+					int s = (int)fmod(1000.0f - m_pos_x * 0.025f, m_sprites_player.size());
+					br_player.texture = m_sprites_player[s];
+				}
+				if (canAttackN)
+				{
+
+					if (getKeyState(graphics::SCANCODE_A))
+					{
+						right = false;
+					}
+					indexPlayer += 0.5;//animation_speed;
+					if (indexPlayer >= m_sprites_player.size()) {
+						indexPlayer = 0;
+						weaponIsActive = false;
+						canAttackN = false;
+						m_Attacking = false;
+					}
+					br_player.texture = m_sprites_player[int(indexPlayer)];
+
+				}
+
+				if (damage)
+				{
+					m_sprites_player = loadFileGameObject("playerDie");
+					damageAnimation = true;
+				}
+				if (damageAnimation)
+				{
+					if (getKeyState(graphics::SCANCODE_A))
+					{
+						right = false;
+					}
+					indexPlayer += 0.5;//animation_speed;
+					cout << m_sprites_player.size() << "   " << m_sprites_player.size() / 2 << endl;
+					int p = m_sprites_player.size() / 2;
+					if (indexPlayer >= p) {
+						indexPlayer = 0;
+						damage = false;
+						damageAnimation = false;
+					}
+					br_player.texture = m_sprites_player[int(indexPlayer)];
+				}
+				if (right) {
+					graphics::resetPose();
+				}
+				else {
+					graphics::setScale(-1.0f, 1.0f);
+				}
+			}
+			graphics::drawRect(m_state->getCanvasWidth() * 0.5f, m_state->getCanvasHeight() * 0.5f, 200, 400, br_player);
+
+			graphics::resetPose();
+			if (m_state->m_debugging)
+			{
+				debugDraw();
+			}
+			drawHealth(m_health, m_health_max, 20);
+		}
+		else
+		{
+			if (indexPlayer == 0) {
+				m_sprites_player = loadFileGameObject("playerDie");
+			}
+			playerDrawDeath();
+		}
+	}
+	else
+	{
+		m_sprites_player = loadFileGameObject("playerWalk");
+		indexPlayer += animation_speed;
+		if (indexPlayer >= m_sprites_player.size()) {
+			indexPlayer = 0;
+		}
+		br_player.texture = m_sprites_player[int(indexPlayer)];
+		graphics::drawRect(m_state->getCanvasWidth() * 0.5f, m_state->getCanvasHeight() * 0.5f, 200.0f, 400.0f, br_player);
+	}
+	drawDustAnimation();
+}
