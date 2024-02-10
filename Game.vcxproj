@@ -146,7 +146,6 @@
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Particle.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Poissons.cpp" />
     <ClCompile Include="Rock.cpp" />
@@ -160,7 +159,6 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="Level.h" />
-    <ClInclude Include="Particle.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Poissons.h" />
     <ClInclude Include="Rock.h" />

@@ -1,17 +1,9 @@
 #pragma once
 #include "Bird.h"
 #include <sgg/graphics.h>
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <string>
-#include <cstring> 
-#include <cerrno> 
-#include "GameState.h"
 #include "GameObject.h"
-#include <vector>
-#include <string>
-#include <filesystem>
+#include "GameState.h"
+#include "Level.h"
 
 using namespace std;
 //----------------------------Constructor-------------------------------------
@@ -47,15 +39,15 @@ void Bird::update(float dt)
         //pros dejia
         if (m_pos_x < -2600 )
         {
-            
             setActive(false);
         }
-        if ( m_pos_x>3600 )
+        if ( m_pos_x>3500 )
         {
             setActive(false);
         }
     }
     Enemy::update(dt);
+
 }
 //----------------------------init-----------------------------------------------
 void Bird::init()

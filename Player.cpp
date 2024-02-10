@@ -244,10 +244,12 @@ void Player::init()
 		m_pos_y = 4300.0f;
 	}
 	else if (m_state->getPointerLevel() == 2) {
-
+		m_pos_x = -1700.0;
+		m_pos_y = 4200.0f;
 	}
 	else if (m_state->getPointerLevel() == 3) {
-
+		m_pos_x = -1500.0;
+		m_pos_y = 4500.0f;
 	}
 	m_width = 90;
 	m_height = 150;
@@ -262,7 +264,7 @@ void Player::init()
 
 	this->attackCooldownMax = 25.0f;
 	this->attackCooldown = this->attackCooldownMax;
-	std::cout << this->attackCooldownMax << "         " << this->attackCooldown;
+	//std::cout << this->attackCooldownMax << "         " << this->attackCooldown;
 }
 //-------------------------------------draw()-----------------------------------------------------------
 void Player::draw()

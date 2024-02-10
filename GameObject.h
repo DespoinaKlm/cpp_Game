@@ -20,7 +20,7 @@ public:
 	virtual void update(float dt);
 	virtual void init();
 	virtual void draw();
-	inline bool isActive() const { return m_active; }
+	inline bool isActive(){ return m_active; }
 	inline void setActive(bool a) { m_active = a; }
 	inline int getID(){return m_next_id;}
 	inline void setName(string name){ m_name = name; }

@@ -14,9 +14,8 @@
 
 using namespace std;
 //------------------------------------Constructor---------------------------------------------------
-Level::Level(GameState* gs, const string name,float score) :GameObject(gs, name)
+Level::Level(GameState* gs, vector<vector<char>>& map,const string name,float score):GameObject(gs, name),level_map(map)
 {
-	namelevel = name;
 	m_score = score;
 }
 //------------------------------------update()--------------------------------------------------------
@@ -92,71 +91,12 @@ void Level::init()
 	br_background.fill_opacity = 0.5f;
 	br_background.texture = m_state->getFullAssetPath("background.png");
 
-	//keep score
-	if (m_state->getPointerLevel()==1) 
-	{
-		m_score = 0;
-	}
-	if (m_state->getPointerLevel() == 2)
-	{
-		m_score = getScore();
-	}
-	if (m_state->getPointerLevel() == 3) 
-	{
-		m_score = getScore();
-	}
-
 	//for flying enemies
 	this->enemySpawnTimerMax = 60.0f;
 	this->enemySpawnTimer = this->enemySpawnTimerMax;
 	this->maxEnemies = 20;
-
-	
-	if (m_state->getPointerLevel() != 0) { // Bazei tous xarakthres tou Level + levelpointer + ".txt" se vector<vector<char>> 
-		std::ifstream inputFile(m_state->getFullAssetPath("Level" + std::to_string(m_state->getPointerLevel()) + ".txt"));
-
-		if (!inputFile.is_open()) {
-			std::cerr << "Error opening the file." << std::endl;
-		}
-
-		std::vector<std::vector<char>> level1;
-
-		std::string line;
-		while (std::getline(inputFile, line)) {
-			std::vector<char> row;
-
-			for (char ch : line) {
-				row.push_back(ch);
-			}
-
-			level_map.push_back(row);
-		}
-		//ektypwse to level
-		for (const auto& row : level_map) {
-			for (char ch : row) {
-				std::cout << ch;
-			}
-			std::cout << std::endl;
-		}
-
-		inputFile.close();
-		next_level = false;
-	}
-	//else if (m_state->getPointerLevel() == 2) {
-	//	level_map = level_map2;
-	//	cout << "                                   kk                      \n";
-	//	next_level = false;
-	//	//m_state->init();
-	//}
-	//else if (m_state->getPointerLevel() == 3) {
-	//	level_map = level_map3;
-	//	next_level = false;
-	//}
-	//else {
-
-	//}
 	//blocks
-	m_blocks.resize(level_map.size());
+	m_blocks.resize((level_map.size()));
 	m_block_names.resize(level_map.size());
 
 	for (int row = 0; row < level_map.size(); row++)
@@ -165,7 +105,7 @@ void Level::init()
 		m_block_names[row].resize(level_map[row].size());
 		for (int col = 0; col < level_map[row].size(); col++)
 		{
-			if (level_map[row][col] == 'X')
+			if ((level_map[row][col])=='X')
 			{
 				float pos_x = col * m_block_size-1850;
 				float pos_y = row * m_block_size;
@@ -188,7 +128,7 @@ void Level::init()
 			else if (level_map[row][col] == 'R')
 			{
 				float pos_x = col * m_block_size - 1850;
-				float pos_y = row * m_block_size+70 ;
+				float pos_y = row * m_block_size+50 ;
 				m_blocks[row][col] = Blocks(pos_x, pos_y, m_block_size, m_block_size);
 				m_block_names[row][col] = "rock1.png";
 			}
@@ -236,6 +176,15 @@ void Level::init()
 			}
 		}
 	}
+	//////////////////////////
+	for (auto& p: level_map)
+	{
+		for (auto& p1: p)
+		{
+			cout << p1;
+		}
+		cout << endl;
+	}
 	for (auto& p : m_static_objects) {
 		if (p) {
 			p->init();
@@ -277,10 +226,12 @@ void Level::init()
 	br_weapon.outline_color[1] = 1.0f;
 	br_weapon.outline_color[2] = 0.0f;
 
+	cout << m_state->getlevel()->getName() << endl;
 }
 //------------------------------------draw()----------------------------------------------------------
 void Level::draw()
 {
+	
 	//background
 	float offset_x = (m_state->m_global_offset_x / 2.0f) + (m_state->getCanvasWidth() / 2.0f);
 	float offset_y = (m_state->m_global_offset_y / 2.0f) + (m_state->getCanvasHeight() / 2.0f);
@@ -416,11 +367,13 @@ void Level::drawEnemies()
 //---------------------------------------updateEnemies------------------------------------------------
 void Level::updateEnemies(float dt)
 {
+	//cout << m_birds.size() <<"      " << maxEnemies << endl;
 	if (this->m_birds.size() < this->maxEnemies)
 	{
 		//cout << enemySpawnTimer << endl;
 		if (this->enemySpawnTimer>= this->enemySpawnTimerMax)
 		{
+			//cout << "spawn enemies" << endl;
 			this->SpawnEnemy();
 			this->enemySpawnTimer = 0.0f;
 		}
@@ -457,10 +410,12 @@ void Level::updateEnemies(float dt)
 						this->m_birds[i]->Damage(m_state->getPlayer()->get_Attack());
 					}
 				}
+				//cout << "Bird is Active: " << this->m_birds[i]->isActive() << endl;
 				if (!this->m_birds[i]->isActive())
 				{
 					updateScore(100 + rand() % 200);
 					m_birds[i]->setActive(false);
+					this->m_birds.erase(this->m_birds.begin() + i);
 					graphics::playSound(m_state->getFullAssetPath("death_enemy.wav"), 1.0f);
 				}
 			}
@@ -539,10 +494,13 @@ void Level::SpawnEnemy()
 {
 	for (int row = 0; row < level_map.size(); row++)
 	{
+		int i = 0;
 		for (int col = 0; col < level_map[row].size(); col++)
 		{
 			if (level_map[row][col] == 'B')
 			{
+				//cout << i<< endl;
+				i++;
 				float pos_x = col * m_block_size - 2500;
 				float pos_y = row * m_block_size + 30;
 				EnemyBird = new Bird(m_state, pos_x, pos_y, "Bird", 50);
@@ -562,7 +520,6 @@ void Level::checkCollisions()
 			float offset = 0.0f;
 			if (level_map[row][col] == 'X') {
 				Blocks block = m_blocks[row][col];
-				
 				if (m_state->getPlayer()->insertUp(block)) {
 					//cout<<m_state->getPlayer()->insertUp(block);
 					//cout << " find the differences " << m_state->getPlayer()->intersectDown(block) << endl;
@@ -572,7 +529,7 @@ void Level::checkCollisions()
 				
 						m_state->getPlayer()->m_vy += m_state->getPlayer()->delta_time * m_state->getPlayer()->getGravity();
 						m_state->getPlayer()->m_pos_y += m_state->getPlayer()->m_vy * m_state->getPlayer()->delta_time;
-						cout << m_state->getPlayer()->m_vy << endl;
+						//cout << m_state->getPlayer()->m_vy << endl;
 						break;
 					}
 				}
@@ -610,12 +567,13 @@ void Level::checkCollisions()
 				Blocks block = m_blocks[row][col];
 				if (offset = m_state->getPlayer()->intersect(block) && m_state->getPlayer()->isPickingUp())
 				{
-					if (next_level) {
+					if (m_state->getNextLevel())
+					{
+						cout << m_state->getNextLevel() << endl;
 						break;
 					}
-					helplevel++;
-					m_state->setPointerLevel(helplevel);
-					next_level = true;
+					m_state->AddIndex();
+					m_state->setNextLevel(true);
 					break;
 				}
 			}
@@ -691,13 +649,13 @@ void Level::checkCollisionWithEnemies(float dt)
 				updateScore(100 + rand() % 251);
 				if (m_rocks[i]->getSpeed() < 0) {
 					//left
-					m_rocks[i]->m_pos_x += offset - 50;
+					m_rocks[i]->m_pos_x += offset + 50;
 				}
 				else
 				{
 					//right
-					cout << "right" << endl;
-					m_rocks[i]->m_pos_x += offset + 50;
+					//cout << "right" << endl;
+					m_rocks[i]->m_pos_x += offset - 50;
 				}
 				graphics::playSound(m_state->getFullAssetPath("Attack.wav"), 1.0f);
 				if (m_state->getPlayer()->PlusAttack()) {
@@ -804,7 +762,7 @@ float Level::getScore()
 //------------------------------------NextLevel()-----------------------------------------------------
 void Level::NextLevel(float score, float health)
 {
-	if (next_level) {
+	if (m_state->getNextLevel()) {
 		setScore(m_score);
 		m_state->getPlayer()->set_Health(health);
 	}
@@ -818,13 +776,24 @@ Level& Level::updateScore(float score)
 //--------------------------------Destructor----------------------------------------------------------
 Level::~Level()
 {
-	
+	for (auto& blocks : m_blocks) 
+	{
+		blocks.clear();
+	}
+	m_blocks.clear();
+
+	for (auto& blocks_n: m_block_names)
+	{
+		blocks_n.clear();
+	}
+	m_block_names.clear();
+
 	// Delete dynamic objects
-	for (auto& dynamicObj : m_dynamic_objects) {
+	for (auto& dynamicObj : m_dynamic_objects)
+	{
 		delete dynamicObj;
 	}
 	m_dynamic_objects.clear();
-
 	// Delete birds
 	for (auto& bird : m_birds) {
 		delete bird;
@@ -836,6 +805,7 @@ Level::~Level()
 		delete rock;
 	}
 	m_rocks.clear();
+
 	delete poisontype;
 	delete EnemyBird;
 	delete EnemyRock;
