@@ -44,8 +44,12 @@ void Enemy::draw()
             {
                 graphics::resetPose();
             }
-            enemyDrawDeath(enemy_death, x, y, this->m_width, this->m_height);
-
+            //if () {
+            //    graphics::drawRect(x, y, m_width * 1.5, m_height * 1.5, br_enemy);
+            //}
+            //else {
+                enemyDrawDeath(enemy_death, x, y, this->m_width, this->m_height);
+            //}
         }
         //bird
         else
