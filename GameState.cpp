@@ -25,12 +25,14 @@ void GameState::init()
     cout <<"pointerLevel: " << pointerLevel << endl;
     if (pointerLevel=1)
     {
+        printf("in level1");
         m_level = new Level(m_unique_state, "level-1");
         m_level->init();
         m_levels.push_back(m_level);
     }
     else if (pointerLevel = 2)
     {
+        printf("in level2");
         m_level = new Level(m_unique_state, "level-2");
         m_level->init();
         m_levels.push_back(m_level);

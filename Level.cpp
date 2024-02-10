@@ -112,24 +112,49 @@ void Level::init()
 	this->maxEnemies = 20;
 
 	
-	if (m_state->getPointerLevel() == 1) {
-		level_map = level_map1;
-		next_level = false;
-		
-	}
-	else if (m_state->getPointerLevel() == 2) {
-		level_map = level_map2;
-		cout << "                                   kk                      \n";
-		next_level = false;
-		m_state->init();
-	}
-	else if (m_state->getPointerLevel() == 3) {
-		level_map = level_map3;
-		next_level = false;
-	}
-	else {
+	if (m_state->getPointerLevel() != 0) { // Bazei tous xarakthres tou Level + levelpointer + ".txt" se vector<vector<char>> 
+		std::ifstream inputFile(m_state->getFullAssetPath("Level" + std::to_string(m_state->getPointerLevel()) + ".txt"));
 
+		if (!inputFile.is_open()) {
+			std::cerr << "Error opening the file." << std::endl;
+		}
+
+		std::vector<std::vector<char>> level1;
+
+		std::string line;
+		while (std::getline(inputFile, line)) {
+			std::vector<char> row;
+
+			for (char ch : line) {
+				row.push_back(ch);
+			}
+
+			level_map.push_back(row);
+		}
+		//ektypwse to level
+		for (const auto& row : level_map) {
+			for (char ch : row) {
+				std::cout << ch;
+			}
+			std::cout << std::endl;
+		}
+
+		inputFile.close();
+		next_level = false;
 	}
+	//else if (m_state->getPointerLevel() == 2) {
+	//	level_map = level_map2;
+	//	cout << "                                   kk                      \n";
+	//	next_level = false;
+	//	//m_state->init();
+	//}
+	//else if (m_state->getPointerLevel() == 3) {
+	//	level_map = level_map3;
+	//	next_level = false;
+	//}
+	//else {
+
+	//}
 	//blocks
 	m_blocks.resize(level_map.size());
 	m_block_names.resize(level_map.size());

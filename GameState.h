@@ -47,11 +47,11 @@ private:
 	bool pressed_space;
 	bool game_over;
 	//next level
-	int pointerLevel=1;
+	
 	vector<Level*> m_levels;
 
 public:
-
+	int pointerLevel = 1;
 	float m_global_offset_x = 0.0f;
 	float m_global_offset_y = 0.0f;
 
