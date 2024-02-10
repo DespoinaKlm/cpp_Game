@@ -31,7 +31,6 @@ void GameState::init()
     }
     else if (pointerLevel = 2)
     {
-        cout << "was here" << endl;
         m_level = new Level(m_unique_state, "level-2");
         m_level->init();
         m_levels.push_back(m_level);
@@ -52,7 +51,7 @@ void GameState::init()
 //------------------------------------draw()--------------------------------------------------------
 void GameState::draw()
 {
-    cout << "pointerLevel: " << pointerLevel << endl;
+   
     if (!m_level) {
         return;
     }

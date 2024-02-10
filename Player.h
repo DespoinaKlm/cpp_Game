@@ -71,9 +71,10 @@ public:
 	inline void setJumping(bool answer) { m_IsJumping = answer; }
 	inline void setGround(bool answer) { m_Grounding =answer; }
 	inline bool isJumping() { return m_IsJumping; }
+	inline bool isFalling() { return m_Falling; }
 	inline bool isAttacking() { return m_Attacking; }
 	inline bool isPickingUp()  { return m_IsPickingUp; }
-	
+	inline bool isRunning() { return m_IsRunning; }
 	inline bool isGrounding() { return m_Grounding; }
 	inline bool PlusAttack()  { return plusAttack; }
 	inline void setPlusAttack(bool answ) { plusAttack = answ; }

@@ -10,7 +10,7 @@ private:
 	vector<string> enemy_death;
 	const char* str2= "RockEnemy";
 	const char* str3 = "Goblin";
-	const char* str4 = "IceBlob";
+	const char* str4 = "iceBlob";
 	const char* str1 = m_name.c_str();
 	
 protected:

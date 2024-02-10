@@ -544,27 +544,13 @@ void Level::checkCollisions()
 					//cout << "Up up" << endl;
 					if (m_state->getPlayer()->m_vy < 0) {
 						m_state->getPlayer()->m_pos_y = block.m_pos_y + block.m_height - 0.1;
-						//m_state->getPlayer()->m_pos_y -=  block.m_height + 0.1;
+				
 						m_state->getPlayer()->m_vy += m_state->getPlayer()->delta_time * m_state->getPlayer()->getGravity();
+						m_state->getPlayer()->m_pos_y += m_state->getPlayer()->m_vy * m_state->getPlayer()->delta_time;
+						cout << m_state->getPlayer()->m_vy << endl;
 						break;
 					}
 				}
-				/*
-				
-				else {
-					if (offset = m_state->getPlayer()->intersectDown(block))
-					{
-						//cout << "Down down" << endl;
-						m_state->getPlayer()->m_pos_y += offset;
-
-						if (m_state->getPlayer()->isJumping() && !m_state->getPlayer()->isGrounding())
-							graphics::playSound(m_state->getFullAssetPath("big_impact.wav"), 1.0f);
-
-						m_state->getPlayer()->m_vy = 0.0f;
-
-						break;
-					}
-				}*/
 			}
 		}
 	}
@@ -579,14 +565,11 @@ void Level::checkCollisions()
 				Blocks block = m_blocks[row][col];
 				if (offset = m_state->getPlayer()->intersectDown(block))
 				{
-					//cout << "Down down" << endl;
 					m_state->getPlayer()->m_pos_y += offset;
-
-					if (m_state->getPlayer()->isJumping() && !m_state->getPlayer()->isGrounding())
+					
+					if (m_state->getPlayer()->m_vy > 5.0f)
 						graphics::playSound(m_state->getFullAssetPath("big_impact.wav"), 1.0f);
-
 					m_state->getPlayer()->m_vy = 0.0f;
-
 					break;
 				}
 			}
@@ -606,8 +589,6 @@ void Level::checkCollisions()
 						break;
 					}
 					helplevel++;
-					cout << "helplevel: " << helplevel << endl;
-					
 					m_state->setPointerLevel(helplevel);
 					next_level = true;
 					break;
@@ -623,7 +604,6 @@ void Level::checkCollisions()
 				Blocks block = m_blocks[row][col];
 				if(offset = m_state->getPlayer()->intersectSideways(block))
 				{
-					//cout << "Side side" << endl;
 					m_state->getPlayer()->m_pos_x += offset;
 					m_state->getPlayer()->m_vx = 0.0f;
 					break;

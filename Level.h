@@ -40,8 +40,6 @@ class Level : public GameObject {
 		   {' ', 'P', 'P', 'X', 'X', 'X', 'X', ' ', ' ', 'X', 'X', 'X', 'X','X', 'X', 'X', 'X', 'X', 'X', ' ', ' ', 'X', 'X', ' ', 'G', 'T'}, //17
 		   {'X', 'X', 'X', 'X', 'X', 'X', 'X', ' ', ' ', 'X', 'X', 'X', 'X','X', 'X', 'X', 'X', 'X', 'X', ' ', ' ', 'X', 'X', 'X', 'X', 'X'}, //18
 	};
-	//dipla apo to g to kontino eixa ena x mhn to jexaseis pigene san piramida
-	
 	vector<vector<char>> level_map2 = {
 		   {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'E',' ', 'P', ' ', ' ', 'P', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, //1
 		   {' ', ' ', ' ', ' ', ' ', 'X', 'X', ' ', ' ', ' ', ' ', ' ', 'X','X', 'X', 'X', 'X', 'X', 'X', 'X', ' ', ' ', ' ', ' ', ' ', ' '}, //2
@@ -68,7 +66,6 @@ class Level : public GameObject {
 		   {'T', 'P', ' ', 'X', 'X', 'X', 'X', ' ', ' ', 'X', 'X', 'X', 'X','X', 'X', 'X', 'X', 'X', 'X', ' ', ' ', 'X', 'X', ' ', 'G', 'T'}, //17
 		   {'X', 'X', 'X', 'X', 'X', 'X', 'X', ' ', ' ', 'X', 'X', 'X', 'X','X', 'X', 'X', 'X', 'X', 'X', ' ', ' ', 'X', 'X', 'X', 'X', 'X'}, //18
 	};
-	
 	vector<vector<char>> level_map3 = {
 		   {'B', ' ', ' ', ' ', ' ', 'P', ' ', ' ', ' ', ' ', ' ', ' ', 'R',' ', ' ', ' ', ' ', 'E', ' ', 'R', ' ', ' ', ' ', ' ', ' ', 'B'}, //1
 		   {' ', ' ', ' ', ' ', ' ', 'X', 'X', ' ', ' ', ' ', ' ', ' ', 'X','X', 'X', 'X', 'X', 'X', 'X', 'X', ' ', ' ', ' ', ' ', ' ', ' '}, //2
@@ -134,9 +131,7 @@ class Level : public GameObject {
 	list <GameObject*>m_dynamic_objects;
 	vector<Enemy*> m_birds;
 	vector<Rock*> m_rocks;
-	//Code for the moving animation
 	vector<string> m_gate;
-
 
 public:
 	Level(GameState* gs, const string name = "Level0",float score=0);
