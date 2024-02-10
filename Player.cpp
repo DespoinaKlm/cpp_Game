@@ -52,15 +52,16 @@ void Player::dustAnimation(vector<string>dust)
 
 	indexDustAnimation += 0.5;
 	//cout << m_vx<<endl;
-	if (indexPlayer >= dust.size()) {
+	if (indexDustAnimation >= dust.size()) {
 		indexDustAnimation = 0;
 		drawJump = false;
+		m_IsRunning = false;
 	}
-	br_player.texture = dust[int(indexPlayer)];
+	br_player.texture = dust[int(indexDustAnimation)];
 	if (right)
 	{
 		//cout << "have fun " << endl;
-		graphics::drawRect(x_d, y_d, 20.0f, 20.0f, br_player);
+		graphics::drawRect(x_d, y_d, 40.0f, 40.0f, br_player);
 	}
 	//else
 	//{
@@ -70,21 +71,22 @@ void Player::dustAnimation(vector<string>dust)
 //----------------------------------------updateCooldownAttack------------------------------------------
 void Player::drawDustAnimation()
 {
-	if (drawJump)
-	{
-		if (graphics::getKeyState(graphics::SCANCODE_W)) {
+	//if (drawJump)
+	//{
+		//if (graphics::getKeyState(graphics::SCANCODE_W)) {
 			//dust_animation = loadFileGameObject("jump");
 			//dustAnimation(dust_animation);
-		}
-		else
-		{
+		//}
+		//else
+		//{
+	//cout << "m_IsRunning: " << m_IsRunning << endl;
 			if (m_IsRunning)
 			{
 				dust_animation = loadFileGameObject("run");
 				dustAnimation(dust_animation);
 			}
-		}
-	}
+		//}
+	//}
 }
 //----------------------------------------updateCooldownAttack------------------------------------------
 void Player::updateCooldownAttack()
@@ -190,7 +192,7 @@ void Player::movePlayer(float dt)
 	{
 		if (graphics::getKeyState(graphics::SCANCODE_W))
 		{
-			m_IsRunning = false;
+			//m_IsRunning = false;
 			drawJump = true;
 			m_vy -= m_accel_vertical * 0.02f;
 			m_IsJumping = true;
@@ -198,7 +200,7 @@ void Player::movePlayer(float dt)
 		}
 		else
 		{
-			m_IsRunning = false;
+			//m_IsRunning = false;
 			m_vy -= 0.0f;
 			m_Grounding = true;
 			m_IsJumping = false;
@@ -271,44 +273,54 @@ void Player::init()
 void Player::draw()
 {
 	//cout << m_state->getlevel()->getNextLevel() << endl;
+	//mini animation
 	if (!m_state->getlevel()->getNextLevel())
 	{
 		//cout <<"velocity   " << m_vx << endl;
 		//cout << (!getKeyState(graphics::SCANCODE_Q) && !getKeyState(graphics::SCANCODE_A) && !getKeyState(graphics::SCANCODE_D) && !getKeyState(graphics::SCANCODE_W) && m_vx==0 ) << endl;;
-
+		//not dead
 		if (!dead)
 		{
-			//if (!getKeyState(graphics::SCANCODE_Q) && !getKeyState(graphics::SCANCODE_A) && !getKeyState(graphics::SCANCODE_D) && !getKeyState(graphics::SCANCODE_W)){
-			//	br_player.texture = m_state->getFullAssetPath("playerStanding.png");
-			//}
-			//else
-			//{
+			//takes damage
 			if (damage) {
 				m_sprites_player = loadFileGameObject("playerDie");
 				damageAnimation = true;
 			}
+			//starts animation for damage
 			if (damageAnimation) {
 				if (getKeyState(graphics::SCANCODE_A))
 				{
 					right = false;
 				}
-				indexPlayer += 0.40;//animation_speed;
-				cout << m_sprites_player.size() << "   " << m_sprites_player.size() / 2 << endl;
-				if (indexPlayer >= (m_sprites_player.size() / 2) + 1) {
+				indexPlayer += 0.40;
+				int p = (m_sprites_player.size() / 2) + 1;
+				if (indexPlayer >= p)
+				{
 					indexPlayer = 0;
 					damage = false;
 					damageAnimation = false;
+					
 				}
+
 				br_player.texture = m_sprites_player[int(indexPlayer)];
+				cout <<"damageAnimation: " << damageAnimation << " indexPlayer: " << indexPlayer<<endl;
+				if (getKeyState(graphics::SCANCODE_W)&& !damageAnimation)
+				{
+					m_sprites_player = loadFileGameObject("playerJump");
+				}
 			}
+			//player wasnt attacked
 			if (!damage)
 			{
+				//if he hasnt attacked
 				if (!getKeyState(graphics::SCANCODE_Q) && !canAttackN)
 				{
+					//if he jumped
 					if (getKeyState(graphics::SCANCODE_W))
 					{
 						m_IsJumping = true;
 						m_Grounding = false;
+						//direction for the player
 						if (getKeyState(graphics::SCANCODE_A))
 						{
 							right = false;
@@ -320,29 +332,27 @@ void Player::draw()
 
 						m_sprites_player = loadFileGameObject("playerJump");
 					}
+					//if he falling
 					if (m_vy != 0)
 					{
 						m_Grounding = false;
-						m_IsJumping = true;
-
+						m_IsJumping = false;
+						m_Falling = true;
+						//pressed buttons
 						if (getKeyState(graphics::SCANCODE_A) || getKeyState(graphics::SCANCODE_D))
 						{
-
 							s = (int)fmod(1000.0f - m_pos_y * 0.025f, m_sprites_player.size());
 							br_player.texture = m_sprites_player[s];
 						}
 						else
 						{
-							//leptomeria otan den kounietai o paixthw na kounietai
-
-							//cout << m_IsJumping << endl;
-							if (m_IsJumping)
+							//animation falling
+							m_sprites_player = loadFileGameObject("playerJump");
+							if (m_Falling)
 							{
-								indexPlayer += 0.15;
-								//cout << indexPlayer << endl;
+								indexPlayer += 0.5;
 								if (indexPlayer >= m_sprites_player.size())
 								{
-
 									indexPlayer = 0;
 								}
 								br_player.texture = m_sprites_player[int(indexPlayer)];
@@ -355,17 +365,22 @@ void Player::draw()
 					}
 					else
 					{
+						m_Falling = false;
+						m_IsRunning = false;
 						m_IsJumping = false;
 						m_Grounding = true;
-
 						m_sprites_player = loadFileGameObject("playerStanding");
 					}
+					//direction
 					if (getKeyState(graphics::SCANCODE_A))
 					{
 						right = false;
 						//m_IsRunning = true;
 					}
-					if (m_Grounding) {
+					//on the floor
+					if (m_Grounding)
+					{
+						indexDustAnimation = true;
 						if (getKeyState(graphics::SCANCODE_A) || getKeyState(graphics::SCANCODE_D))
 						{
 
@@ -381,17 +396,13 @@ void Player::draw()
 
 						}
 					}
-					cout<<m_sprites_player.size();
-					if (m_sprites_player.size() == 0) {
-						s = 0;
-					}
-					else {
-						s = (int)fmod(1000.0f - m_pos_x * 0.025f, m_sprites_player.size());
-					}
+					//cout<<"for the walk" << m_sprites_player.size() << endl;
+					s = (int)fmod(1000.0f - m_pos_x * 0.025f, m_sprites_player.size());
 					br_player.texture = m_sprites_player[s];
 					//cout << "1000.0f - m_pos_x(" << m_pos_x << ")* 0.025f  MOD " << m_sprites_player.size() << ": " << s << endl;
 
 				}
+				//attack player
 				if (getKeyState(graphics::SCANCODE_Q))
 				{
 					weaponIsActive = true;
@@ -402,8 +413,6 @@ void Player::draw()
 					{
 						right = false;
 					}
-					s = (int)fmod(1000.0f - m_pos_x * 0.025f, m_sprites_player.size());
-					br_player.texture = m_sprites_player[s];
 				}
 				if (canAttackN)
 				{
@@ -412,7 +421,8 @@ void Player::draw()
 					{
 						right = false;
 					}
-					indexPlayer += 0.5;//animation_speed;
+					indexPlayer += 0.5;
+					//cout << "indexPlayer: " << indexPlayer << " m_sprites_player.size(): " << m_sprites_player.size() << endl;
 					if (indexPlayer >= m_sprites_player.size()) {
 						indexPlayer = 0;
 						weaponIsActive = false;
@@ -420,9 +430,14 @@ void Player::draw()
 						m_Attacking = false;
 					}
 					br_player.texture = m_sprites_player[int(indexPlayer)];
-
+					if (getKeyState(graphics::SCANCODE_W)) {
+						m_IsJumping = true;
+					}
+					if (m_IsJumping && !canAttackN){
+						//cout << "indexPlayer: " << indexPlayer << " canAttackN: " << canAttackN << endl;
+						m_sprites_player = loadFileGameObject("playerJump");
+					}
 				}
-
 				if (damage)
 				{
 					m_sprites_player = loadFileGameObject("playerDie");
@@ -435,7 +450,7 @@ void Player::draw()
 						right = false;
 					}
 					indexPlayer += 0.5;//animation_speed;
-					cout << m_sprites_player.size() << "   " << m_sprites_player.size() / 2 << endl;
+					//cout << m_sprites_player.size() << "   " << m_sprites_player.size() / 2 << endl;
 					int p = m_sprites_player.size() / 2;
 					if (indexPlayer >= p) {
 						indexPlayer = 0;
@@ -444,138 +459,15 @@ void Player::draw()
 					}
 					br_player.texture = m_sprites_player[int(indexPlayer)];
 				}
-
-
-				if (right) {
+				if (right)
+				{
 					graphics::resetPose();
-				}
-				else {
-					graphics::setScale(-1.0f, 1.0f);
-				}
-			}
-			/*
-			if (!getKeyState(graphics::SCANCODE_Q) && !canAttackN)
-			{
-				if (getKeyState(graphics::SCANCODE_W))
-				{
-					m_IsJumping = true;
-					m_Grounding = false;
-					if (getKeyState(graphics::SCANCODE_A))
-					{
-						right = false;
-					}
-					if (getKeyState(graphics::SCANCODE_D))
-					{
-						right = true;
-					}
-
-					m_sprites_player = loadFileGameObject("playerJump");
-				}
-				if (m_vy != 0)
-				{
-					m_Grounding = false;
-					m_IsJumping = true;
-
-					if (getKeyState(graphics::SCANCODE_A) || getKeyState(graphics::SCANCODE_D))
-					{
-
-						int s = (int)fmod(1000.0f - m_pos_y * 0.025f, m_sprites_player.size());
-						br_player.texture = m_sprites_player[s];
-					}
-					else
-					{
-						//leptomeria otan den kounietai o paixthw na kounietai
-
-						//cout << m_IsJumping << endl;
-						if (m_IsJumping)
-						{
-							indexPlayer += 0.15;
-							//cout << indexPlayer << endl;
-							if (indexPlayer >= m_sprites_player.size())
-							{
-
-								indexPlayer = 0;
-							}
-							br_player.texture = m_sprites_player[int(indexPlayer)];
-						}
-						else
-						{
-							indexPlayer = 0;
-						}
-					}
 				}
 				else
 				{
-					m_IsJumping = false;
-					m_Grounding = true;
-
-					m_sprites_player = loadFileGameObject("playerWalk");
+					graphics::setScale(-1.0f, 1.0f);
 				}
-				if (getKeyState(graphics::SCANCODE_A))
-				{
-					right = false;
-					//m_IsRunning = true;
-				}
-				if (m_Grounding) {
-					if (getKeyState(graphics::SCANCODE_A) || getKeyState(graphics::SCANCODE_D))
-					{
-
-						m_sprites_player = loadFileGameObject("playerWalk");
-						if (graphics::getKeyState(graphics::SCANCODE_D))
-						{
-							right = true;
-						}
-						if (graphics::getKeyState(graphics::SCANCODE_A))
-						{
-							right = false;
-						}
-
-					}
-				}
-				int s = (int)fmod(1000.0f - m_pos_x * 0.025f, m_sprites_player.size());
-				br_player.texture = m_sprites_player[s];
-				//cout << "1000.0f - m_pos_x(" << m_pos_x << ")* 0.025f  MOD " << m_sprites_player.size() << ": " << s << endl;
-
 			}
-			if (getKeyState(graphics::SCANCODE_Q))
-			{
-				weaponIsActive = true;
-				m_sprites_player = loadFileGameObject("playerAttack");
-				canAttackN = true;
-
-				if (getKeyState(graphics::SCANCODE_A))
-				{
-					right = false;
-				}
-				int s = (int)fmod(1000.0f - m_pos_x * 0.025f, m_sprites_player.size());
-				br_player.texture = m_sprites_player[s];
-			}
-			if (canAttackN)
-			{
-
-				if (getKeyState(graphics::SCANCODE_A))
-				{
-					right = false;
-				}
-				indexPlayer += 0.5;//animation_speed;
-				if (indexPlayer >= m_sprites_player.size()) {
-					indexPlayer = 0;
-					weaponIsActive = false;
-					canAttackN = false;
-					m_Attacking = false;
-				}
-				br_player.texture = m_sprites_player[int(indexPlayer)];
-
-			}
-			*/
-
-			if (right) {
-				graphics::resetPose();
-			}
-			else {
-				graphics::setScale(-1.0f, 1.0f);
-			}
-
 			graphics::drawRect(m_state->getCanvasWidth() * 0.5f, m_state->getCanvasHeight() * 0.5f, 200, 400, br_player);
 
 			graphics::resetPose();
@@ -591,26 +483,20 @@ void Player::draw()
 				m_sprites_player = loadFileGameObject("playerDie");
 			}
 			playerDrawDeath();
+			graphics::drawRect(m_state->getCanvasWidth() * 0.5f, m_state->getCanvasHeight() * 0.5f, 200, 400, br_player);
 		}
 	}
 	else
 	{
-		//cout << "hoho;";
 		m_sprites_player = loadFileGameObject("playerWalk");
+		//cout << "indexPlayer: "<< indexPlayer<<" size: "<< m_sprites_player.size()<<endl;
 		indexPlayer += animation_speed;
 		if (indexPlayer >= m_sprites_player.size()) {
 			indexPlayer = 0;
 		}
 		br_player.texture = m_sprites_player[int(indexPlayer)];
 		graphics::drawRect(m_state->getCanvasWidth() * 0.5f, m_state->getCanvasHeight() * 0.5f, 200.0f, 400.0f, br_player);
-		//drawDustAnimation();
 	}
-	//cout << m_IsRunning << endl;
-
-
-		//dust_animation= loadFileGameObject("run");
-		//dustAnimation(dust_animation);
-
 	drawDustAnimation();
 }
 
@@ -618,14 +504,15 @@ void Player::draw()
 void Player::playerDrawDeath()
 {
 	indexPlayer += 0.5;
-	cout << indexPlayer << endl;
-	if (indexPlayer >= m_sprites_player.size()) {
+	//cout << indexPlayer << endl;
+	if (indexPlayer >= m_sprites_player.size())
+	{
 		indexPlayer = m_sprites_player.size() - 1;
 		setActive(false);
 
 	}
 	br_player.texture = m_sprites_player[int(indexPlayer)];
-	graphics::drawRect(m_state->getCanvasWidth() * 0.5f, m_state->getCanvasHeight() * 0.5f, 150, 200, br_player);
+	//graphics::drawRect(m_state->getCanvasWidth() * 0.5f, m_state->getCanvasHeight() * 0.5f, 150, 200, br_player);
 }
 //---------------------------------------get_Attack()---------------------------------------------------
 int Player::get_Attack()
@@ -658,7 +545,6 @@ Player& Player::Damage(float damage)
 	if (m_health > 0) {
 		this->damage = true;
 	}
-	cout << damage << endl;
 	if (m_health <= 0) {
 		dead = true;
 		weaponIsActive = false;

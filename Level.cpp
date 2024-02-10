@@ -31,7 +31,7 @@ void Level::update(float dt)
 		m_state->getPlayer()->update(dt);
 	}
 
-	//updateEnemies(dt);
+	updateEnemies(dt);
 	checkCollisions();
 	checkCollisionWithEnemies(dt);
 
@@ -68,7 +68,7 @@ void Level::update(float dt)
 		}
 	}
 	
-	if (m_state->getPlayer()->isLeft()) {
+	if (!m_state->getPlayer()->isRight()) {
 		m_weaponlevel.m_pos_x = m_state->getPlayer()->m_pos_x - 10;
 		boxmove = -10;
 	}
@@ -93,24 +93,43 @@ void Level::init()
 	br_background.texture = m_state->getFullAssetPath("background.png");
 
 	//keep score
-	if (m_name == "level-1") {
+	if (m_state->getPointerLevel()==1) 
+	{
 		m_score = 0;
 	}
-	if (m_name == "level-2") {
+	if (m_state->getPointerLevel() == 2)
+	{
 		m_score = getScore();
 	}
-	if (m_name == "level-3") {
-		m_score = getScore();
-	}
-	else {
+	if (m_state->getPointerLevel() == 3) 
+	{
 		m_score = getScore();
 	}
 
 	//for flying enemies
-	this->enemySpawnTimerMax = 10.0f;
+	this->enemySpawnTimerMax = 60.0f;
 	this->enemySpawnTimer = this->enemySpawnTimerMax;
 	this->maxEnemies = 20;
 
+	
+	if (m_state->getPointerLevel() == 1) {
+		level_map = level_map1;
+		next_level = false;
+		
+	}
+	else if (m_state->getPointerLevel() == 2) {
+		level_map = level_map2;
+		cout << "                                   kk                      \n";
+		next_level = false;
+		m_state->init();
+	}
+	else if (m_state->getPointerLevel() == 3) {
+		level_map = level_map3;
+		next_level = false;
+	}
+	else {
+
+	}
 	//blocks
 	m_blocks.resize(level_map.size());
 	m_block_names.resize(level_map.size());
@@ -160,7 +179,7 @@ void Level::init()
 			else if(level_map[row][col] == 'P')
 			{
 				float pos_x = col * m_block_size - 1850;
-				float pos_y = row * m_block_size+30;
+				float pos_y = row * m_block_size;
 				float pw_h = m_block_size / 2.2;
 				m_blocks[row][col] =Blocks(pos_x , pos_y, pw_h, pw_h);
 				poisontype = new Poissons(m_state, rand() % PoisonType::NROFTYPES, pos_x, pos_y, pw_h, pw_h, "Poison");
@@ -170,16 +189,16 @@ void Level::init()
 			else if (level_map[row][col] == 'E') {
 				float pos_x = col * m_block_size - 1850;
 				float pos_y = row * m_block_size + 30 ;
-				EnemyRock = new Rock(m_state, rand() % RockTyoe::NROFTYPES1, pos_x, pos_y, "RockEnemy", 500);
+				EnemyRock = new Rock(m_state, rand() % RockTyoe::NROFTYPES1, pos_x, pos_y, "RockEnemy", 600);
 				m_dynamic_objects.push_back(EnemyRock);
 				m_rocks.push_back(EnemyRock);
 				m_blocks[row][col] = Blocks(pos_x, pos_y, EnemyRock->m_width, EnemyRock->m_height);
 				m_block_names[row][col] = "rockEnemy1.png";
 			}
 			else if (level_map[row][col] == 'B') {
-				float pos_x = col * m_block_size - 1850;
+				float pos_x = col * m_block_size - 2500;
 				float pos_y = row * m_block_size + 30;
-				EnemyBird = new Bird(m_state, pos_x, pos_y, "BirdEnemy", 300);
+				EnemyBird = new Bird(m_state, pos_x, pos_y, "Bird", 50);
 				m_dynamic_objects.push_back(EnemyBird);
 				m_birds.push_back(EnemyBird);
 				m_blocks[row][col] = Blocks(pos_x, pos_y, EnemyBird->m_width, EnemyBird->m_height);
@@ -324,7 +343,8 @@ void Level::drawBlock(int i, int j)
 		const char* rock = "rock";
 		const char* poison = "poison";
 		const char* enemy = "rockEnemy";
-		if (strcmp(paths, poison) != 0 && strcmp(paths, enemy) != 0)
+		const char* bird = "bird";
+		if (strcmp(paths, poison) != 0 && strcmp(paths, enemy) != 0 && strcmp(paths,bird)!=0)
 		{
 
 			if (strcmp(paths, tree)== 0)
@@ -351,7 +371,7 @@ void Level::drawBlock(int i, int j)
 		}
 		if (m_state->m_debugging)
 		{
-			if (strcmp(paths, poison) != 0 && strcmp(paths, enemy) != 0)
+			if (strcmp(paths, poison) != 0 && strcmp(paths, enemy) != 0 && strcmp(paths, bird) != 0)
 			{
 				graphics::drawRect(x, y, box.m_width, box.m_height, m_block_brush_debug);
 			}
@@ -373,9 +393,10 @@ void Level::updateEnemies(float dt)
 {
 	if (this->m_birds.size() < this->maxEnemies)
 	{
+		//cout << enemySpawnTimer << endl;
 		if (this->enemySpawnTimer>= this->enemySpawnTimerMax)
 		{
-			//this->SpawnEnemy();
+			this->SpawnEnemy();
 			this->enemySpawnTimer = 0.0f;
 		}
 		else
@@ -383,13 +404,85 @@ void Level::updateEnemies(float dt)
 			this->enemySpawnTimer += 1.f;
 		}
 	}
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	//weapon
 	for (int i = 0; i < this->m_birds.size(); i++)
 	{
 		this->m_birds[i]->update(dt);
-		
+		float offset = 0.0f;
+		if (this->m_birds[i]->isActive() && m_state->getPlayer()->isAttacking())
+		{
+			if (m_weaponlevel.intersect(*(m_birds[i])))
+			{
+				updateScore(50 + rand() % 151);
+				if (m_birds[i]->m_pos_y == 4430) {
+					m_birds[i]->m_pos_x += offset + 50;
+				}
+				else
+				{
+					m_birds[i]->m_pos_x += offset - 50;
+				}
+				graphics::playSound(m_state->getFullAssetPath("Attack.wav"), 1.0f);
+				if (m_state->getPlayer()->PlusAttack()) {
+					this->m_birds[i]->Damage(m_state->getPlayer()->get_Attack() * 2);
+					m_state->getPlayer()->setPlusAttack(false);
+				}
+				else {
+					if (m_state->getPlayer()->isActive()) {
+						this->m_birds[i]->Damage(m_state->getPlayer()->get_Attack());
+					}
+				}
+				if (!this->m_birds[i]->isActive())
+				{
+					updateScore(100 + rand() % 200);
+					m_birds[i]->setActive(false);
+					graphics::playSound(m_state->getFullAssetPath("death_enemy.wav"), 1.0f);
+				}
+			}
+		}
+	}
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	//damage
+	for (int i = 0; i < this->m_birds.size(); i++)
+	{
+		this->m_birds[i]->update(dt);
+		if (this->m_birds[i]->isActive())
+		{
+			if (m_state->getPlayer()->isActive()) {
+				float offset = 0.0f;
+				if (m_state->getPlayer()->intersectSideways(*(m_birds[i])))
+				{
+					updateScore((10 + rand() % 50) * -1);
+					if (m_birds[i]->m_pos_y == 4430)
+					{
+						//right
+						m_birds[i]->m_pos_x += offset -150;
+						m_state->getPlayer()->m_pos_x += offset + 50;
+					}
+					else
+					{
+						//left
+						m_state->getPlayer()->m_pos_x += offset - 50;
+						m_birds[i]->m_pos_x += offset + 150;
+					}
+					if (!this->m_birds[i]->getCantAttack() && !m_state->getPlayer()->isAttacking())
+					{
+						graphics::playSound(m_state->getFullAssetPath("notAttack.wav"), 1.0f);
+						m_state->getPlayer()->Damage(this->m_birds[i]->getAttack());
+					}
+					m_state->getPlayer()->m_vx = 0.0f;
+					break;
+				}
+			}
+		}
+	}
+/*
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	for (int i = 0; i < this->m_birds.size(); i++)
+	{
 		if (m_state->getPlayer()->intersectSideways(*(m_birds[i])))
 		{
-			//cout<<"Active bird:" << this->m_birds[i]->isActive();
 			if (this->m_birds[i]->isActive() && m_state->getPlayer()->isAttacking()){
 				updateScore(100);
 				graphics::playSound(m_state->getFullAssetPath("Attack.wav"), 1.0f);
@@ -397,30 +490,44 @@ void Level::updateEnemies(float dt)
 					updateScore(200);
 					
 					m_birds[i]->Damage(m_state->getPlayer()->get_Attack());
-					//cout << m_birds[i]->getHealth();
-					//graphics::playSound(m_state->getFullAssetPath("attacksound.wav"), 1.0f);
+					cout << m_birds[i]->getHealth();
+					graphics::playSound(m_state->getFullAssetPath("attacksound.wav"), 1.0f);
 
 				}
 			}
-			
 			if (this->m_birds[i]->isActive() && !m_state->getPlayer()->isAttacking()) {
 				graphics::playSound(m_state->getFullAssetPath("notAttack.wav"), 1.0f);
 				m_state->getPlayer()->Damage(this->m_birds[i]->getAttack());
 
 			}
-			
 		}
 		if (!this->m_birds[i]->isActive()) {
 			m_birds[i]->setActive(false);
 			this->m_birds.erase(this->m_birds.begin() + i);
 		}	
 	}
+	*/
+	
 }
 //----------------------------------SpawnEnemy--------------------------------------------------------
 void Level::SpawnEnemy()
 {
-	//EnemyBird = new Bird(m_state, "Bird");
-	//this->m_birds.push_back(this->EnemyBird);
+	for (int row = 0; row < level_map.size(); row++)
+	{
+		for (int col = 0; col < level_map[row].size(); col++)
+		{
+			if (level_map[row][col] == 'B')
+			{
+				float pos_x = col * m_block_size - 2500;
+				float pos_y = row * m_block_size + 30;
+				EnemyBird = new Bird(m_state, pos_x, pos_y, "Bird", 50);
+				this->m_birds.push_back(this->EnemyBird);
+				m_dynamic_objects.push_back(EnemyBird);
+				m_birds.push_back(EnemyBird);
+			}
+			
+		}
+	}
 }
 //----------------------------------checkCollisions---------------------------------------------------
 void Level::checkCollisions()
@@ -495,6 +602,13 @@ void Level::checkCollisions()
 				Blocks block = m_blocks[row][col];
 				if (offset = m_state->getPlayer()->intersect(block) && m_state->getPlayer()->isPickingUp())
 				{
+					if (next_level) {
+						break;
+					}
+					helplevel++;
+					cout << "helplevel: " << helplevel << endl;
+					
+					m_state->setPointerLevel(helplevel);
 					next_level = true;
 					break;
 				}
@@ -571,11 +685,14 @@ void Level::checkCollisionWithEnemies(float dt)
 			if (m_weaponlevel.intersect(*(m_rocks[i]))){
 				updateScore(100 + rand() % 251);
 				if (m_rocks[i]->getSpeed() < 0) {
-					m_rocks[i]->m_pos_x += offset + 50;
+					//left
+					m_rocks[i]->m_pos_x += offset - 50;
 				}
 				else
 				{
-					m_rocks[i]->m_pos_x += offset - 50;
+					//right
+					cout << "right" << endl;
+					m_rocks[i]->m_pos_x += offset + 50;
 				}
 				graphics::playSound(m_state->getFullAssetPath("Attack.wav"), 1.0f);
 				if (m_state->getPlayer()->PlusAttack()) {
@@ -601,26 +718,28 @@ void Level::checkCollisionWithEnemies(float dt)
 		this->m_rocks[i]->update(dt);
 		if (this->m_rocks[i]->isActive())
 		{
-			float offset = 0.0f;
-			if (offset = m_state->getPlayer()->intersectSideways(*(m_rocks[i])))
-			{
-				updateScore((10 + rand() % 50)*-1);
-				if (m_rocks[i]->getSpeed() < 0) {
-					m_rocks[i]->m_pos_x += offset + 50;
-					m_state->getPlayer()->m_pos_x += offset -50;
-				}
-				else
+			if (m_state->getPlayer()->isActive()) {
+				float offset = 0.0f;
+				if (offset = m_state->getPlayer()->intersectSideways(*(m_rocks[i])))
 				{
-					m_state->getPlayer()->m_pos_x += offset + 50;
-					m_rocks[i]->m_pos_x += offset - 50;
+					updateScore((10 + rand() % 50) * -1);
+					if (m_rocks[i]->getSpeed() < 0) {
+						m_rocks[i]->m_pos_x += offset + 50;
+						m_state->getPlayer()->m_pos_x += offset - 50;
+					}
+					else
+					{
+						m_state->getPlayer()->m_pos_x += offset + 50;
+						m_rocks[i]->m_pos_x += offset - 50;
+					}
+					if (!this->m_rocks[i]->getCantAttack() && !m_state->getPlayer()->isAttacking())
+					{
+						graphics::playSound(m_state->getFullAssetPath("notAttack.wav"), 1.0f);
+						m_state->getPlayer()->Damage(this->m_rocks[i]->getAttack());
+					}
+					m_state->getPlayer()->m_vx = 0.0f;
+					break;
 				}
-				if (!this->m_rocks[i]->getCantAttack() && !m_state->getPlayer()->isAttacking())
-				{
-					graphics::playSound(m_state->getFullAssetPath("notAttack.wav"), 1.0f);
-					m_state->getPlayer()->Damage(this->m_rocks[i]->getAttack());
-				}
-				m_state->getPlayer()->m_vx = 0.0f;
-				break;
 			}
 		}
 	}

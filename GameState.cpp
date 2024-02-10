@@ -19,12 +19,30 @@ GameState::GameState()
 //------------------------------------init()--------------------------------------------------------
 void GameState::init()
 {
-
+    
     m_player = new Player(m_unique_state, "The-man", 1000);
     m_player->init();
-
-    m_level = new Level(m_unique_state, "level-1");
-    m_level->init();
+    cout <<"pointerLevel: " << pointerLevel << endl;
+    if (pointerLevel=1)
+    {
+        m_level = new Level(m_unique_state, "level-1");
+        m_level->init();
+        m_levels.push_back(m_level);
+    }
+    else if (pointerLevel = 2)
+    {
+        cout << "was here" << endl;
+        m_level = new Level(m_unique_state, "level-2");
+        m_level->init();
+        m_levels.push_back(m_level);
+    }
+    else if (pointerLevel = 3)
+    {
+        m_level = new Level(m_unique_state, "level-3");
+        m_level->init();
+        m_levels.push_back(m_level);
+    }
+    
 
     graphics::preloadBitmaps(getAssetDir());
     graphics::setFont(m_asset_path + "OpenSans-Regular.ttf");
@@ -34,6 +52,7 @@ void GameState::init()
 //------------------------------------draw()--------------------------------------------------------
 void GameState::draw()
 {
+    cout << "pointerLevel: " << pointerLevel << endl;
     if (!m_level) {
         return;
     }
@@ -77,23 +96,24 @@ GameState::~GameState()
     if (m_player) {
         delete m_player;
     }
-    if (m_level) {
-        // an exoume ki alla levels prepei na pame na kanoume delete ta levels kai oxi ton prointer kapoiou apo auta diladi se for loop
-        delete m_level;
+
+    for (auto& levels : m_levels) {
+        delete levels;
     }
+    delete m_level;
+
 }
 //------------------------------------getAssetDir()-------------------------------------------------
 string GameState::getAssetDir()
 {
     return m_asset_path;
 }
-
 //------------------------------------getFullAssetPath()--------------------------------------------
 string GameState::getFullAssetPath(const string& asset)
 {
     return m_asset_path + asset;
 }
-//------------------------------------getCanvasWidth()---------------------------------------------
+//------------------------------------getCanvasWidth()----------------------------------------------
 float GameState::getCanvasWidth()
 {
     return m_canvas_width;
@@ -103,5 +123,5 @@ float GameState::getCanvasHeight()
 {
     return m_canvas_height;
 }
-
+//--------------------------------------------------------------------------------------------------
 GameState* GameState::m_unique_state = nullptr;

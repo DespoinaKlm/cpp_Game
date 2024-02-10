@@ -16,7 +16,7 @@ private:
 	Blocks playerBlocks;
 	graphics::Brush br_player;
 	graphics::Brush br_player_health;
-	float indexPlayer=0;
+	float indexPlayer = 0;
 	float indexDustAnimation = 0;
 	float animation_speed = 0.5;
 	float x_d=0, y_d=0;
@@ -38,6 +38,7 @@ private:
 	float attackCooldownMax;
 
 	//movement
+	bool standing;
 	bool canAttackN;
 	bool damage;
 	bool damageAnimation;
@@ -63,7 +64,7 @@ public:
 	Player(GameState* gs, const string& name,float health=1000);
 	~Player();
 	void drawHealth(float health,float max_health,int length);
-	//----------getPosition()----------------
+	//----------getPosition()--------------------------------
 	float getPosX() const{ return m_pos_x; }
 	float getPosY() const { return m_pos_y; }
 	inline bool getGround() const {return m_Grounding;}
@@ -79,7 +80,6 @@ public:
 	inline float getGravity()  { return m_gravity; }
 	inline bool isActiveWeapon()  { return weaponIsActive; }
 	inline bool isRight()  { return right; }
-	inline bool isLeft()  { return left; }
 	const bool canAttack();
 	void updateCooldownAttack();
 	void drawDustAnimation();

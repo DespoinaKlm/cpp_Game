@@ -43,11 +43,12 @@ private:
 	float m_exit_size_x;
 	float m_exit_size_y;
 
+
 	bool pressed_space;
 	bool game_over;
-	//vector<Level*> m_levels;
-	//class Rock * m_enemy = 0;
-	//class Bird * m_enemy_bird = 0;
+	//next level
+	int pointerLevel=1;
+	vector<Level*> m_levels;
 
 public:
 
@@ -66,9 +67,8 @@ public:
 	string getFullAssetPath(const string& asset);
 	float getCanvasWidth();
 	float getCanvasHeight();
-
+	inline int getPointerLevel() { return pointerLevel; }
+	inline void setPointerLevel(int i) { pointerLevel = i; }
 	class Player * getPlayer() { return m_player; }
 	class Level * getlevel() { return m_level;}
-	//class Rock * getEnemy(){return m_enemy; }
-	//class Bird * getEnemyBird() { return m_enemy_bird; }
 };

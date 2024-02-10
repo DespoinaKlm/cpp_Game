@@ -33,9 +33,10 @@ void Enemy::draw()
     
     if (dead)
     {
+        float x = m_pos_x + m_state->m_global_offset_x;
+        float y = m_pos_y + m_state->m_global_offset_y;
         if (strcmp(str1, str2) == 0) {
-            float x = m_pos_x + m_state->m_global_offset_x;
-            float y = m_pos_y + m_state->m_global_offset_y;
+            
             if (speed_enemy <= 0) {
                 graphics::setScale(-1.0f, 1.0f);
             }
@@ -49,7 +50,7 @@ void Enemy::draw()
         //bird
         else
         {
-            enemyDrawDeath(enemy_death, this->m_pos_x, this->m_pos_y, this->m_width, this->m_height);
+            enemyDrawDeath(enemy_death, x, y, this->m_width, this->m_height);
         }
         
     }
@@ -58,7 +59,7 @@ void Enemy::draw()
 float Enemy::getAttack()
 {
    this->attack = true;
-   return (40 + rand() % 81)* getStrongerAttack();
+   return (20 + rand() % 41)* getStrongerAttack();
 }
 //---------------------------------------getHealth--------------------------------------------------------
 float Enemy::getHealth()
