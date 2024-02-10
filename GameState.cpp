@@ -15,34 +15,36 @@ using namespace std;
 //-----------------------------------Constructor----------------------------------------------------
 GameState::GameState()
 {
-    nextLevel = false;
 }
 //------------------------------------init()--------------------------------------------------------
 void GameState::init()
 {
-    cout << "pointerLevel " << pointerLevel << endl;
-    if (pointerLevel == 1)
+    
+    m_player = new Player(m_unique_state, "The-man", 1000);
+    m_player->init();
+    cout <<"pointerLevel: " << pointerLevel << endl;
+    if (pointerLevel=1)
     {
-        m_player = new Player(m_unique_state, "The-man", 1000);
-        m_player->init();
-        m_level = new Level(m_unique_state,level_map1, "level-1" );
+        printf("in level1");
+        m_level = new Level(m_unique_state, "level-1");
         m_level->init();
         m_levels.push_back(m_level);
     }
-    else if (pointerLevel == 2)
+    else if (pointerLevel = 2)
     {
-        m_player->init();
-        m_level = new Level(m_unique_state,level_map2 , "level-2", m_levels[0]->getScore());
+        printf("in level2");
+        m_level = new Level(m_unique_state, "level-2");
         m_level->init();
         m_levels.push_back(m_level);
     }
-    else if (pointerLevel == 3)
+    else if (pointerLevel = 3)
     {
-        m_player->init();
-        m_level = new Level(m_unique_state, level_map3,"level-3", m_levels[1]->getScore());
+        m_level = new Level(m_unique_state, "level-3");
         m_level->init();
         m_levels.push_back(m_level);
     }
+    
+
     graphics::preloadBitmaps(getAssetDir());
     graphics::setFont(m_asset_path + "OpenSans-Regular.ttf");
     graphics::playMusic(getFullAssetPath("TheRebelPath.wav"), 0.5f, true, 4000);
@@ -51,31 +53,13 @@ void GameState::init()
 //------------------------------------draw()--------------------------------------------------------
 void GameState::draw()
 {
+   
     if (!m_level) {
         return;
     }
-    if (pointerLevel==1)
-    {
-        m_levels[0]->draw();
-    }
-    else if (pointerLevel == 2)
-    {
-        if (nextLevel)
-        {
-            init();
-            nextLevel = false;
-        }
-        m_levels[1]->draw();
-    }
-    else if (pointerLevel == 3)
-    {
-        if (nextLevel)
-        {
-            init();
-            nextLevel = false;
-        }
-        m_levels[2]->draw();
-    }
+
+    m_level->draw();
+
 }
 //------------------------------------update()------------------------------------------------------
 void GameState::update(float dt)
@@ -94,18 +78,8 @@ void GameState::update(float dt)
     if (!m_level) {
         return;
     }
-    if (pointerLevel == 1)
-    {
-        m_levels[0]->update(dt);
-    }
-    else if(pointerLevel == 2)
-    {
-        m_levels[1]->update(dt);
-    }
-    else if(pointerLevel == 3)
-    {
-        m_levels[2]->update(dt);
-    }
+
+    m_level->update(dt);
     m_debugging = graphics::getKeyState(graphics::SCANCODE_0);
 
 }
@@ -149,13 +123,6 @@ float GameState::getCanvasWidth()
 float GameState::getCanvasHeight()
 {
     return m_canvas_height;
-}
-GameState& GameState::AddIndex()
-{
-    cout << "before " << pointerLevel << endl;
-    this->pointerLevel++;
-    cout << "after " << pointerLevel << endl;
-    return *this;
 }
 //--------------------------------------------------------------------------------------------------
 GameState* GameState::m_unique_state = nullptr;
