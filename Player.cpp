@@ -20,7 +20,6 @@ Player::Player(GameState* gs, const string& name, float health) :GameObject(gs, 
 	m_active = true;
 	m_Attacking = false;
 	plusAttack = false;
-	m_Falling = false;
 	m_Grounding = false;
 	weaponIsActive = false;
 	right = false;
@@ -36,7 +35,6 @@ Player::Player(GameState* gs, const string& name, float health) :GameObject(gs, 
 void Player::dustAnimation(vector<string>dust)
 {
 	indexDustAnimation += 0.5;
-	//cout << m_vx<<endl;
 	if (indexDustAnimation >= dust.size()) {
 		indexDustAnimation = 0;
 		drawJump = false;
@@ -119,6 +117,8 @@ void Player::drawHealth(float health, float max_health, int length)
 
 		br_player_health.fill_opacity = 0.5f;
 		graphics::drawText(45, 100, 50, "Health: ", br_player_health);
+		//m_state->getCanvasWidth() * 0.5f, m_state->getCanvasHeight() * 0.5f
+		//graphics::drawText(m_state->getCanvasWidth() * 0.5f-500, m_state->getCanvasHeight() * 0.5f-500, 50, "Health: ", br_player_health);
 		graphics::drawRect(i * block_health_size + 240, 100, block_health_size, block_health_size * 3, br_player_health);
 	}
 

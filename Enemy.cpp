@@ -123,14 +123,25 @@ void Enemy::checkCollisionWithPlayer(float dt)
             if (offset = intersectSideways(*m_state->getPlayer()))
             {
                 m_state->getlevel()->updateScore((10 + rand() % 50) * -1);
-                if (m_state->getPlayer()->isRight()) {
-                    m_pos_x += offset + 50;
+                //moves backwards
+                if (m_state->getPlayer()->isRight()){
+                    if (strcmp(str1, "Bird") != 0) {
+                        m_pos_x += offset + 50;
+                    }
+                    else {
+                        m_pos_x += offset - 50;
+                    }
                     m_state->getPlayer()->m_pos_x += offset - 50;
                 }
                 else
                 {
                     m_state->getPlayer()->m_pos_x += offset + 50;
-                    m_pos_x += offset - 50;
+                    if (strcmp(str1, "Bird") != 0) {
+                        m_pos_x += offset - 50;
+                    }
+                    else {
+                        m_pos_x += offset + 50;
+                    }
                 }
                 if (!getCantAttack() && !m_state->getPlayer()->isAttacking())
                 {
@@ -151,6 +162,7 @@ void Enemy::checkCollisionWithPlayer(float dt)
             m_state->getPlayer()->m_pos_y += offset - 150;
             m_state->getlevel()->updateScore(10 + rand() % 151);
             graphics::playSound(m_state->getFullAssetPath("Attack.wav"), 1.0f);
+            //plus attack 
             if (m_state->getPlayer()->PlusAttack())
             {
                 Damage(m_state->getPlayer()->get_Attack() * 2);
@@ -160,6 +172,7 @@ void Enemy::checkCollisionWithPlayer(float dt)
             {
                 Damage(m_state->getPlayer()->get_Attack());
             }
+            //sound of death
             if (dead)
             {
                 if (strcmp(str1, "Bird") != 0)
@@ -185,6 +198,7 @@ Enemy & Enemy::Damage(int damage)
         m_enemy_health = 0;
         dead = true;
         cantAttack = true;
+        //enemy death animation
         if (strcmp(str1, str2) == 0)
         {
             enemy_death=loadFileGameObject("rockEnemyDies");
