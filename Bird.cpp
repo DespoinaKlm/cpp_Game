@@ -9,12 +9,13 @@ using namespace std;
 //----------------------------Constructor-------------------------------------
 Bird::Bird(GameState* gs, float px, float py, const string& name, int health):Enemy(gs,name,health)
 {
+    m_active = true;
     m_pos_x = px;
     m_pos_y = py;
     m_width = enemy_size;
     m_height = enemy_size;
     dead = false;
-    //cout << dead;
+    outofCanva = false;
     init();
 }
 //----------------------------Destructor-------------------------------------
@@ -28,22 +29,24 @@ void Bird::update(float dt)
         if (m_pos_y==4430)
         {
             //dejia
-            m_pos_x += speed_enemy /** graphics::getDeltaTime()*/;
+            m_pos_x += speed_enemy;
             
         }
         else
         {
             //aristera
-            m_pos_x -= speed_enemy /** graphics::getDeltaTime()*/;
+            m_pos_x -= speed_enemy;
         }
         //pros dejia
         if (m_pos_x < -2600 )
         {
-            setActive(false);
+            outofCanva = true;
+            m_active=false;
         }
         if ( m_pos_x>3500 )
         {
-            setActive(false);
+            outofCanva = true;
+            m_active =false;
         }
     }
     Enemy::update(dt);

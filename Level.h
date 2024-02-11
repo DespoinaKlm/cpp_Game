@@ -11,9 +11,9 @@
 
 class Poissons;
 using namespace std;
-class Level : public GameObject {
-	
-	vector<vector<char>> &level_map;
+class Level : public GameObject
+{
+	vector<vector<char>> level_map;
 	Poissons* poisontype;
 	float indexframeGate;
 	bool next_level = false;
@@ -33,7 +33,7 @@ class Level : public GameObject {
 	//brush for the background 
 	graphics::Brush br_background;
 
-	Box m_weaponlevel;
+	
 	int boxmove;
 	graphics::Brush br_weapon;
 	
@@ -50,27 +50,26 @@ class Level : public GameObject {
 	// static and dynamic objects
 	vector <GameObject*> m_static_objects;
 	list <GameObject*>m_dynamic_objects;
-	vector<Enemy*> m_birds;
-	vector<Rock*> m_rocks;
+	vector<Enemy*> m_Enemies;
 	vector<string> m_gate;
 
 public:
-	Level(GameState* gs,vector<vector<char>>& map ,const string name = "Level0",float score=0);
+	Box m_weaponlevel;
+	Level(GameState* gs,const string name = "Level0",float score=0);
 	~Level();
 	void checkCollisions();
 	void checkCollisionWithEnemies(float dt);
 	void update(float dt) override;
 	void init() override;
 	void draw() override;
-	inline string getLevelName() { return namelevel; }
+	inline string getLevelName() const { return namelevel; }
 	void drawScore();
 	//Code for the score 
 	void setScore(float score);
 	float getScore();
 	void NextLevel(float score,float health);
 	Level& updateScore(float score);
-	inline bool getNextLevel() const { return next_level;}
-	
-	vector<vector<Blocks>> getBlock() { return m_blocks; }
-	vector<vector<char>> getLevelMap() { return level_map;}
+	vector<vector<char>> loadFileMap(int pointer );
+	vector<vector<Blocks>> getBlock() const { return m_blocks; }
+	vector<vector<char>> getLevelMap() const{ return level_map;}
 };

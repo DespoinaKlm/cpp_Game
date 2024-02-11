@@ -1,0 +1,24 @@
+                  E       
+     XX     XXXXXXXX      
+   XXXXX   XX       X    T
+T         XXX            X
+XX      XXXXX        E    
+XXXX  X        XX  XXXX   
+              X        X  
+    X                    T
+           XXX           X
+T     X   XXXX            
+XX   XX          E  X X   
+XX  XXX         XXXX     T
+   R   R       X         X
+  XXXXXXX     XX        X 
+           XX             
+T         XXX        X    
+X   XX  XXXXXX        X   
+XX            R  XX      T
+XXXX       XXXX     X    X
+XXXX                    XX
+      X  X                
+    R    XX E R R   R ER B
+ PPX     XXXXXXXXX  XXXXGT
+XXXXXXX  XXXXXXXXX  XXXXXX

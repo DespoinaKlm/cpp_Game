@@ -1,8 +1,8 @@
 #pragma once
-#include "GameObject.h"
-#include "box.h"
 #include <sgg/graphics.h>
+#include "GameObject.h"
 #include "GameState.h"
+#include "box.h"
 #include "Blocks.h"
 
 class Enemy : public GameObject, public Box {
@@ -20,8 +20,9 @@ protected:
 	bool canAttack;
 	int m_enemy_health;
 	int m_attack;
+	
 	float indexDrawDeath=0;
-	float speed_enemy = 2.5f;
+	float speed_enemy = 5.0f;
 	float enemy_size = 200;
 	
 	void setHealth(int health);
@@ -30,6 +31,8 @@ protected:
 	int strongerAttack = 1;
 	graphics:: Brush br_enemy;
 	graphics::Brush br_enemyD;
+	Box m_weaponlevel;
+
 	
 public:
 	Enemy(GameState* gs, const string& name = "", int health = 300);
@@ -45,5 +48,6 @@ public:
 	inline void setDead(bool answer) { dead = answer; }
 	inline bool getDead() const{ return dead; }
 	void enemyDrawDeath(vector<string> draw_death, float px, float py, float pw, float ph);
+	void checkCollisionWithPlayer(float dt);
 	Enemy& Damage(int damage);
 };

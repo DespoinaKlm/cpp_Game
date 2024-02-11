@@ -52,13 +52,15 @@ void GameState::init()
     //player init
      m_player = new Player(m_unique_state, "The-man", 1000);
      m_player->init();
-
+     
+     /*
      //first level init
-     m_level = new Level(m_unique_state,level_map1, "level-1" );
+     m_level = new Level(m_unique_state, "level-1" );
      m_level->init();
      m_levels.push_back(m_level);
    
-     //second level init
+     
+      //second level init
      m_level = new Level(m_unique_state,level_map2 , "level-2", m_levels[0]->getScore());
      m_level->init();
      m_levels.push_back(m_level);
@@ -67,6 +69,8 @@ void GameState::init()
      m_level = new Level(m_unique_state, level_map3,"level-3", m_levels[1]->getScore());
      m_level->init();
      m_levels.push_back(m_level);
+     */
+    
     
      graphics::preloadBitmaps(getAssetDir());
      graphics::setFont(m_asset_path + "OpenSans-Regular.ttf");
@@ -76,11 +80,7 @@ void GameState::init()
 //------------------------------------draw()--------------------------------------------------------
 void GameState::draw()
 {
-    if (!m_level)
-    {
-       return;
-    }
-
+    
     if (pointerLevel == 0)
     {
         // purple background 
@@ -88,7 +88,7 @@ void GameState::draw()
         graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f,m_canvas_width * 1.5f, m_canvas_height * 1.0f,m_brush_bgStart);
 
         // Press Space to start 
-        graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f, 700.0f, 1000.0f, m_brush_pressSpace);
+        graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f, 800.0f , 800.0f,m_brush_pressSpace);
     }
     if(pointerLevel == 1)
     {
@@ -97,31 +97,47 @@ void GameState::draw()
         graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f, m_canvas_width * 1.5f, m_canvas_height * 1.0f, m_brush_bgStart);
 
         //wasd
-        graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f, 600.0f, 1000.0f, m_brush_wasd);
+        graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f, 800.0f, 800.0f, m_brush_wasd);
 
         // Press Space to start 
-        graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f-600, 700.0f, 1000.0f, m_brush_pressSpace);
+        graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f-500, 800.0f, 800.0f, m_brush_pressSpace);
     }
     if(pointerLevel == 2)
     {
-        m_levels[pointerLevel-2]->draw();
+        if (nextLevel)
+        {
+            nextLevel = false;
+            cout << "was here 1" << endl;
+        }
+        if (!m_level)
+        {
+            return;
+        }
+        m_levels[0]->draw();
+        
     }
     if(pointerLevel == 3) {
         if (nextLevel)
         {
             nextLevel = false;
+            cout << "was here 2" << endl;
         }
-        m_levels[pointerLevel - 2]->draw();
-        //m_levels[1]->draw();
+        if (!m_level)
+        {
+            return;
+        }
+
+        m_levels[1]->draw();
     }
     if(pointerLevel == 4)
     {
         if (nextLevel)
         {
+            cout << "was here 3" << endl;
             nextLevel = false;
         }
-        m_levels[pointerLevel - 2]->draw();
-        //m_levels[2]->draw();
+ 
+        m_levels[2]->draw();
     }
     if (pointerLevel==5)
     {
@@ -174,33 +190,64 @@ void GameState::update(float dt)
    {
         if (graphics::getKeyState(graphics::SCANCODE_SPACE)) 
         {
+            nextLevel = true;
             AddIndex();
         }
         
    }
    if (pointerLevel == 1)
    {
-       if (graphics::getKeyState(graphics::SCANCODE_SPACE))
+       nextLevel = false;
+       if (graphics::getKeyState(graphics::SCANCODE_KP_ENTER))
        {
+           nextLevel = true;
            AddIndex();
        }
        
    }
    if (pointerLevel == 2|| pointerLevel == 3 || pointerLevel == 4)
    {
-       if (!m_level)
-       {
-           return;
-       }
+       
        if (pointerLevel == 2) {
+           if (nextLevel) {
+               cout << "pointer " << pointerLevel << endl;
+               m_player->init();
+               m_level = new Level(m_unique_state, "level-1");
+               m_level->init();
+               m_levels.push_back(m_level);
+               nextLevel = false;
+
+           }
            m_levels[0]->update(dt);
        }
+       
        if (pointerLevel == 3) {
+           if (nextLevel) {
+               cout << "pointer " << pointerLevel << endl;
+               m_player->init();
+               m_level = new Level(m_unique_state, "level-2", m_levels[0]->getScore());
+               m_level->init();
+               m_levels.push_back(m_level);
+               nextLevel = false;
+           }
            m_levels[1]->update(dt);
        }
        if (pointerLevel == 4) {
+           if (nextLevel) {
+               cout << "pointer " << pointerLevel << endl;
+               m_player->init();
+               m_level = new Level(m_unique_state, "level-3", m_levels[1]->getScore());
+               m_level->init();
+               m_levels.push_back(m_level);
+               nextLevel = false;
+           }
            m_levels[2]->update(dt);
        }
+        if (!m_level)
+        {
+           return;
+        }
+
         m_debugging = graphics::getKeyState(graphics::SCANCODE_0);
    }
 }

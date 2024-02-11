@@ -32,7 +32,6 @@ int main(int argc, char** argv) {
 	graphics::createWindow(1200, 800, "Level1");
 
 	GameState::get_Gamestate()->init();
-
 	graphics::setDrawFunction(draw);
 	graphics::setUpdateFunction(update);
 

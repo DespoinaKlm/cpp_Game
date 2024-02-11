@@ -13,6 +13,7 @@ Poissons::Poissons(GameState* gs, int type,float posx, float posy, float posw, f
 	m_pos_y = posy;
 	m_width = posw;
 	m_height = posh;
+	m_active = true;
 }
 //---------------------------------Update-------------------------------------------------------------------------------------
 void Poissons::update(float dt)
@@ -98,7 +99,7 @@ void Poissons::draw()
 		{
 			TypeOfPoison();
 			drawframe = false;
-			setActive(false);
+			m_active=false;
 		}
 		else
 		{

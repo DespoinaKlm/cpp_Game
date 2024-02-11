@@ -6,20 +6,16 @@
 //----------------------------------Rock------------------------------------------------------
 Rock::Rock(GameState* gs, int type, float px, float py, const string& name, int health) :Enemy(gs, name, health)
 {
+    m_active = true;
     m_pos_x = px;
     m_pos_y = py;
     m_width = enemy_size*0.7;
     m_height = enemy_size*0.9;
     type_enemy = type;
-    speed_enemy = 2.0f;
     AttackingAnimation = false;
     attack = false;
     setDead(false);
     init();
-}
-//----------------------------------Rock------------------------------------------------------
-Rock::~Rock()
-{
 }
 //----------------------------------update----------------------------------------------------
 void Rock::update(float dt)
@@ -32,8 +28,6 @@ void Rock::update(float dt)
 void Rock::init()
 {
     //Brush
-    br_enemy.fill_opacity = 1.1f;
-    br_enemy.outline_opacity = 0.0f;
     br_enemy.texture = m_state->getFullAssetPath("rockEnemyWalking1.png");
 
     
@@ -55,6 +49,7 @@ void Rock::init()
             setName("iceBlob");
             break;
     }
+    Enemy::init();
 }
 //----------------------------------draw------------------------------------------------------
 void Rock::draw()
@@ -106,7 +101,8 @@ void Rock::draw()
                 }
             }
         }
-        if (AttackingAnimation) {
+        if (AttackingAnimation)
+        {
             indexAttackAnimation += 0.25;
             if (indexAttackAnimation >= rock_enemy.size())
             {
@@ -126,8 +122,6 @@ void Rock::draw()
         {
             graphics::drawRect(x, y, m_width * 1.5, m_height*1.5, br_enemy);
         }
-        
-
         if (m_state->m_debugging)
         {
            debugDrawEnemy(x, y);
@@ -185,5 +179,9 @@ void Rock::checkCollisionRock()
 void Rock::reverse()
 {
     speed_enemy *= -1;
+}
+//----------------------------------Rock------------------------------------------------------
+Rock::~Rock()
+{
 }
 //--------------------------------------------------------------------------------------------

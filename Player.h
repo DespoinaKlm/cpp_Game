@@ -43,10 +43,7 @@ private:
 	bool damage;
 	bool damageAnimation;
 	bool right;
-	bool m_IsJumping;
-	bool m_IsRunning;
 	bool m_Attacking;
-	bool m_Falling;
 	bool m_Grounding;
 	bool m_IsPickingUp;
 	bool plusAttack;
@@ -68,19 +65,15 @@ public:
 	float getPosX() const{ return m_pos_x; }
 	float getPosY() const { return m_pos_y; }
 	inline bool getGround() const {return m_Grounding;}
-	inline void setJumping(bool answer) { m_IsJumping = answer; }
-	inline void setGround(bool answer) { m_Grounding =answer; }
-	inline bool isJumping() { return m_IsJumping; }
-	inline bool isFalling() { return m_Falling; }
-	inline bool isAttacking() { return m_Attacking; }
-	inline bool isPickingUp()  { return m_IsPickingUp; }
-	inline bool isRunning() { return m_IsRunning; }
-	inline bool isGrounding() { return m_Grounding; }
-	inline bool PlusAttack()  { return plusAttack; }
+	inline void setGround(bool answer) { m_Grounding =answer;}
+	inline bool isAttacking() const { return m_Attacking; }
+	inline bool isPickingUp() const { return m_IsPickingUp; }
+	inline bool isGrounding() const { return m_Grounding; }
+	inline bool PlusAttack()const { return plusAttack; }
 	inline void setPlusAttack(bool answ) { plusAttack = answ; }
-	inline float getGravity()  { return m_gravity; }
-	inline bool isActiveWeapon()  { return weaponIsActive; }
-	inline bool isRight()  { return right; }
+	inline float getGravity() const { return m_gravity; }
+	inline bool isActiveWeapon() const { return weaponIsActive; }
+	inline bool isRight()  const { return right; }
 	const bool canAttack();
 	void updateCooldownAttack();
 	void drawDustAnimation();

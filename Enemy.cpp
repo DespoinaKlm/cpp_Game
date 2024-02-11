@@ -1,11 +1,17 @@
 #include "Enemy.h"
 #include <sgg/graphics.h>
 #include <iostream>
+#include "GameObject.h"
+#include "GameState.h"
+#include "Player.h"
+#include "Level.h"
+#include "box.h"
 
 using namespace std;
 //---------------------------------------Constructor------------------------------------------------------
 Enemy::Enemy(GameState* gs, const string& name ,int health) :GameObject(gs,name),m_attack(getAttack()), m_enemy_health(health)
 {
+    //m_active = true;
     m_enemy_health = health;
     cantAttack = false;
 }
@@ -13,19 +19,29 @@ Enemy::Enemy(GameState* gs, const string& name ,int health) :GameObject(gs,name)
 void Enemy::update(float dt)
 {
 
-    if (m_enemy_health <= 150 && isActive()) {
-        if (strongerAttack==1) {
-            graphics::playSound(m_state->getFullAssetPath("roar.wav"), 0.5f);
+    if (m_enemy_health <= 50 && !dead)
+    {
+        if (strongerAttack == 1) {
+            if (strcmp(str1, "Bird") != 0 ) {
+                graphics::playSound(m_state->getFullAssetPath("roar.wav"), 0.5f);
+            }
+            else
+            {
+                //sound bird
+                //cout << "bird " << isActive() << endl;
+            }
         }
-        strongerAttack = 2;
-        
+        strongerAttack = 4;
     }
+    checkCollisionWithPlayer(dt);
+    
     GameObject::update(dt);
 }
 //---------------------------------------init-------------------------------------------------------------
 void Enemy::init()
 {
-    
+    br_enemy.fill_opacity = 1.1f;
+    br_enemy.outline_opacity = 0.0f;
 }
 //---------------------------------------init-------------------------------------------------------------
 void Enemy::draw()
@@ -35,7 +51,7 @@ void Enemy::draw()
     {
         float x = m_pos_x + m_state->m_global_offset_x;
         float y = m_pos_y + m_state->m_global_offset_y;
-        if (strcmp(str1, str2) == 0) {
+        if (strcmp(str1, str2) == 0 || strcmp(str1, str3) == 0|| strcmp(str1, str4) == 0) {
             
             if (speed_enemy <= 0) {
                 graphics::setScale(-1.0f, 1.0f);
@@ -44,20 +60,23 @@ void Enemy::draw()
             {
                 graphics::resetPose();
             }
-            //if () {
-            //    graphics::drawRect(x, y, m_width * 1.5, m_height * 1.5, br_enemy);
-            //}
-            //else {
+            if (strcmp(str1, str4) == 0)
+            {
                 enemyDrawDeath(enemy_death, x, y, this->m_width, this->m_height);
-            //}
+            }
+            else
+            {
+                enemyDrawDeath(enemy_death, x, y, this->m_width * 1.6, this->m_height * 1.5);
+            }
+
         }
-        //bird
         else
         {
             enemyDrawDeath(enemy_death, x, y, this->m_width, this->m_height);
         }
         
     }
+
 }
 //---------------------------------------getAttack--------------------------------------------------------
 float Enemy::getAttack()
@@ -87,16 +106,79 @@ void Enemy::enemyDrawDeath(vector<string> draw_death, float px, float py,float p
     indexDrawDeath += 0.2;
     if (indexDrawDeath >=draw_death.size()) {
         indexDrawDeath = draw_death.size()-1;
-        setActive(false);
-        
+        m_active=false;
     }
     br_enemy.texture = draw_death[int(indexDrawDeath)];
     graphics::drawRect(px, py, pw, ph, br_enemy);
 }
+//---------------------------------------checkCollisionWithPlayer-----------------------------------------
+void Enemy::checkCollisionWithPlayer(float dt)
+{
+    
+    //when the player hasnt attacked
+    if (isActive())
+    {
+        if (m_state->getPlayer()->isActive()) {
+            float offset = 0.0f;
+            if (offset = intersectSideways(*m_state->getPlayer()))
+            {
+                m_state->getlevel()->updateScore((10 + rand() % 50) * -1);
+                if (m_state->getPlayer()->isRight()) {
+                    m_pos_x += offset + 50;
+                    m_state->getPlayer()->m_pos_x += offset - 50;
+                }
+                else
+                {
+                    m_state->getPlayer()->m_pos_x += offset + 50;
+                    m_pos_x += offset - 50;
+                }
+                if (!getCantAttack() && !m_state->getPlayer()->isAttacking())
+                {
+                    graphics::playSound(m_state->getFullAssetPath("notAttack.wav"), 1.0f);
+                    m_state->getPlayer()->Damage(getAttack());
+                }
+                m_state->getPlayer()->m_vx = 0.0f;
+                //break;
+            }
+        }
+    }
+    //player hit enemy head
+    if (isActive())
+    {
+        float offset = 0.0f;
+        if (m_state->getPlayer()->intersectDown(*this))
+        {
+            m_state->getPlayer()->m_pos_y += offset - 150;
+            m_state->getlevel()->updateScore(10 + rand() % 151);
+            graphics::playSound(m_state->getFullAssetPath("Attack.wav"), 1.0f);
+            if (m_state->getPlayer()->PlusAttack())
+            {
+                Damage(m_state->getPlayer()->get_Attack() * 2);
+                m_state->getPlayer()->setPlusAttack(false);
+            }
+            else
+            {
+                Damage(m_state->getPlayer()->get_Attack());
+            }
+            if (dead)
+            {
+                if (strcmp(str1, "Bird") != 0)
+                {
+                    graphics::playSound(m_state->getFullAssetPath("death_enemy.wav"), 1.0f);
+                }
+                else {
+                    //add bird sound
+                }
+                m_state->getlevel()->updateScore(100 + rand() % 350);
+                
+            }
+            m_state->getPlayer()->m_vy = 0.0f;
+        }
+    }
+}
 //---------------------------------------Damage------------------------------------------------------------
 Enemy & Enemy::Damage(int damage)
 {
-    //cout << getHealth() << endl;
     m_enemy_health -= damage;
     if (m_enemy_health <= 0)
     {

@@ -13,8 +13,6 @@ private:
 	bool AttackingAnimation;
 	float indexAttackAnimation;
 	int type_enemy;
-	const float m_gravity = 9.8f;
-	float enemy_size = 200;
 public:
 	Rock(GameState* gs, int type, float px, float py,const string& name = "", int health = 300);
 	~Rock();
@@ -25,5 +23,4 @@ public:
 	const int& getType() const;
 	void checkCollisionRock();
 	void reverse();
-	float getSpeed()const { return speed_enemy; }
 };
