@@ -12,11 +12,9 @@ private:
 	vector<string> bird_enemy;
 	float indexBird;
 	int reverse;
-	bool outofCanva;
 public:
 	Bird(GameState* gs, float px, float py, const string& name, int health=300);
 	~Bird();
-	inline bool getOutOfCanva() const{ return outofCanva; }
 	void update(float dt) override;
 	void init() override;
 	void draw() override;

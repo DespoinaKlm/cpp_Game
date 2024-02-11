@@ -28,12 +28,7 @@ struct Box
         }
         return false;
     }
-    float intersectUp(Box& other)
-    {
-        if (fabs(m_pos_x - other.m_pos_x) * 2.0f >= (m_width + other.m_width) || m_pos_y > other.m_pos_y)
-            return 0.0f;
-        return std::min<float>(0.0f, other.m_pos_y - (other.m_height / 2.0f) - m_pos_y - (m_height / 2.0f));
-    }
+    
 
     /** Detects an intersection when this Box is "above" (smaller y values) a target box (other)
     *   and reports the adjustment offset so that the two boxes are separated.

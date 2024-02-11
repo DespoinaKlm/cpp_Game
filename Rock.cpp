@@ -27,10 +27,6 @@ void Rock::update(float dt)
 //----------------------------------init------------------------------------------------------
 void Rock::init()
 {
-    //Brush
-    br_enemy.texture = m_state->getFullAssetPath("rockEnemyWalking1.png");
-
-    
     //Animation
     switch (type_enemy)
     {
@@ -103,7 +99,7 @@ void Rock::draw()
         }
         if (AttackingAnimation)
         {
-            indexAttackAnimation += 0.25;
+            indexAttackAnimation += 0.15;
             if (indexAttackAnimation >= rock_enemy.size())
             {
                 AttackingAnimation = false;
@@ -116,11 +112,11 @@ void Rock::draw()
         }
         if (getName()=="iceBlob")
         {
-            graphics::drawRect(x, y, m_width, m_height, br_enemy);
+            graphics::drawRect(x, y, m_width * 1.5, m_height * 1.5, br_enemy);
         }
         else
         {
-            graphics::drawRect(x, y, m_width * 1.5, m_height*1.5, br_enemy);
+            graphics::drawRect(x, y, m_width * 2, m_height*2, br_enemy);
         }
         if (m_state->m_debugging)
         {
@@ -148,7 +144,7 @@ void Rock::checkCollisionRock()
     for (int row = 0; row < levelMapHelp.size(); row++) {
         for (int col = 0; col < levelMapHelp[row].size(); col++) {
             float offset = 0.0f;
-            Blocks block = m_blocksHelp[row][col];
+            Box block = m_blocksHelp[row][col];
             if (levelMapHelp[row][col] == 'X') {
                 
                 if (offset = intersectDown(block))

@@ -15,7 +15,7 @@ Bird::Bird(GameState* gs, float px, float py, const string& name, int health):En
     m_width = enemy_size;
     m_height = enemy_size;
     dead = false;
-    outofCanva = false;
+    speed_enemy = 1.5;
     init();
 }
 //----------------------------Destructor-------------------------------------
@@ -40,12 +40,10 @@ void Bird::update(float dt)
         //pros dejia
         if (m_pos_x < -2600 )
         {
-            outofCanva = true;
             m_active=false;
         }
         if ( m_pos_x>3500 )
         {
-            outofCanva = true;
             m_active =false;
         }
     }
