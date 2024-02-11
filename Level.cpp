@@ -3,10 +3,10 @@
 #include "Level.h"
 #include "Player.h"
 #include <iostream>
-#include <fstream>
 #include <string>
 #include <stdio.h>
 #include "Enemy.h"
+#include "Blocks.h"
 #include "Rock.h"
 #include "Bird.h"
 #include "Poissons.h"
@@ -105,7 +105,7 @@ void Level::init()
 			{
 				float pos_x = col * m_block_size-1850;
 				float pos_y = row * m_block_size;
-				m_blocks[row][col] = Box(pos_x, pos_y, m_block_size, m_block_size);
+				m_blocks[row][col] = Blocks(pos_x, pos_y, m_block_size, m_block_size);
 				m_block_names[row][col] = "ground.png";
 			}
 			else if (level_map[row][col] == 'T')
@@ -118,14 +118,14 @@ void Level::init()
 					pos_x = col * m_block_size - 1850 -170;
 				}
 				float pos_y = row * m_block_size  -150;
-				m_blocks[row][col] = Box(pos_x, pos_y, m_block_size, m_block_size*3);
+				m_blocks[row][col] = Blocks(pos_x, pos_y, m_block_size, m_block_size*3);
 				m_block_names[row][col] = "tree_1.png";
 			}
 			else if (level_map[row][col] == 'R')
 			{
 				float pos_x = col * m_block_size - 1850;
 				float pos_y = row * m_block_size+50 ;
-				m_blocks[row][col] = Box(pos_x, pos_y, m_block_size, m_block_size);
+				m_blocks[row][col] = Blocks(pos_x, pos_y, m_block_size, m_block_size);
 				m_block_names[row][col] = "rock1.png";
 			}
 			else if (level_map[row][col] == 'G')
@@ -133,7 +133,7 @@ void Level::init()
 				float pos_x = col * m_block_size - 1750;
 				float pos_y = row * m_block_size;
 				float pos_w_h = m_block_size / 2;
-				m_blocks[row][col] = Box(pos_x, pos_y, m_block_size, m_block_size);
+				m_blocks[row][col] = Blocks(pos_x, pos_y, m_block_size, m_block_size);
 				m_block_names[row][col] = "gate1.png";
 				indexframeGate = 0;
 			}
@@ -142,7 +142,7 @@ void Level::init()
 				float pos_x = col * m_block_size - 1850;
 				float pos_y = row * m_block_size;
 				float pw_h = m_block_size / 2.2;
-				m_blocks[row][col] =Box(pos_x , pos_y, pw_h, pw_h);
+				m_blocks[row][col] =Blocks(pos_x , pos_y, pw_h, pw_h);
 				poisontype = new Poissons(m_state, rand() % PoisonType::NROFTYPES, pos_x, pos_y, pw_h, pw_h, "Poison");
 				m_dynamic_objects.push_back(poisontype);
 				m_block_names[row][col] ="poison1.png";
@@ -153,7 +153,7 @@ void Level::init()
 				EnemyRock = new Rock(m_state, rand() % RockTyoe::NROFTYPES1, pos_x, pos_y, "RockEnemy", 600);
 				m_dynamic_objects.push_back(EnemyRock);
 				m_Enemies.push_back(EnemyRock);
-				m_blocks[row][col] = Box(pos_x, pos_y, EnemyRock->m_width, EnemyRock->m_height);
+				m_blocks[row][col] = Blocks(pos_x, pos_y, EnemyRock->m_width, EnemyRock->m_height);
 				m_block_names[row][col] = "rockEnemy1.png";
 			}
 			else if (level_map[row][col] == 'B') {
@@ -162,14 +162,21 @@ void Level::init()
 				EnemyBird = new Bird(m_state, pos_x, pos_y, "Bird", 50);
 				m_dynamic_objects.push_back(EnemyBird);
 				m_Enemies.push_back(EnemyBird);
-				m_blocks[row][col] = Box(pos_x, pos_y, EnemyBird->m_width, EnemyBird->m_height);
+				m_blocks[row][col] = Blocks(pos_x, pos_y, EnemyBird->m_width, EnemyBird->m_height);
 				m_block_names[row][col] = "bird1.png";
 			}
 			else
 			{
-				m_blocks[row][col] = Box();
+				m_blocks[row][col] = Blocks();
 				m_block_names[row][col] = "";
 			}
+		}
+	}
+	
+	for (auto& p : m_static_objects)
+	{
+		if (p) {
+			p->init();
 		}
 	}
 	
@@ -179,7 +186,6 @@ void Level::init()
 			p->init();
 		}
 	}
-
 	m_block_brush.outline_opacity = 0.0f;
 	m_block_brush_debug.fill_opacity = 0.1f;
 	m_block_brush_debug.fill_color[0] = 0.9f;
@@ -192,6 +198,7 @@ void Level::init()
 	//Animation gate
 	m_gate= loadFileGameObject("gate");
 
+	
 	//brush for the weapon of the player	
 	m_weaponlevel.m_pos_x = m_state->getPlayer()->m_pos_x;
 	m_weaponlevel.m_pos_y = m_state->getPlayer()->m_pos_y;
@@ -228,7 +235,27 @@ void Level::draw()
 			drawBlock(row, col);
 		}
 	}
-	
+
+	for (auto& p : m_static_objects)
+	{
+		if (p)
+		{
+			//objects
+			p->draw();
+		}
+	}
+
+	//player 
+	if (m_state->getPlayer()->isActive())
+	{
+		m_state->getPlayer()->draw();
+		char s[20];
+		sprintf_s(s, "(%5.2f, %5.2f)", m_state->getPlayer()->getPosX(), m_state->getPlayer()->getPosY());
+		graphics::drawText(45, 200, 50, "Position: ", br_background);
+		graphics::drawText(240, 200, 50, s, br_background);
+
+	}
+
 	for (auto& p : m_dynamic_objects)
 	{
 		//objects
@@ -236,12 +263,6 @@ void Level::draw()
 		{
 			p->draw();
 		}
-	}
-
-	if (m_state->getPlayer()->isActive())
-	{
-		m_state->getPlayer()->draw();
-
 	}
 
 	for (auto& p : m_Enemies)
@@ -252,9 +273,9 @@ void Level::draw()
 			p->draw();
 		}
 	}
-
 	drawScore();
-
+	
+	
 	if (m_state->m_debugging)
 	{
 		graphics::drawRect(m_state->getCanvasWidth() * 0.5f + boxmove, m_state->getCanvasHeight() * 0.5f, m_weaponlevel.m_width, m_weaponlevel.m_height, br_weapon);
@@ -293,7 +314,7 @@ vector<vector<char>> Level::loadFileMap(int pointer)
 
 	inputFile.close();
 	return level_map;
-
+	
 }
 //------------------------------------drawBlock-------------------------------------------------------
 void Level::drawBlock(int i, int j)
@@ -397,7 +418,7 @@ void Level::checkCollisions()
 		for (int col = 0; col < level_map[row].size(); col++) {
 			float offset = 0.0f;
 			if (level_map[row][col] == 'X') {
-				Box block = m_blocks[row][col];
+				Blocks block = m_blocks[row][col];
 				if (m_state->getPlayer()->insertUp(block) && !m_state->getPlayer()->intersectSideways(block) && !m_state->getPlayer()->intersectDown(block)) {
 					//cout<<m_state->getPlayer()->insertUp(block);
 					//cout << " find the differences " << m_state->getPlayer()->intersectDown(block) << endl;
@@ -432,7 +453,7 @@ void Level::checkCollisions()
 			float offset = 0.0f;
 			if (level_map[row][col] == 'X')
 			{
-				Box block = m_blocks[row][col];
+				Blocks block = m_blocks[row][col];
 				if (offset = m_state->getPlayer()->intersectDown(block))
 				{
 					m_state->getPlayer()->m_pos_y += offset;
@@ -452,7 +473,7 @@ void Level::checkCollisions()
 		{
 			float offset = 0.0f;
 			if (level_map[row][col] == 'G') {
-				Box block = m_blocks[row][col];
+				Blocks block = m_blocks[row][col];
 				if (offset = m_state->getPlayer()->intersect(block) && m_state->getPlayer()->isPickingUp())
 				{
 					if (m_state->getNextLevel())
@@ -471,7 +492,7 @@ void Level::checkCollisions()
 		for (int col = 0; col < level_map[row].size(); col++) {
 			float offset = 0.0f;
 			if(level_map[row][col] == 'T' || level_map[row][col] == 'X') {
-				Box block = m_blocks[row][col];
+				Blocks block = m_blocks[row][col];
 				if(offset = m_state->getPlayer()->intersectSideways(block))
 				{
 					m_state->getPlayer()->m_pos_x += offset;
@@ -707,10 +728,10 @@ void Level::checkCollisionWithEnemies(float dt)
 void Level::drawScore()
 {
 	graphics::resetPose();
-	graphics::drawText(45, 200, 50, "Score: ", br_background);
+	graphics::drawText(45, 300, 50, "Score: ", br_background);
 	char score[20];
-	sprintf_s(score, "( %5.2f )", getScore());
-	graphics::drawText(265, 200, 50, score, br_background);
+	sprintf_s(score, "(%5.2f)", getScore());
+	graphics::drawText(265, 300, 50, score, br_background);
 }
 //------------------------------------setScore()------------------------------------------------------
 void Level::setScore(float score)

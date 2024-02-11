@@ -3,10 +3,14 @@
 #include "GameObject.h"
 #include "GameState.h"
 #include "box.h"
+#include "Blocks.h"
 
 class Enemy : public GameObject, public Box {
 private:
 	vector<string> enemy_death;
+	const char* str2= "RockEnemy";
+	const char* str3 = "Goblin";
+	const char* str4 = "iceBlob";
 	const char* str1 = m_name.c_str();
 	
 protected:
@@ -18,8 +22,8 @@ protected:
 	int m_attack;
 	
 	float indexDrawDeath=0;
-	float speed_enemy = 2.5f;
-	float enemy_size = 170;
+	float speed_enemy = 3.0f;
+	float enemy_size = 200;
 	
 	void setHealth(int health);
 	void setAttack();
@@ -27,6 +31,7 @@ protected:
 	int strongerAttack = 1;
 	graphics:: Brush br_enemy;
 	graphics::Brush br_enemyD;
+	Box m_weaponlevel;
 
 	
 public:

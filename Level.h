@@ -4,6 +4,7 @@
 #include <list>
 #include "box.h"
 #include "Enemy.h"
+#include "Blocks.h"
 #include "Poissons.h"
 #include "Bird.h"
 #include "Rock.h"
@@ -12,67 +13,63 @@ class Poissons;
 using namespace std;
 class Level : public GameObject
 {
-	//Poison
+	vector<vector<char>> level_map;
 	Poissons* poisontype;
 	float indexframeGate;
+	bool next_level = false;
 
-	//Code for blocks and names
+	//Code for blocks
 	vector<vector<string>> m_block_names;
-	vector<vector<Box>> m_blocks;
+	vector<vector<Blocks>> m_blocks;
 	const float m_block_size = 200.0f;
 	graphics::Brush m_block_brush;
 	graphics::Brush m_block_brush_debug;
 	void drawBlock(int i, int j);
 
 	//here is the score and the level
+	string namelevel;
 	int m_score;
 
 	//brush for the background 
 	graphics::Brush br_background;
 
-	//player weapon
-	graphics::Brush br_weapon;
-	Box m_weaponlevel;
+	
 	int boxmove;
-
+	graphics::Brush br_weapon;
+	
 	//Code for the enemy bird
 	Bird* EnemyBird;
 	Rock* EnemyRock;
+	void drawEnemies();
 	void updateEnemies(float sdt);
 	void SpawnEnemy();
 	float enemySpawnTimer;
 	float enemySpawnTimerMax;
+	int maxEnemies;
 
 	// static and dynamic objects
-	vector<vector<char>> level_map;
+	vector <GameObject*> m_static_objects;
 	list <GameObject*>m_dynamic_objects;
 	vector<Enemy*> m_Enemies;
 	vector<string> m_gate;
 
 public:
-	
+	Box m_weaponlevel;
 	Level(GameState* gs,const string name = "Level0",float score=0);
 	~Level();
-
-	//Inheritance from GameObject
+	void checkCollisions();
+	void checkCollisionWithEnemies(float dt);
 	void update(float dt) override;
 	void init() override;
 	void draw() override;
-
-	//Collisions for the player
-	void checkCollisions();
-	void checkCollisionWithEnemies(float dt);
-	
-	
+	inline string getLevelName() const { return namelevel; }
+	void drawScore();
 	//Code for the score 
 	void setScore(float score);
 	float getScore();
-	void drawScore();
 	void NextLevel(float score,float health);
 	Level& updateScore(float score);
-
-	//Vectors for the enem
 	vector<vector<char>> loadFileMap(int pointer );
-	vector<vector<Box>> getBlock() const { return m_blocks; }
+	vector<vector<Blocks>> getBlock() const { return m_blocks; }
 	vector<vector<char>> getLevelMap() const{ return level_map;}
 };

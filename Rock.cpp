@@ -148,7 +148,7 @@ void Rock::checkCollisionRock()
     for (int row = 0; row < levelMapHelp.size(); row++) {
         for (int col = 0; col < levelMapHelp[row].size(); col++) {
             float offset = 0.0f;
-            Box block = m_blocksHelp[row][col];
+            Blocks block = m_blocksHelp[row][col];
             if (levelMapHelp[row][col] == 'X') {
                 
                 if (offset = intersectDown(block))

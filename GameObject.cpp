@@ -50,5 +50,5 @@ vector<string> GameObject::loadFileGameObject(string movement)
 void GameObject::update(float dt) {
 
 }
-//---------------------------------------------------------------------------------------------------
+
 int GameObject::m_next_id = 1;

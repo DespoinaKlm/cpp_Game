@@ -10,6 +10,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include "Blocks.h"
 
 using namespace std;
 
@@ -59,6 +60,24 @@ void Player::drawDustAnimation()
 		dust_animation = loadFileGameObject("run");
 		dustAnimation(dust_animation);
 	}
+}
+//----------------------------------------updateCooldownAttack------------------------------------------
+void Player::updateCooldownAttack()
+{
+	if (this->attackCooldown < this->attackCooldownMax) {
+		this->attackCooldown += 0.5f;
+	}
+}
+//----------------------------------------canAttack----------------------------------------------------
+const bool Player::canAttack()
+{
+	//cout << attackCooldown << endl;
+	if (this->attackCooldown >= this->attackCooldownMax)
+	{
+		this->attackCooldown = 0.0f;
+		return true;
+	}
+	return false;
 }
 //----------------------------------------health bar----------------------------------------------------
 void Player::drawHealth(float health, float max_health, int length)
@@ -178,7 +197,7 @@ void Player::update(float dt)
 		{
 			m_Attacking = true;
 		}
-		
+		updateCooldownAttack();
 		if (graphics::getKeyState(graphics::SCANCODE_E))
 		{
 			m_IsPickingUp = true;
@@ -227,12 +246,16 @@ void Player::init()
 	m_state->m_global_offset_x = m_state->getCanvasWidth() / 2.0f - m_pos_x;
 	m_state->m_global_offset_y = m_state->getCanvasHeight() / 2.0f - m_pos_y;
 
-
+	this->attackCooldownMax = 25.0f;
+	this->attackCooldown = this->attackCooldownMax;
+	//std::cout << this->attackCooldownMax << "         " << this->attackCooldown;
 }
 //-------------------------------------draw()-----------------------------------------------------------
 void Player::draw()
 {
-	
+	//mini animation
+	//cout << "next level " << m_state->getNextLevel() << endl;
+	//cout << "pointer " << m_state->getPointerLevel() << endl;
 	if (!m_state->getNextLevel())
 	{
 		if (!dead)
@@ -245,7 +268,7 @@ void Player::draw()
 			//starts animation for damage
 			if (damageAnimation)
 			{
-				indexPlayer += 0.25;
+				indexPlayer += 0.40;
 				int p = (m_sprites_player.size() / 2) + 1;
 				if (indexPlayer >= p)
 				{
@@ -329,7 +352,7 @@ void Player::draw()
 				//animation atttack
 				if (canAttackN)
 				{
-					indexPlayer += 0.25;
+					indexPlayer += 0.5;
 					if (indexPlayer >= m_sprites_player.size()) {
 						indexPlayer = 0;
 						weaponIsActive = false;
@@ -376,20 +399,20 @@ void Player::draw()
 	}
 	else
 	{
-		
-		if (indexPlayer=0)
-		{
-			m_sprites_player = loadFileGameObject("playerWalk");
-		}
-		indexPlayer += 0.25;
-		cout << "indexPlayer: " << indexPlayer << " size: " << m_sprites_player.size()<< endl;
-		if (indexPlayer >=m_sprites_player.size())
-		{
-			indexPlayer = 0;
+		//mini walk animation
+		//if (indexPlayer=0)
+		//{
+		//	m_sprites_player = loadFileGameObject("playerWalk");
+		//}
+		//indexPlayer += 0.5;
+		//cout << "indexPlayer: " << indexPlayer << " size: " << m_sprites_player.size()<< endl;
+		//if (indexPlayer >=m_sprites_player.size())
+		//{
+		//	indexPlayer = 0;
 		cout << "was here " << m_state->getPointerLevel() << endl;
-		
-		}
-		br_player.texture = m_sprites_player[int(indexPlayer)];
+			//m_state->AddIndex();
+		//}
+		//br_player.texture = m_sprites_player[int(indexPlayer)];
 		graphics::drawRect(m_state->getCanvasWidth() * 0.5f, m_state->getCanvasHeight() * 0.5f, 200.0f, 400.0f, br_player);
 	}
 	if (m_vx==1.0f && m_vy==0) {
@@ -400,12 +423,11 @@ void Player::draw()
 //------------------------------------playerDrawDeath()-------------------------------------------------
 void Player::playerDrawDeath()
 {
-	indexPlayer += 0.25;
+	indexPlayer += 0.5;
 	if (indexPlayer >= m_sprites_player.size())
 	{
 		indexPlayer = m_sprites_player.size() - 1;
 		setActive(false);
-		m_state->game_over = true;
 		m_state->setPointerLevel(6);
 
 	}
@@ -468,13 +490,6 @@ void Player::debugDraw()
 	br_player_debug.outline_color[0] = 0.5f;
 	br_player_debug.outline_color[1] = 0.0f;
 	br_player_debug.outline_color[2] = 0.5f;
-
-	//player 
-	
-	char s[20];
-	sprintf_s(s, "(%5.2f, %5.2f)", m_state->getPlayer()->getPosX(), m_state->getPlayer()->getPosY());
-	graphics::drawText(45, 300, 50, "Position: ", br_player_debug);
-	graphics::drawText(240, 300, 50, s, br_player_debug);
 	graphics::drawRect(m_state->getCanvasWidth() * 0.5f, m_state->getCanvasHeight() * 0.5f, m_width, m_height, br_player_debug);
 
 }

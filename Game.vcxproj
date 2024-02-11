@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Bird.cpp" />
+    <ClCompile Include="Blocks.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameState.cpp" />
@@ -152,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bird.h" />
+    <ClInclude Include="Blocks.h" />
     <ClInclude Include="box.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="GameObject.h" />

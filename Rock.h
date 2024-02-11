@@ -6,12 +6,10 @@ enum RockTyoe { ROCK = 0, GOBLIN, IceBlOb, NROFTYPES1 };
 class Rock :public Enemy {
 
 private:
-	//help for the collision with static objects
 	vector<string> rock_enemy;
 	vector<vector<char>> levelMapHelp;
-	vector<vector<Box>> m_blocksHelp;
+	vector<vector<Blocks>> m_blocksHelp;
 
-	//animattion attack
 	bool AttackingAnimation;
 	float indexAttackAnimation;
 	int type_enemy;

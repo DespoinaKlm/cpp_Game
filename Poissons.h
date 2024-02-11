@@ -3,12 +3,13 @@
 #include "GameObject.h"
 #include "GameState.h"
 #include "box.h"
+#include "Blocks.h"
 
 using namespace std;
 
 enum PoisonType { DEFAULT = 0, DAMAGING, HEALING, STRONGER, NROFTYPES };
 
-class Poissons: public GameObject, public Box {
+class Poissons: public GameObject, public Blocks {
 private:
 	float indexframePoisson;
 	vector<string> m_poissonA;
