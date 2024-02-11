@@ -11,70 +11,145 @@
 #include "Enemy.h"
 #include "Rock.h"
 #include "Bird.h"
+#include "util.h"
+
 using namespace std;
 //-----------------------------------Constructor----------------------------------------------------
 GameState::GameState()
 {
     nextLevel = false;
+    game_over = false;
+    pointerLevel = 0;
 }
 //------------------------------------init()--------------------------------------------------------
 void GameState::init()
 {
-    cout << "pointerLevel " << pointerLevel << endl;
-    if (pointerLevel == 1)
-    {
-        m_player = new Player(m_unique_state, "The-man", 1000);
-        m_player->init();
-        m_level = new Level(m_unique_state,level_map1, "level-1" );
-        m_level->init();
-        m_levels.push_back(m_level);
-    }
-    else if (pointerLevel == 2)
-    {
-        m_player->init();
-        m_level = new Level(m_unique_state,level_map2 , "level-2", m_levels[0]->getScore());
-        m_level->init();
-        m_levels.push_back(m_level);
-    }
-    else if (pointerLevel == 3)
-    {
-        m_player->init();
-        m_level = new Level(m_unique_state, level_map3,"level-3", m_levels[1]->getScore());
-        m_level->init();
-        m_levels.push_back(m_level);
-    }
-    graphics::preloadBitmaps(getAssetDir());
-    graphics::setFont(m_asset_path + "OpenSans-Regular.ttf");
-    graphics::playMusic(getFullAssetPath("TheRebelPath.wav"), 0.5f, true, 4000);
+    //brush background
+    m_brush_bgStart.fill_opacity = 0.8f;
+    m_brush_bgStart.outline_opacity = 0.0f;
+    m_brush_bgStart.texture = m_asset_path + "background.png";
+
+    //player brush 
+    m_playerBrush.fill_opacity = 1.1f;
+    m_playerBrush.outline_opacity = 0.0f;
+    m_playerBrush.texture = getFullAssetPath("playerStanding1.png");
+
+    //enemy brush
+    m_enemyBrush.fill_opacity = 1.1f;
+    m_enemyBrush.outline_opacity = 0.0f;
+    m_enemyBrush.texture = getFullAssetPath("iceBlobDie.png");
+
+    //movement
+    m_brush_wasd.fill_opacity = 0.8f;
+    m_brush_wasd.outline_opacity = 0.0f;
+    m_brush_wasd.texture = m_asset_path + "movement.png";
+    
+    //press space
+    m_brush_pressSpace.fill_opacity = 0.8f;
+    m_brush_pressSpace.outline_opacity = 0.0f;
+    m_brush_pressSpace.texture = m_asset_path + "PressSpace.png";
+
+    //player init
+     m_player = new Player(m_unique_state, "The-man", 1000);
+     m_player->init();
+
+     //first level init
+     m_level = new Level(m_unique_state,level_map1, "level-1" );
+     m_level->init();
+     m_levels.push_back(m_level);
+   
+     //second level init
+     m_level = new Level(m_unique_state,level_map2 , "level-2", m_levels[0]->getScore());
+     m_level->init();
+     m_levels.push_back(m_level);
+
+     //third level init
+     m_level = new Level(m_unique_state, level_map3,"level-3", m_levels[1]->getScore());
+     m_level->init();
+     m_levels.push_back(m_level);
+    
+     graphics::preloadBitmaps(getAssetDir());
+     graphics::setFont(m_asset_path + "OpenSans-Regular.ttf");
+     graphics::playMusic(getFullAssetPath("TheRebelPath.wav"), 0.5f, true, 4000);
 
 }
 //------------------------------------draw()--------------------------------------------------------
 void GameState::draw()
 {
-    if (!m_level) {
-        return;
-    }
-    if (pointerLevel==1)
+    if (!m_level)
     {
-        m_levels[0]->draw();
+       return;
     }
-    else if (pointerLevel == 2)
+
+    if (pointerLevel == 0)
+    {
+        // purple background 
+        SETCOLOR(m_brush_bgStart.fill_color, 0.8f, 0.2f, 0.8f);
+        graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f,m_canvas_width * 1.5f, m_canvas_height * 1.0f,m_brush_bgStart);
+
+        // Press Space to start 
+        graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f, 700.0f, 1000.0f, m_brush_pressSpace);
+    }
+    if(pointerLevel == 1)
+    {
+        //blue background
+        SETCOLOR(m_brush_bgStart.fill_color, 0.1f, 0.6f, 0.8f); 
+        graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f, m_canvas_width * 1.5f, m_canvas_height * 1.0f, m_brush_bgStart);
+
+        //wasd
+        graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f, 600.0f, 1000.0f, m_brush_wasd);
+
+        // Press Space to start 
+        graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f-600, 700.0f, 1000.0f, m_brush_pressSpace);
+    }
+    if(pointerLevel == 2)
+    {
+        m_levels[pointerLevel-2]->draw();
+    }
+    if(pointerLevel == 3) {
+        if (nextLevel)
+        {
+            nextLevel = false;
+        }
+        m_levels[pointerLevel - 2]->draw();
+        //m_levels[1]->draw();
+    }
+    if(pointerLevel == 4)
     {
         if (nextLevel)
         {
-            init();
             nextLevel = false;
         }
-        m_levels[1]->draw();
+        m_levels[pointerLevel - 2]->draw();
+        //m_levels[2]->draw();
     }
-    else if (pointerLevel == 3)
+    if (pointerLevel==5)
     {
-        if (nextLevel)
+        //you won background
+        m_brush_bgStart.texture = m_asset_path + "YouWon.png";
+        graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f, m_canvas_width * 1.5f, m_canvas_height * 1.0f, m_brush_bgStart);
+
+        //player
+        graphics::drawRect(m_canvas_width / 2.0f - 300, m_canvas_height / 2.0f + 270, 800, 800, m_playerBrush);
+        //enemy
+        graphics::drawRect(m_canvas_width / 2.0f + 300, m_canvas_height / 2.0f + 270, 500, 500, m_enemyBrush);
+    }
+    if (pointerLevel == 6)
+    {
+        if (game_over)
         {
-            init();
-            nextLevel = false;
+            //Game over
+            m_brush_bgStart.texture = m_asset_path + "GameOver.png";
+            graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f,m_canvas_width * 1.5f, m_canvas_height * 1.0f, m_brush_bgStart);
+
+            //player
+            m_playerBrush.texture = getFullAssetPath("playerDie5.png");
+            graphics::drawRect(m_canvas_width / 2.0f + 300, m_canvas_height / 2.0f+270, 800, 800, m_playerBrush);
+
+            //enemy
+            m_enemyBrush.texture = getFullAssetPath("iceBlobAttack2.png");
+            graphics::drawRect(m_canvas_width / 2.0f - 300, m_canvas_height / 2.0f+270, 500, 500, m_enemyBrush);
         }
-        m_levels[2]->draw();
     }
 }
 //------------------------------------update()------------------------------------------------------
@@ -91,23 +166,43 @@ void GameState::update(float dt)
         std::this_thread::sleep_for(std::chrono::duration<float, std::milli>(sleep_time));
     }
 
-    if (!m_level) {
-        return;
-    }
-    if (pointerLevel == 1)
-    {
-        m_levels[0]->update(dt);
-    }
-    else if(pointerLevel == 2)
-    {
-        m_levels[1]->update(dt);
-    }
-    else if(pointerLevel == 3)
-    {
-        m_levels[2]->update(dt);
-    }
-    m_debugging = graphics::getKeyState(graphics::SCANCODE_0);
+    m_brush_pressSpace.fill_opacity = 0.4f + 0.4f * cos(graphics::getGlobalTime() / 200.0f); // "Press space to start" image blinks 
 
+    float delta_time = dt / 1000.0f;
+   
+   if (pointerLevel == 0)
+   {
+        if (graphics::getKeyState(graphics::SCANCODE_SPACE)) 
+        {
+            AddIndex();
+        }
+        
+   }
+   if (pointerLevel == 1)
+   {
+       if (graphics::getKeyState(graphics::SCANCODE_SPACE))
+       {
+           AddIndex();
+       }
+       
+   }
+   if (pointerLevel == 2|| pointerLevel == 3 || pointerLevel == 4)
+   {
+       if (!m_level)
+       {
+           return;
+       }
+       if (pointerLevel == 2) {
+           m_levels[0]->update(dt);
+       }
+       if (pointerLevel == 3) {
+           m_levels[1]->update(dt);
+       }
+       if (pointerLevel == 4) {
+           m_levels[2]->update(dt);
+       }
+        m_debugging = graphics::getKeyState(graphics::SCANCODE_0);
+   }
 }
 //------------------------------------get_Gamestate()-----------------------------------------------
 GameState* GameState::get_Gamestate()
