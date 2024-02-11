@@ -52,26 +52,7 @@ void GameState::init()
     //player init
      m_player = new Player(m_unique_state, "The-man", 1000);
      m_player->init();
-     
-     /*
-     //first level init
-     m_level = new Level(m_unique_state, "level-1" );
-     m_level->init();
-     m_levels.push_back(m_level);
-   
-     
-      //second level init
-     m_level = new Level(m_unique_state,level_map2 , "level-2", m_levels[0]->getScore());
-     m_level->init();
-     m_levels.push_back(m_level);
 
-     //third level init
-     m_level = new Level(m_unique_state, level_map3,"level-3", m_levels[1]->getScore());
-     m_level->init();
-     m_levels.push_back(m_level);
-     */
-    
-    
      graphics::preloadBitmaps(getAssetDir());
      graphics::setFont(m_asset_path + "OpenSans-Regular.ttf");
      graphics::playMusic(getFullAssetPath("TheRebelPath.wav"), 0.5f, true, 4000);
@@ -107,7 +88,6 @@ void GameState::draw()
         if (nextLevel)
         {
             nextLevel = false;
-            cout << "was here 1" << endl;
         }
         if (!m_level)
         {
@@ -120,7 +100,6 @@ void GameState::draw()
         if (nextLevel)
         {
             nextLevel = false;
-            cout << "was here 2" << endl;
         }
         if (!m_level)
         {
@@ -133,7 +112,6 @@ void GameState::draw()
     {
         if (nextLevel)
         {
-            cout << "was here 3" << endl;
             nextLevel = false;
         }
  

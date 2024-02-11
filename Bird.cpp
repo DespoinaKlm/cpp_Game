@@ -16,6 +16,7 @@ Bird::Bird(GameState* gs, float px, float py, const string& name, int health):En
     m_height = enemy_size;
     dead = false;
     outofCanva = false;
+    speed_enemy = 1.5;
     init();
 }
 //----------------------------Destructor-------------------------------------

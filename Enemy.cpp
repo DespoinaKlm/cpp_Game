@@ -18,7 +18,6 @@ Enemy::Enemy(GameState* gs, const string& name ,int health) :GameObject(gs,name)
 //---------------------------------------update-----------------------------------------------------------
 void Enemy::update(float dt)
 {
-
     if (m_enemy_health <= 50 && !dead)
     {
         if (strongerAttack == 1) {
@@ -34,7 +33,6 @@ void Enemy::update(float dt)
         strongerAttack = 4;
     }
     checkCollisionWithPlayer(dt);
-    
     GameObject::update(dt);
 }
 //---------------------------------------init-------------------------------------------------------------
@@ -46,12 +44,11 @@ void Enemy::init()
 //---------------------------------------init-------------------------------------------------------------
 void Enemy::draw()
 {
-    
     if (dead)
     {
         float x = m_pos_x + m_state->m_global_offset_x;
         float y = m_pos_y + m_state->m_global_offset_y;
-        if (strcmp(str1, str2) == 0 || strcmp(str1, str3) == 0|| strcmp(str1, str4) == 0) {
+        if (strcmp(str1, "RockEnemy") == 0 || strcmp(str1, "Goblin") == 0 || strcmp(str1, "iceBlob") == 0) {
             
             if (speed_enemy <= 0) {
                 graphics::setScale(-1.0f, 1.0f);
@@ -60,7 +57,7 @@ void Enemy::draw()
             {
                 graphics::resetPose();
             }
-            if (strcmp(str1, str4) == 0)
+            if (strcmp(str1, "iceBlob") == 0)
             {
                 enemyDrawDeath(enemy_death, x, y, this->m_width, this->m_height);
             }
@@ -103,7 +100,7 @@ void Enemy::setAttack()
 //---------------------------------------enemyDrawDeath---------------------------------------------------
 void Enemy::enemyDrawDeath(vector<string> draw_death, float px, float py,float pw, float ph)
 {
-    indexDrawDeath += 0.2;
+    indexDrawDeath += 0.25;
     if (indexDrawDeath >=draw_death.size()) {
         indexDrawDeath = draw_death.size()-1;
         m_active=false;
@@ -114,7 +111,6 @@ void Enemy::enemyDrawDeath(vector<string> draw_death, float px, float py,float p
 //---------------------------------------checkCollisionWithPlayer-----------------------------------------
 void Enemy::checkCollisionWithPlayer(float dt)
 {
-    
     //when the player hasnt attacked
     if (isActive())
     {
@@ -126,10 +122,11 @@ void Enemy::checkCollisionWithPlayer(float dt)
                 //moves backwards
                 if (m_state->getPlayer()->isRight()){
                     if (strcmp(str1, "Bird") != 0) {
-                        m_pos_x += offset + 50;
+                        m_pos_x += offset + 20;
                     }
-                    else {
-                        m_pos_x += offset - 50;
+                    else
+                    {
+                        m_pos_x += offset - 20;
                     }
                     m_state->getPlayer()->m_pos_x += offset - 50;
                 }
@@ -139,7 +136,8 @@ void Enemy::checkCollisionWithPlayer(float dt)
                     if (strcmp(str1, "Bird") != 0) {
                         m_pos_x += offset - 50;
                     }
-                    else {
+                    else
+                    {
                         m_pos_x += offset + 50;
                     }
                 }
@@ -157,35 +155,39 @@ void Enemy::checkCollisionWithPlayer(float dt)
     if (isActive())
     {
         float offset = 0.0f;
+        //cout << "velocity m_vy: " << m_state->getPlayer()->m_vy << endl;
         if (m_state->getPlayer()->intersectDown(*this))
         {
-            m_state->getPlayer()->m_pos_y += offset - 150;
-            m_state->getlevel()->updateScore(10 + rand() % 151);
-            graphics::playSound(m_state->getFullAssetPath("Attack.wav"), 1.0f);
-            //plus attack 
-            if (m_state->getPlayer()->PlusAttack())
-            {
-                Damage(m_state->getPlayer()->get_Attack() * 2);
-                m_state->getPlayer()->setPlusAttack(false);
-            }
-            else
-            {
-                Damage(m_state->getPlayer()->get_Attack());
-            }
-            //sound of death
-            if (dead)
-            {
-                if (strcmp(str1, "Bird") != 0)
+            //if (!(m_state->getPlayer()->m_vy ==0 && strcmp(str1, "Bird") == 0))
+            //{
+                m_state->getPlayer()->m_pos_y += offset - 70;
+                m_state->getlevel()->updateScore(10 + rand() % 151);
+                graphics::playSound(m_state->getFullAssetPath("Attack.wav"), 1.0f);
+                //plus attack 
+                if (m_state->getPlayer()->PlusAttack())
                 {
-                    graphics::playSound(m_state->getFullAssetPath("death_enemy.wav"), 1.0f);
+                    Damage(m_state->getPlayer()->get_Attack() * 2);
+                    m_state->getPlayer()->setPlusAttack(false);
                 }
-                else {
-                    //add bird sound
+                else
+                {
+                    Damage(m_state->getPlayer()->get_Attack());
                 }
-                m_state->getlevel()->updateScore(100 + rand() % 350);
+                //sound of death
+                if (dead)
+                {
+                    if (strcmp(str1, "Bird") != 0)
+                    {
+                        graphics::playSound(m_state->getFullAssetPath("death_enemy.wav"), 1.0f);
+                    }
+                    else {
+                        //add bird sound
+                    }
+                    m_state->getlevel()->updateScore(100 + rand() % 350);
                 
-            }
-            m_state->getPlayer()->m_vy = 0.0f;
+                }
+                m_state->getPlayer()->m_vy = 0.0f;
+            //}
         }
     }
 }
@@ -199,14 +201,14 @@ Enemy & Enemy::Damage(int damage)
         dead = true;
         cantAttack = true;
         //enemy death animation
-        if (strcmp(str1, str2) == 0)
+        if (strcmp(str1, "RockEnemy") == 0)
         {
             enemy_death=loadFileGameObject("rockEnemyDies");
         }
-        else if (strcmp(str1, str3) == 0) {
+        else if (strcmp(str1, "Goblin") == 0) {
             enemy_death = loadFileGameObject("greenGoblinDie");
         }
-        else if (strcmp(str1, str4) == 0) {
+        else if (strcmp(str1, "iceBlob") == 0) {
             enemy_death = loadFileGameObject("iceBlobDie");
         }
         else

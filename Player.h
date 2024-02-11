@@ -3,8 +3,6 @@
 #include "GameObject.h"
 #include "GameState.h"
 #include "box.h"
-#include <filesystem>
-#include "Blocks.h"
 
 using namespace std;
 
@@ -12,33 +10,30 @@ class Player : public GameObject, public Box
 {
 private:
 	//brush
-	int block_health_size = 25;
-	Blocks playerBlocks;
 	graphics::Brush br_player;
 	graphics::Brush br_player_health;
+
+	//animation index
 	float indexPlayer = 0;
 	float indexDustAnimation = 0;
-	float animation_speed = 0.5;
-	float x_d=0, y_d=0;
 	int s;
+
 	//health
+	int block_health_size = 25;
 	float m_health;
 	float m_health_max = 1000;
+	
 	//Animation
 	vector<string> m_sprites_player;
 	vector<string> dust_animation;
 	
-	const float m_accel_horizontal = 20.0f;
+	//movement
+	const float m_accel_horizontal = 40.0f;
 	const float m_accel_vertical = 4500.0f;
-	const float m_max_velocity = 40.0f;
+	const float m_max_velocity = 80.0f;
 	const float m_gravity = 9.8f;
 
-	//attack Cooldown
-	float attackCooldown;
-	float attackCooldownMax;
-
-	//movement
-	bool standing;
+	//bool movement
 	bool canAttackN;
 	bool damage;
 	bool damageAnimation;
@@ -60,34 +55,39 @@ public:
 	float m_vy = 0.0f;
 	Player(GameState* gs, const string& name,float health=1000);
 	~Player();
-	void drawHealth(float health,float max_health,int length);
-	//----------getPosition()--------------------------------
+
+	//inheritance GameObject
+	void update(float dt) override;
+	void init() override;
+	void draw() override;
+
+	//position
 	float getPosX() const{ return m_pos_x; }
 	float getPosY() const { return m_pos_y; }
-	inline bool getGround() const {return m_Grounding;}
-	inline void setGround(bool answer) { m_Grounding =answer;}
+
+	//help for animation and movements
 	inline bool isAttacking() const { return m_Attacking; }
 	inline bool isPickingUp() const { return m_IsPickingUp; }
-	inline bool isGrounding() const { return m_Grounding; }
 	inline bool PlusAttack()const { return plusAttack; }
 	inline void setPlusAttack(bool answ) { plusAttack = answ; }
 	inline float getGravity() const { return m_gravity; }
 	inline bool isActiveWeapon() const { return weaponIsActive; }
 	inline bool isRight()  const { return right; }
-	const bool canAttack();
-	void updateCooldownAttack();
 	void drawDustAnimation();
-	void update(float dt) override;
-	void init() override;
-	void draw() override;
-	Player &PlusHealth(float plushealth);
-	Player &Damage(float damage);
-	int get_Attack();
-	float get_Health();
-	void set_Health(float health);
 	void playerDrawDeath();
 	void dustAnimation(vector<string>dust);
 
+	//health player
+	void drawHealth(float health,float max_health,int length);
+	Player &PlusHealth(float plushealth);
+	Player &Damage(float damage);
+	float get_Health();
+	void set_Health(float health);
+
+	//attack
+	int get_Attack();
+
 protected:
+	//debug
 	void debugDraw();
 };
