@@ -228,6 +228,14 @@ void GameState::update(float dt)
 
         m_debugging = graphics::getKeyState(graphics::SCANCODE_0);
    }
+   if (pointerLevel == 5) {
+       graphics::playMusic(getFullAssetPath("epic_hybrid_logo.wav"), 1.0f);
+   }
+   if (pointerLevel == 6)
+   {
+       graphics::playMusic(getFullAssetPath("lost.wav"), 1.0f);
+
+   }
 }
 //------------------------------------get_Gamestate()-----------------------------------------------
 GameState* GameState::get_Gamestate()

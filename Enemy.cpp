@@ -113,7 +113,7 @@ void Enemy::enemyDrawDeath(vector<string> draw_death, float px, float py,float p
     else if(getName() == "Bird")
     {
         graphics::drawRect(px, py, pw, ph, br_enemy);
-        
+        graphics::playSound(m_state->getFullAssetPath("boom.wav"), 1.0f);
     }
     else
     {
@@ -178,12 +178,12 @@ void Enemy::checkCollisionWithPlayer(float dt)
                 //sound of death
                 if (dead)
                 {
-                    if (strcmp(str1, "Bird") != 0)
+                    if (strcmp(str1,"Bird") != 0)
                     {
                         graphics::playSound(m_state->getFullAssetPath("death_enemy.wav"), 1.0f);
                     }
                     else {
-                        //add bird sound
+                        graphics::playSound(m_state->getFullAssetPath("bird.wav"), 1.0f);
                     }
                     m_state->getlevel()->updateScore(100 + rand() % 350);
                 
