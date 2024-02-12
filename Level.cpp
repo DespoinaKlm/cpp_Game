@@ -163,7 +163,7 @@ void Level::init()
 				{
 					//RIGHT
 					
-					pos_x = col * m_block_size +500;
+					pos_x = col * m_block_size;
 				}
 				else 
 				{
@@ -374,7 +374,19 @@ void Level::SpawnEnemy()
 		{
 			if (level_map[row][col] == 'B')
 			{
-				float pos_x = col * m_block_size - 2500;
+				float pos_x;
+				if (col == (level_map[row].size() - 1))
+				{
+					//RIGHT
+
+					pos_x = col * m_block_size;
+				}
+				else
+				{
+					//LEFT
+					pos_x = col * m_block_size - 2000;
+				}
+				
 				float pos_y = row * m_block_size + 30;
 				EnemyBird = new Bird(m_state, pos_x, pos_y, "Bird", 50);
 				this->m_Enemies.push_back(this->EnemyBird);
