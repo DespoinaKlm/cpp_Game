@@ -69,7 +69,7 @@ void GameState::draw()
         graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f,m_canvas_width * 1.5f, m_canvas_height * 1.0f,m_brush_bgStart);
 
         // Press Space to start 
-        graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f, 800.0f , 800.0f,m_brush_pressSpace);
+        graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f, 600.0f , 800.0f,m_brush_pressSpace);
     }
     if(pointerLevel == 1)
     {
@@ -78,10 +78,10 @@ void GameState::draw()
         graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f, m_canvas_width * 1.5f, m_canvas_height * 1.0f, m_brush_bgStart);
 
         //wasd
-        graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f, 800.0f, 800.0f, m_brush_wasd);
-        // Press Enter to start 
+        graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f, 600.0f, 1000.0f, m_brush_wasd);
         
-        graphics::drawText(m_canvas_width / 2.0f-250, m_canvas_height / 2.0f - 500, 80, "Press Enter", m_brush_pressSpace);
+        // Press LShift to start 
+        graphics::drawText(m_canvas_width / 2.0f-250, m_canvas_height / 2.0f - 500, 80, "Press LSHIFT", m_brush_pressSpace);
     }
     if(pointerLevel == 2)
     {
@@ -183,7 +183,7 @@ void GameState::update(float dt)
    if (pointerLevel == 1)
    {
        nextLevel = false;
-       if (graphics::getKeyState(graphics::SCANCODE_KP_ENTER))
+       if (graphics::getKeyState(graphics::SCANCODE_LSHIFT))
        {
            nextLevel = true;
            AddIndex();
