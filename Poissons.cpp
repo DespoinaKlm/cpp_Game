@@ -32,12 +32,13 @@ void Poissons::init()
 	br_poison.texture = m_state->getFullAssetPath("poison1.png");
 	
 	//try animation for the poisson
-	m_poissonA = loadFileGameObject("poison");
+	m_poisson = loadFileGameObject("poison");
 	
 }
 //---------------------------------Color--------------------------------------------------------------------------------------
 void Poissons::getColor()
 {
+	//Finds Brush color
 	switch (m_type)
 	{
 	case PoisonType::DEFAULT:
@@ -64,6 +65,7 @@ void Poissons::getColor()
 //---------------------------------TypeOfPoison-------------------------------------------------------------------------------
 void Poissons::TypeOfPoison()
 {
+	//the ability of every single poison 
 	switch (m_type)
 	{
 		case PoisonType::DEFAULT:
@@ -90,12 +92,13 @@ void Poissons::draw()
 	//Animation
 	if (m_state->getPlayer()->isActive() && intersect(*m_state->getPlayer()) && m_state->getPlayer()->isPickingUp())
 	{
+		//starts animation
 		drawframe = true;
 	}
 	if (drawframe)
 	{
 		indexframePoisson += 0.1;
-		if (indexframePoisson >= m_poissonA.size())
+		if (indexframePoisson >= m_poisson.size())
 		{
 			TypeOfPoison();
 			drawframe = false;
@@ -103,6 +106,7 @@ void Poissons::draw()
 		}
 		else
 		{
+			//sound effect
 			switch (m_type)
 			{
 			case PoisonType::DEFAULT:
@@ -118,11 +122,12 @@ void Poissons::draw()
 				graphics::playSound(m_state->getFullAssetPath("points.wav"), 0.5f);
 				break;
 			}
-			br_poison.texture = m_poissonA[int(indexframePoisson)];
+			br_poison.texture = m_poisson[int(indexframePoisson)];
 		}
 	}
-	//cout << indexframePoisson << "\n";
+	
 	graphics::drawRect(x, y, m_width * 2.5f, m_height * 5.0f, br_poison);
+
 
 	if (m_state->m_debugging) {
 		debugDrawPoison();

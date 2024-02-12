@@ -212,7 +212,7 @@ void Player::init()
 		m_pos_y = 4200.0f;
 	}
 	else if (m_state->getPointerLevel() == 4) {
-		m_pos_x = 0.0f;
+		m_pos_x = 230.0f;
 		m_pos_y = 2000.0f;
 	}
 	m_width = 90;

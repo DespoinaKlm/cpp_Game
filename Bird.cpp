@@ -9,7 +9,6 @@ using namespace std;
 //----------------------------Constructor-------------------------------------
 Bird::Bird(GameState* gs, float px, float py, const string& name, int health):Enemy(gs,name,health)
 {
-    
     m_pos_x = px;
     m_pos_y = py;
     m_width = enemy_size;
@@ -44,9 +43,8 @@ void Bird::update(float dt)
         {
             m_active=false;
         }
-        if (m_pos_x >6800)
+        if (m_pos_x >5200)
         {
-            cout << "noo" << endl;
             m_active =false;
         }
     }
@@ -63,19 +61,19 @@ void Bird::init()
 
     firstposition = m_pos_x;
     bird_enemy = loadFileGameObject("bird");
-    cout << "firstposition " << firstposition << endl;
-    cout << "m_pos_x: " << m_pos_x <<  " m_pos_y: "<< m_pos_y << endl;
+    
     Enemy::init();
 }
 //----------------------------draw-----------------------------------------------
 void Bird::draw()
 {
-    
+    //not dead
     if (!dead) {
         float x = m_pos_x + m_state->m_global_offset_x;
         float y = m_pos_y + m_state->m_global_offset_y;
         int s = (int)fmod(1000.0f - m_pos_x * 0.025f, bird_enemy.size());
         br_enemy.texture = bird_enemy[s];
+        //draw right direction
         if (firstposition > 0)
         {
             graphics::setScale(-1.0f, 1.0f);

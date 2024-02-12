@@ -15,6 +15,7 @@ private:
 	bool AttackingAnimation;
 	float indexAttackAnimation;
 	int type_enemy;
+
 public:
 	Rock(GameState* gs, int type, float px, float py,const string& name = "", int health = 300);
 	~Rock();
@@ -22,7 +23,14 @@ public:
 	void init() override;
 	void draw() override;
 	void debugDrawEnemy(float x, float y) override;
+
+	//type of enemy
 	const int& getType() const;
+
+	//collision with trees floor and rocks
 	void checkCollisionRock();
+
+	//reverse position
 	void reverse();
+
 };

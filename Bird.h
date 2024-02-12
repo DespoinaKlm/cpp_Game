@@ -8,11 +8,14 @@ using namespace std;
 class Bird :public Enemy {
 
 private:
-	graphics::Brush br_enemy_birds;
+
+	//animation
 	vector<string> bird_enemy;
 	float indexBird;
-	int reverse;
+
+	//for the movement of the bird
 	float firstposition;
+
 public:
 	Bird(GameState* gs, float px, float py, const string& name, int health=300);
 	~Bird();
