@@ -43,47 +43,47 @@ void GameState::init()
     m_brush_wasd.fill_opacity = 0.8f;
     m_brush_wasd.outline_opacity = 0.0f;
     m_brush_wasd.texture = m_asset_path + "movement.png";
-    
+
     //press space
     m_brush_pressSpace.fill_opacity = 0.8f;
     m_brush_pressSpace.outline_opacity = 0.0f;
     m_brush_pressSpace.texture = m_asset_path + "PressSpace.png";
 
     //player init
-     m_player = new Player(m_unique_state, "The-man", 1000);
-     m_player->init();
+    m_player = new Player(m_unique_state, "The-man", 1000);
+    m_player->init();
 
-     graphics::preloadBitmaps(getAssetDir());
-     graphics::setFont(m_asset_path + "OpenSans-Regular.ttf");
-     graphics::playMusic(getFullAssetPath("epic_hybrid_logo.wav"), 0.8f, true, 4000);
+    graphics::preloadBitmaps(getAssetDir());
+    graphics::setFont(m_asset_path + "OpenSans-Regular.ttf");
+    graphics::playMusic(getFullAssetPath("epic_hybrid_logo.wav"), 0.8f, true, 4000);
 
 }
 //------------------------------------draw()--------------------------------------------------------
 void GameState::draw()
 {
-    
+
     if (pointerLevel == 0)
     {
         // purple background 
         SETCOLOR(m_brush_bgStart.fill_color, 0.8f, 0.2f, 0.8f);
-        graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f,m_canvas_width * 1.5f, m_canvas_height * 1.0f,m_brush_bgStart);
+        graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f, m_canvas_width * 1.5f, m_canvas_height * 1.0f, m_brush_bgStart);
 
         // Press Space to start 
-        graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f, 800.0f , 800.0f,m_brush_pressSpace);
+        graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f, 600.0f, 800.0f, m_brush_pressSpace);
     }
-    if(pointerLevel == 1)
+    if (pointerLevel == 1)
     {
         //blue background
-        SETCOLOR(m_brush_bgStart.fill_color, 0.1f, 0.6f, 0.8f); 
+        SETCOLOR(m_brush_bgStart.fill_color, 0.1f, 0.6f, 0.8f);
         graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f, m_canvas_width * 1.5f, m_canvas_height * 1.0f, m_brush_bgStart);
 
         //wasd
-        graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f, 800.0f, 800.0f, m_brush_wasd);
-        // Press Enter to start 
-        
-        graphics::drawText(m_canvas_width / 2.0f-250, m_canvas_height / 2.0f - 500, 80, "Press Enter", m_brush_pressSpace);
+        graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f, 600.0f, 1000.0f, m_brush_wasd);
+
+        // Press LShift to start 
+        graphics::drawText(m_canvas_width / 2.0f - 250, m_canvas_height / 2.0f - 500, 80, "Press LSHIFT", m_brush_pressSpace);
     }
-    if(pointerLevel == 2)
+    if (pointerLevel == 2)
     {
         if (nextLevel)
         {
@@ -94,9 +94,9 @@ void GameState::draw()
             return;
         }
         m_levels[0]->draw();
-        
+
     }
-    if(pointerLevel == 3) {
+    if (pointerLevel == 3) {
         if (nextLevel)
         {
             nextLevel = false;
@@ -108,16 +108,16 @@ void GameState::draw()
 
         m_levels[1]->draw();
     }
-    if(pointerLevel == 4)
+    if (pointerLevel == 4)
     {
         if (nextLevel)
         {
             nextLevel = false;
         }
- 
+
         m_levels[2]->draw();
     }
-    if (pointerLevel==5)
+    if (pointerLevel == 5)
     {
         //draw score
         graphics::resetPose();
@@ -141,15 +141,15 @@ void GameState::draw()
         {
             //Game over
             m_brush_bgStart.texture = m_asset_path + "GameOver.png";
-            graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f,m_canvas_width * 1.5f, m_canvas_height * 1.0f, m_brush_bgStart);
+            graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f, m_canvas_width * 1.5f, m_canvas_height * 1.0f, m_brush_bgStart);
 
             //player
             m_playerBrush.texture = getFullAssetPath("playerDie5.png");
-            graphics::drawRect(m_canvas_width / 2.0f + 300, m_canvas_height / 2.0f+270, 800, 800, m_playerBrush);
+            graphics::drawRect(m_canvas_width / 2.0f + 300, m_canvas_height / 2.0f + 270, 800, 800, m_playerBrush);
 
             //enemy
             m_enemyBrush.texture = getFullAssetPath("iceBlobAttack2.png");
-            graphics::drawRect(m_canvas_width / 2.0f - 300, m_canvas_height / 2.0f+270, 500, 500, m_enemyBrush);
+            graphics::drawRect(m_canvas_width / 2.0f - 300, m_canvas_height / 2.0f + 270, 500, 500, m_enemyBrush);
         }
     }
 }
@@ -170,85 +170,85 @@ void GameState::update(float dt)
     m_brush_pressSpace.fill_opacity = 0.4f + 0.4f * cos(graphics::getGlobalTime() / 200.0f); // "Press space to start" image blinks 
 
     float delta_time = dt / 1000.0f;
-   
-   if (pointerLevel == 0)
-   {
-        if (graphics::getKeyState(graphics::SCANCODE_SPACE)) 
+
+    if (pointerLevel == 0)
+    {
+        if (graphics::getKeyState(graphics::SCANCODE_SPACE))
         {
             nextLevel = true;
             AddIndex();
         }
-        
-   }
-   if (pointerLevel == 1)
-   {
-       nextLevel = false;
-       if (graphics::getKeyState(graphics::SCANCODE_KP_ENTER))
-       {
-           nextLevel = true;
-           AddIndex();
-       }
-       
-   }
-   if (pointerLevel == 2|| pointerLevel == 3 || pointerLevel == 4)
-   {
-       
-       if (pointerLevel == 2) {
-           if (nextLevel)
-           {
-               graphics::stopMusic();
-               graphics::playMusic(getFullAssetPath("TheRebelPath.wav"), 0.5f, true, 4000);
-               m_player->init();
-               m_level = new Level(m_unique_state, "level-1");
-               m_level->init();
-               m_levels.push_back(m_level);
-               nextLevel = false;
 
-           }
-           m_levels[0]->update(dt);
-       }
-       
-       if (pointerLevel == 3) {
-           if (nextLevel) {
-               graphics::stopMusic();
-               graphics::playMusic(getFullAssetPath("pointer3.wav"), 0.5f, true, 4000);
-               m_player->init();
-               m_level = new Level(m_unique_state, "level-2", m_levels[0]->getScore());
-               m_level->init();
-               m_levels.push_back(m_level);
-               nextLevel = false;
-           }
-           m_levels[1]->update(dt);
-       }
-       if (pointerLevel == 4) {
-           if (nextLevel)
-           {
-               graphics::stopMusic();
-               graphics::playMusic(getFullAssetPath("Mind_Storm.wav"), 0.5f, true, 4000);
-               m_player->init();
-               m_level = new Level(m_unique_state, "level-3", m_levels[1]->getScore());
-               m_level->init();
-               m_levels.push_back(m_level);
-               nextLevel = false;
-           }
-           m_levels[2]->update(dt);
-       }
+    }
+    if (pointerLevel == 1)
+    {
+        nextLevel = false;
+        if (graphics::getKeyState(graphics::SCANCODE_LSHIFT))
+        {
+            nextLevel = true;
+            AddIndex();
+        }
+
+    }
+    if (pointerLevel == 2 || pointerLevel == 3 || pointerLevel == 4)
+    {
+
+        if (pointerLevel == 2) {
+            if (nextLevel)
+            {
+                graphics::stopMusic();
+                graphics::playMusic(getFullAssetPath("TheRebelPath.wav"), 0.5f, true, 4000);
+                m_player->init();
+                m_level = new Level(m_unique_state, "level-1");
+                m_level->init();
+                m_levels.push_back(m_level);
+                nextLevel = false;
+
+            }
+            m_levels[0]->update(dt);
+        }
+
+        if (pointerLevel == 3) {
+            if (nextLevel) {
+                graphics::stopMusic();
+                graphics::playMusic(getFullAssetPath("pointer3.wav"), 0.5f, true, 4000);
+                m_player->init();
+                m_level = new Level(m_unique_state, "level-2", m_levels[0]->getScore());
+                m_level->init();
+                m_levels.push_back(m_level);
+                nextLevel = false;
+            }
+            m_levels[1]->update(dt);
+        }
+        if (pointerLevel == 4) {
+            if (nextLevel)
+            {
+                graphics::stopMusic();
+                graphics::playMusic(getFullAssetPath("Mind_Storm.wav"), 0.5f, true, 4000);
+                m_player->init();
+                m_level = new Level(m_unique_state, "level-3", m_levels[1]->getScore());
+                m_level->init();
+                m_levels.push_back(m_level);
+                nextLevel = false;
+            }
+            m_levels[2]->update(dt);
+        }
         if (!m_level)
         {
-           return;
+            return;
         }
 
         m_debugging = graphics::getKeyState(graphics::SCANCODE_0);
-   }
-   if (pointerLevel == 5) {
-       graphics::stopMusic();
-       graphics::playSound(getFullAssetPath("pointer4.wav"), 0.5f, true);
-   }
-   if (pointerLevel == 6)
-   {
-       graphics::stopMusic();
-       graphics::playSound(getFullAssetPath("lost.wav"), 0.5f);
-   }
+    }
+    if (pointerLevel == 5) {
+        graphics::stopMusic();
+        graphics::playSound(getFullAssetPath("pointer4.wav"), 0.5f, true);
+    }
+    if (pointerLevel == 6)
+    {
+        graphics::stopMusic();
+        graphics::playSound(getFullAssetPath("lost.wav"), 0.5f);
+    }
 }
 //------------------------------------get_Gamestate()-----------------------------------------------
 GameState* GameState::get_Gamestate()
