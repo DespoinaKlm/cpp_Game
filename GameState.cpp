@@ -19,6 +19,7 @@ GameState::GameState()
 {
     nextLevel = false;
     game_over = false;
+    playSound = false;
     pointerLevel = 0;
 }
 //------------------------------------init()--------------------------------------------------------
@@ -55,7 +56,7 @@ void GameState::init()
 
      graphics::preloadBitmaps(getAssetDir());
      graphics::setFont(m_asset_path + "OpenSans-Regular.ttf");
-     graphics::playMusic(getFullAssetPath("TheRebelPath.wav"), 0.5f, true, 4000);
+     graphics::playMusic(getFullAssetPath("epic_hybrid_logo.wav"), 0.5f, true, 4000);
 
 }
 //------------------------------------draw()--------------------------------------------------------
@@ -79,9 +80,9 @@ void GameState::draw()
 
         //wasd
         graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f, 800.0f, 800.0f, m_brush_wasd);
-
-        // Press Space to start 
-        graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f-500, 800.0f, 800.0f, m_brush_pressSpace);
+        // Press Enter to start 
+        
+        graphics::drawText(m_canvas_width / 2.0f-250, m_canvas_height / 2.0f - 500, 80, "Press Enter", m_brush_pressSpace);
     }
     if(pointerLevel == 2)
     {
@@ -119,6 +120,13 @@ void GameState::draw()
     }
     if (pointerLevel==5)
     {
+        //draw score
+        graphics::resetPose();
+        char score[20];
+        graphics::drawText(m_canvas_width / 2.0f - 270, m_canvas_height / 2.0f - 270, 100, "Score  ", m_brush_pressSpace);
+        sprintf_s(score, " %5.2f ", getlevel()->getScore());
+        graphics::drawText(m_canvas_width / 2.0f, m_canvas_height / 2.0f - 270, 100, score, m_brush_pressSpace);
+
         //you won background
         m_brush_bgStart.texture = m_asset_path + "YouWon.png";
         graphics::drawRect(m_canvas_width / 2.0f, m_canvas_height / 2.0f, m_canvas_width * 1.5f, m_canvas_height * 1.0f, m_brush_bgStart);
@@ -187,8 +195,10 @@ void GameState::update(float dt)
    {
        
        if (pointerLevel == 2) {
-           if (nextLevel) {
-               cout << "pointer " << pointerLevel << endl;
+           if (nextLevel)
+           {
+               graphics::stopMusic();
+               graphics::playMusic(getFullAssetPath("TheRebelPath.wav"), 0.5f, true, 4000);
                m_player->init();
                m_level = new Level(m_unique_state, "level-1");
                m_level->init();
@@ -201,7 +211,8 @@ void GameState::update(float dt)
        
        if (pointerLevel == 3) {
            if (nextLevel) {
-               cout << "pointer " << pointerLevel << endl;
+               graphics::stopMusic();
+               graphics::playMusic(getFullAssetPath("pointer3.wav"), 0.5f, true, 4000);
                m_player->init();
                m_level = new Level(m_unique_state, "level-2", m_levels[0]->getScore());
                m_level->init();
@@ -211,8 +222,10 @@ void GameState::update(float dt)
            m_levels[1]->update(dt);
        }
        if (pointerLevel == 4) {
-           if (nextLevel) {
-               cout << "pointer " << pointerLevel << endl;
+           if (nextLevel)
+           {
+               graphics::stopMusic();
+               graphics::playMusic(getFullAssetPath("Mind_Storm.wav"), 0.5f, true, 4000);
                m_player->init();
                m_level = new Level(m_unique_state, "level-3", m_levels[1]->getScore());
                m_level->init();
@@ -230,13 +243,12 @@ void GameState::update(float dt)
    }
    if (pointerLevel == 5) {
        graphics::stopMusic();
-       graphics::playSound(getFullAssetPath("epic_hybrid_logo.wav"), 1.0f);
+       graphics::playSound(getFullAssetPath("pointer4.wav"), 0.5f);
    }
    if (pointerLevel == 6)
    {
        graphics::stopMusic();
-       graphics::playSound(getFullAssetPath("lost.wav"), 1.0f);
-
+       graphics::playSound(getFullAssetPath("lost.wav"), 0.5f);
    }
 }
 //------------------------------------get_Gamestate()-----------------------------------------------

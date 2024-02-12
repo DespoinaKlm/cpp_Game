@@ -18,7 +18,7 @@ protected:
 	int m_attack;
 	
 	float indexDrawDeath=0;
-	float speed_enemy = 1.5f;
+	float speed_enemy = 2.5f;
 	float enemy_size = 170;
 	
 	void setHealth(int health);

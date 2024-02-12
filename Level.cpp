@@ -88,7 +88,7 @@ void Level::init()
 	level_map = loadFileMap(m_state->getPointerLevel());
 	
 	//for flying enemies
-	this->enemySpawnTimerMax = 120.0f;
+	this->enemySpawnTimerMax = 400.0f;
 	this->enemySpawnTimer = this->enemySpawnTimerMax;
 
 	//blocks
@@ -111,14 +111,15 @@ void Level::init()
 			else if (level_map[row][col] == 'T')
 			{
 				float pos_x;
-				if (col >= level_map.size() - 4){
-					pos_x = col * m_block_size - 1850 +100;
+				if (col >= level_map.size() - 4) {
+					pos_x = col * m_block_size - 1850 + 100;
 				}
-				else {
-					pos_x = col * m_block_size - 1850 -170;
+				else
+				{
+					pos_x = col * m_block_size - 1850 - 100;
 				}
-				float pos_y = row * m_block_size  -150;
-				m_blocks[row][col] = Box(pos_x, pos_y, m_block_size, m_block_size*3);
+				float pos_y = row * m_block_size - 160;
+				m_blocks[row][col] = Box(pos_x, pos_y, m_block_size, m_block_size * 3);
 				m_block_names[row][col] = "tree_1.png";
 			}
 			else if (level_map[row][col] == 'R')
@@ -151,16 +152,15 @@ void Level::init()
 				float pos_x = col * m_block_size - 1850;
 				float pos_y = row * m_block_size + 30 ;
 				EnemyRock = new Rock(m_state, rand() % RockTyoe::NROFTYPES1, pos_x, pos_y, "RockEnemy", 600);
-				m_dynamic_objects.push_back(EnemyRock);
 				m_Enemies.push_back(EnemyRock);
 				m_blocks[row][col] = Box(pos_x, pos_y, EnemyRock->m_width, EnemyRock->m_height);
 				m_block_names[row][col] = "rockEnemy1.png";
 			}
 			else if (level_map[row][col] == 'B') {
-				float pos_x = col * m_block_size - 2500;
+				//apo 2500
+				float pos_x = col * m_block_size - 1000;
 				float pos_y = row * m_block_size + 30;
 				EnemyBird = new Bird(m_state, pos_x, pos_y, "Bird", 50);
-				m_dynamic_objects.push_back(EnemyBird);
 				m_Enemies.push_back(EnemyBird);
 				m_blocks[row][col] = Box(pos_x, pos_y, EnemyBird->m_width, EnemyBird->m_height);
 				m_block_names[row][col] = "bird1.png";

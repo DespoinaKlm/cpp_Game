@@ -26,6 +26,7 @@ private:
 	graphics::Brush m_playerBrush;
 	graphics::Brush m_enemyBrush;
 
+	bool playSound;
 	bool nextLevel;
 	int pointerLevel;
 

@@ -18,19 +18,18 @@ Enemy::Enemy(GameState* gs, const string& name ,int health) :GameObject(gs,name)
 //---------------------------------------update-----------------------------------------------------------
 void Enemy::update(float dt)
 {
-    if (m_enemy_health <= 50 && !dead)
+    if (m_enemy_health <= 150 && !dead)
     {
         if (strongerAttack == 1) {
             if (strcmp(str1, "Bird") != 0 ) {
                 graphics::playSound(m_state->getFullAssetPath("roar.wav"), 0.5f);
+                strongerAttack = 4;
             }
             else
             {
-                //sound bird
-                //cout << "bird " << isActive() << endl;
+                strongerAttack = 2;
             }
         }
-        strongerAttack = 4;
     }
     checkCollisionWithPlayer(dt);
     GameObject::update(dt);
@@ -41,7 +40,7 @@ void Enemy::init()
     br_enemy.fill_opacity = 1.1f;
     br_enemy.outline_opacity = 0.0f;
 }
-//---------------------------------------init-------------------------------------------------------------
+//---------------------------------------draw-------------------------------------------------------------
 void Enemy::draw()
 {
     if (dead)
@@ -233,7 +232,7 @@ void Enemy::debugDrawEnemy(float x,float y)
     graphics::drawRect(x, y, enemy_size, enemy_size, br_enemyD);
 
 }
-//---------------------------------------init-------------------------------------------------------------
+//---------------------------------------Enemy-------------------------------------------------------------
 Enemy::~Enemy()
 {
 }

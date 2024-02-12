@@ -274,23 +274,10 @@ void Player::draw()
 					{
 						//pressed buttons
 						if (!(getKeyState(graphics::SCANCODE_A) || getKeyState(graphics::SCANCODE_D)))
-						
 						{
-							//animation falling
 							m_sprites_player = loadFileGameObject("playerJump");
-							if (!m_Grounding)
-							{
-								indexPlayer += 0.22;
-								if (indexPlayer >= m_sprites_player.size())
-								{
-									indexPlayer = 0;
-								}
-								br_player.texture = m_sprites_player[int(indexPlayer)];
-							}
-							else
-							{
-								indexPlayer = 0;
-							}
+							s = (int)fmod(10000.0f - m_pos_y * 0.025f, m_sprites_player.size());
+							br_player.texture = m_sprites_player[s];
 						}
 					}
 					else
@@ -312,7 +299,7 @@ void Player::draw()
 					{
 						m_sprites_player = loadFileGameObject("playerJump");
 					}
-					s = (int)fmod(1000.0f - m_pos_x * 0.025f, m_sprites_player.size());
+					s = (int)fmod(10000.0f - m_pos_x * 0.025f, m_sprites_player.size());
 					br_player.texture = m_sprites_player[s];
 
 				}
@@ -449,7 +436,7 @@ void Player::debugDraw()
 	br_player_debug.outline_color[2] = 0.5f;
 
 	//player 
-	
+	graphics::resetPose();
 	char s[20];
 	sprintf_s(s, "(%5.2f, %5.2f)", m_state->getPlayer()->getPosX(), m_state->getPlayer()->getPosY());
 	graphics::drawText(45, 300, 50, "Position: ", br_player_debug);

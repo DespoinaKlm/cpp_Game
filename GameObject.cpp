@@ -25,8 +25,7 @@ vector<string> GameObject::loadFileGameObject(string movement)
 {
     vector<string> m_sprites;
 
-    ifstream inputFile;
-    inputFile.open("Animation.txt");
+    std::ifstream inputFile(m_state->getFullAssetPath("Animation.txt"));
     if (inputFile.is_open()) {
         std::string line;
         while (inputFile.good())

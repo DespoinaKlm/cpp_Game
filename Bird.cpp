@@ -59,6 +59,7 @@ void Bird::init()
     br_enemy.texture = m_state->getFullAssetPath("bird1.png");
     
     bird_enemy = loadFileGameObject("bird");
+    cout << "m_pos_x " << m_pos_x << endl << "m_pos_y "<< m_pos_y << endl;
     Enemy::init();
 }
 //----------------------------draw-----------------------------------------------
