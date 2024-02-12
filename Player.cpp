@@ -276,8 +276,6 @@ void Player::draw()
 						if (!(getKeyState(graphics::SCANCODE_A) || getKeyState(graphics::SCANCODE_D)))
 						{
 							m_sprites_player = loadFileGameObject("playerJump");
-							s = (int)fmod(10000.0f - m_pos_y * 0.025f, m_sprites_player.size());
-							br_player.texture = m_sprites_player[s];
 						}
 					}
 					else

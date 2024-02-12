@@ -116,7 +116,7 @@ void Level::init()
 				}
 				else
 				{
-					pos_x = col * m_block_size - 1850 - 100;
+					pos_x = col * m_block_size - 1850 - 90;
 				}
 				float pos_y = row * m_block_size - 130;
 				m_blocks[row][col] = Box(pos_x, pos_y, m_block_size, m_block_size * 3);
@@ -162,14 +162,14 @@ void Level::init()
 				if (col== (level_map[row].size()-1))
 				{
 					//RIGHT
-					pos_x = col * m_block_size + 2000;
+					
+					pos_x = col * m_block_size +500;
 				}
 				else 
 				{
 					//LEFT
 					pos_x = col * m_block_size - 2000;
 				}
-				cout << "m_pos_x 1: " << pos_x << endl;
 				float pos_y = row * m_block_size + 30;
 				EnemyBird = new Bird(m_state, pos_x, pos_y, "Bird", 100);
 				m_Enemies.push_back(EnemyBird);
@@ -453,8 +453,10 @@ void Level::checkCollisions()
 				Box block = m_blocks[row][col];
 				if ((m_state->getPlayer()->insertUp(block) && !m_state->getPlayer()->intersectSideways(block)) && ((m_state->getPlayer()->insertUp(block) && !m_state->getPlayer()->intersectDown(block))))
 				{
-					if (m_state->getPlayer()->m_vy > -85 && m_state->getPlayer()->m_vy <0)
+					cout << "velocity: " << m_state->getPlayer()->m_vy << endl;
+					if (m_state->getPlayer()->m_vy > -57 && m_state->getPlayer()->m_vy < 0)
 					{
+						cout << "error: " << m_state->getPlayer()->m_vy << endl;
 						m_state->getPlayer()->m_pos_y = block.m_pos_y + block.m_height - 0.1;
 						m_state->getPlayer()->m_vy += m_state->getPlayer()->delta_time * m_state->getPlayer()->getGravity();
 						m_state->getPlayer()->m_pos_y += m_state->getPlayer()->m_vy * m_state->getPlayer()->delta_time;

@@ -103,6 +103,21 @@ void Poissons::draw()
 		}
 		else
 		{
+			switch (m_type)
+			{
+			case PoisonType::DEFAULT:
+				graphics::playSound(m_state->getFullAssetPath("pow.wav"), 0.5f);
+				break;
+			case PoisonType::HEALING:
+				graphics::playSound(m_state->getFullAssetPath("health.wav"), 0.5f);
+				break;
+			case PoisonType::DAMAGING:
+				graphics::playSound(m_state->getFullAssetPath("hit.wav"), 0.7f);
+				break;
+			case PoisonType::STRONGER:
+				graphics::playSound(m_state->getFullAssetPath("points.wav"), 0.5f);
+				break;
+			}
 			br_poison.texture = m_poissonA[int(indexframePoisson)];
 		}
 	}

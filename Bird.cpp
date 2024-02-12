@@ -44,8 +44,9 @@ void Bird::update(float dt)
         {
             m_active=false;
         }
-        if (m_pos_x >4500)
+        if (m_pos_x >6800)
         {
+            cout << "noo" << endl;
             m_active =false;
         }
     }
