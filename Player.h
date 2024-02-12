@@ -28,7 +28,7 @@ private:
 	vector<string> dust_animation;
 	
 	//movement
-	const float m_accel_horizontal = 30.0f;
+	const float m_accel_horizontal = 35.0f;
 	const float m_accel_vertical = 4500.0f;
 	const float m_max_velocity = 65.0f;
 	const float m_gravity = 9.8f;
