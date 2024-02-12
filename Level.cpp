@@ -157,20 +157,21 @@ void Level::init()
 				m_block_names[row][col] = "rockEnemy1.png";
 			}
 			else if (level_map[row][col] == 'B') {
-				//apo 2500
+				
 				float pos_x;
 				if (col== (level_map[row].size()-1))
 				{
-					cout << "yes      ";
+					//RIGHT
 					pos_x = col * m_block_size;
 				}
-				else {
-					cout << "no      ";
+				else 
+				{
+					//LEFT
 					pos_x = col * m_block_size - 2000;
 				}
-				
+				cout << "m_pos_x 1: " << pos_x << endl;
 				float pos_y = row * m_block_size + 30;
-				EnemyBird = new Bird(m_state, pos_x, pos_y, "Bird", 50);
+				EnemyBird = new Bird(m_state, pos_x, pos_y, "Bird", 100);
 				m_Enemies.push_back(EnemyBird);
 				m_blocks[row][col] = Box(pos_x, pos_y, EnemyBird->m_width, EnemyBird->m_height);
 				m_block_names[row][col] = "bird1.png";
@@ -531,18 +532,21 @@ Level& Level::updateScore(float score)
 //--------------------------------Destructor----------------------------------------------------------
 Level::~Level()
 {
+	// Delete static objects
 	for (auto& blocks : m_blocks) 
 	{
 		blocks.clear();
 	}
 	m_blocks.clear();
 
-	for (auto& blocks : level_map)
+	// Delete char 
+	for (auto& map : level_map)
 	{
-		blocks.clear();
+		map.clear();
 	}
 	level_map.clear();
 
+	// Delete string names
 	for (auto& blocks_n: m_block_names)
 	{
 		blocks_n.clear();

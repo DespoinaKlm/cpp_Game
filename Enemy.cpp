@@ -11,7 +11,6 @@ using namespace std;
 //---------------------------------------Constructor------------------------------------------------------
 Enemy::Enemy(GameState* gs, const string& name ,int health) :GameObject(gs,name),m_attack(getAttack()), m_enemy_health(health)
 {
-    //m_active = true;
     m_enemy_health = health;
     cantAttack = false;
 }

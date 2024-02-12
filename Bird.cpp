@@ -9,14 +9,16 @@ using namespace std;
 //----------------------------Constructor-------------------------------------
 Bird::Bird(GameState* gs, float px, float py, const string& name, int health):Enemy(gs,name,health)
 {
-    m_active = true;
+    
     m_pos_x = px;
     m_pos_y = py;
     m_width = enemy_size;
     m_height = enemy_size;
     dead = false;
     speed_enemy = 1.5;
+    m_active = true;
     init();
+    
 }
 //----------------------------Destructor-------------------------------------
 Bird::~Bird()
@@ -26,15 +28,15 @@ Bird::~Bird()
 void Bird::update(float dt)
 {
     if (!dead) {
-        if (firstposition>2400)
+        if (firstposition<0)
         {
-            //dejia
+            //from left to right
             m_pos_x += speed_enemy;
             
         }
         else
         {
-            //aristera
+            //from right to left
             m_pos_x -= speed_enemy;
         }
         //pros dejia
@@ -42,7 +44,7 @@ void Bird::update(float dt)
         {
             m_active=false;
         }
-        if ( m_pos_x>4500 )
+        if (m_pos_x >4500 )
         {
             m_active =false;
         }
@@ -57,8 +59,10 @@ void Bird::init()
     br_enemy.fill_opacity = 1.1f;
     br_enemy.outline_opacity = 0.0f;
     br_enemy.texture = m_state->getFullAssetPath("bird1.png");
-    
+
+    firstposition = m_pos_x;
     bird_enemy = loadFileGameObject("bird");
+    cout << "firstposition " << firstposition << endl;
     cout << "m_pos_x: " << m_pos_x <<  " m_pos_y: "<< m_pos_y << endl;
     Enemy::init();
 }
@@ -71,7 +75,7 @@ void Bird::draw()
         float y = m_pos_y + m_state->m_global_offset_y;
         int s = (int)fmod(1000.0f - m_pos_x * 0.025f, bird_enemy.size());
         br_enemy.texture = bird_enemy[s];
-        if (firstposition < 2400)
+        if (firstposition > 0)
         {
             graphics::setScale(-1.0f, 1.0f);
         }

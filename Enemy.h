@@ -4,7 +4,7 @@
 #include "GameState.h"
 #include "box.h"
 
-class Enemy : public GameObject, public Box {
+class Enemy : public GameObject, public Box{
 private:
 	vector<string> enemy_death;
 	const char* str1 = m_name.c_str();
