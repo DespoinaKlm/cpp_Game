@@ -147,6 +147,7 @@ void Enemy::checkCollisionWithPlayer(float dt)
                 if (!getCantAttack() && !m_state->getPlayer()->isAttacking())
                 {
                     graphics::playSound(m_state->getFullAssetPath("notAttack.wav"), 1.0f);
+                    graphics::playSound(m_state->getFullAssetPath("hit.wav"), 0.7f);
                     m_state->getPlayer()->Damage(getAttack());
                 }
                 m_state->getPlayer()->m_vx = 0.0f;

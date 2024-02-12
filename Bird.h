@@ -12,6 +12,7 @@ private:
 	vector<string> bird_enemy;
 	float indexBird;
 	int reverse;
+	int firstposition;
 public:
 	Bird(GameState* gs, float px, float py, const string& name, int health=300);
 	~Bird();

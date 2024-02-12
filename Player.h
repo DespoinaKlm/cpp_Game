@@ -30,7 +30,7 @@ private:
 	//movement
 	const float m_accel_horizontal = 30.0f;
 	const float m_accel_vertical = 4500.0f;
-	const float m_max_velocity = 80.0f;
+	const float m_max_velocity = 70.0f;
 	const float m_gravity = 9.8f;
 
 	//bool movement

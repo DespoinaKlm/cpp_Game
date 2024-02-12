@@ -19,7 +19,6 @@ GameState::GameState()
 {
     nextLevel = false;
     game_over = false;
-    playSound = false;
     pointerLevel = 0;
 }
 //------------------------------------init()--------------------------------------------------------
@@ -56,7 +55,7 @@ void GameState::init()
 
      graphics::preloadBitmaps(getAssetDir());
      graphics::setFont(m_asset_path + "OpenSans-Regular.ttf");
-     graphics::playMusic(getFullAssetPath("epic_hybrid_logo.wav"), 0.5f, true, 4000);
+     graphics::playMusic(getFullAssetPath("epic_hybrid_logo.wav"), 0.8f, true, 4000);
 
 }
 //------------------------------------draw()--------------------------------------------------------
@@ -243,7 +242,7 @@ void GameState::update(float dt)
    }
    if (pointerLevel == 5) {
        graphics::stopMusic();
-       graphics::playSound(getFullAssetPath("pointer4.wav"), 0.5f);
+       graphics::playSound(getFullAssetPath("pointer4.wav"), 0.5f, true);
    }
    if (pointerLevel == 6)
    {

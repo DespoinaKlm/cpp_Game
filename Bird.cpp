@@ -26,7 +26,7 @@ Bird::~Bird()
 void Bird::update(float dt)
 {
     if (!dead) {
-        if (m_pos_y==4430)
+        if (firstposition>2400)
         {
             //dejia
             m_pos_x += speed_enemy;
@@ -59,7 +59,7 @@ void Bird::init()
     br_enemy.texture = m_state->getFullAssetPath("bird1.png");
     
     bird_enemy = loadFileGameObject("bird");
-    cout << "m_pos_x " << m_pos_x << endl << "m_pos_y "<< m_pos_y << endl;
+    cout << "m_pos_x: " << m_pos_x <<  " m_pos_y: "<< m_pos_y << endl;
     Enemy::init();
 }
 //----------------------------draw-----------------------------------------------
@@ -71,10 +71,11 @@ void Bird::draw()
         float y = m_pos_y + m_state->m_global_offset_y;
         int s = (int)fmod(1000.0f - m_pos_x * 0.025f, bird_enemy.size());
         br_enemy.texture = bird_enemy[s];
-        if (m_pos_y != 4430) {
+        if (firstposition < 2400)
+        {
             graphics::setScale(-1.0f, 1.0f);
         }
-        if (m_pos_y == 4430)
+        else
         {
             graphics::resetPose();
         }
