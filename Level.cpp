@@ -162,7 +162,7 @@ void Level::init()
 				if (col== (level_map[row].size()-1))
 				{
 					//RIGHT
-					pos_x = col * m_block_size;
+					pos_x = col * m_block_size + 2000;
 				}
 				else 
 				{
@@ -451,8 +451,9 @@ void Level::checkCollisions()
 			float offset = 0.0f;
 			if (level_map[row][col] == 'X') {
 				Box block = m_blocks[row][col];
-				if ((m_state->getPlayer()->insertUp(block) && !m_state->getPlayer()->intersectSideways(block)) && ((m_state->getPlayer()->insertUp(block) && !m_state->getPlayer()->intersectDown(block)))){
-					if (m_state->getPlayer()->m_vy > -85)
+				if ((m_state->getPlayer()->insertUp(block) && !m_state->getPlayer()->intersectSideways(block)) && ((m_state->getPlayer()->insertUp(block) && !m_state->getPlayer()->intersectDown(block))))
+				{
+					if (m_state->getPlayer()->m_vy > -85 && m_state->getPlayer()->m_vy <0)
 					{
 						m_state->getPlayer()->m_pos_y = block.m_pos_y + block.m_height - 0.1;
 						m_state->getPlayer()->m_vy += m_state->getPlayer()->delta_time * m_state->getPlayer()->getGravity();
