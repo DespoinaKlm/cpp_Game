@@ -42,7 +42,7 @@ void Bird::update(float dt)
         {
             m_active=false;
         }
-        if ( m_pos_x>3500 )
+        if ( m_pos_x>4500 )
         {
             m_active =false;
         }

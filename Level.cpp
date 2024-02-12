@@ -158,7 +158,17 @@ void Level::init()
 			}
 			else if (level_map[row][col] == 'B') {
 				//apo 2500
-				float pos_x = col * m_block_size - 2000;
+				float pos_x;
+				if (col== (level_map[row].size()-1))
+				{
+					cout << "yes      ";
+					pos_x = col * m_block_size;
+				}
+				else {
+					cout << "no      ";
+					pos_x = col * m_block_size - 2000;
+				}
+				
 				float pos_y = row * m_block_size + 30;
 				EnemyBird = new Bird(m_state, pos_x, pos_y, "Bird", 50);
 				m_Enemies.push_back(EnemyBird);
@@ -329,7 +339,7 @@ void Level::drawBlock(int i, int j)
 			}
 			else
 			{
-				graphics::drawRect(x, y, m_block_size * 2.5, m_block_size * 10, m_block_brush);
+				graphics::drawRect(x, y, m_block_size * 2.5, m_block_size * 11, m_block_brush);
 			}
 		}
 		if (m_state->m_debugging)
@@ -440,24 +450,14 @@ void Level::checkCollisions()
 			float offset = 0.0f;
 			if (level_map[row][col] == 'X') {
 				Box block = m_blocks[row][col];
-				if (m_state->getPlayer()->insertUp(block) && !m_state->getPlayer()->intersectSideways(block) && !m_state->getPlayer()->intersectDown(block)) {
-					if (m_state->getPlayer()->m_vy < 0) {
+				if ((m_state->getPlayer()->insertUp(block) && !m_state->getPlayer()->intersectSideways(block)) && ((m_state->getPlayer()->insertUp(block) && !m_state->getPlayer()->intersectDown(block)))){
+					if (m_state->getPlayer()->m_vy > -85)
+					{
 						m_state->getPlayer()->m_pos_y = block.m_pos_y + block.m_height - 0.1;
-				
 						m_state->getPlayer()->m_vy += m_state->getPlayer()->delta_time * m_state->getPlayer()->getGravity();
 						m_state->getPlayer()->m_pos_y += m_state->getPlayer()->m_vy * m_state->getPlayer()->delta_time;
 						break;
 					}
-				}
-				if(m_state->getPlayer()->insertUp(block) && m_state->getPlayer()->intersectSideways(block))
-				{
-					
-					break;
-				}
-				if (m_state->getPlayer()->insertUp(block) && m_state->getPlayer()->intersectDown(block))
-				{
-					
-					break;
 				}
 			}
 		}
